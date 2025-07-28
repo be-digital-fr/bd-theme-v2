@@ -1,8 +1,11 @@
+'use client';
+
 import { AdminPreferencesModal } from "@/components/admin-preferences-modal";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector, CurrentLanguageDisplay } from "@/components/language-selector";
-import { getHomeWithNextjsLocale } from "@/sanity/lib/queries/getHomeWithPreferences";
 import { Settings, Globe } from "lucide-react";
+import { useHomeContent } from "@/hooks/use-locale-data";
+import { useLocaleContext } from "@/features/locale/presentation/providers/LocaleProvider";
 
 /**
  * PAGE PRINCIPALE - DIAGNOSTIC ET DÉMONSTRATION AVEC GESTION DE L'URL
@@ -63,60 +66,13 @@ import { Settings, Globe } from "lucide-react";
  *    → Utiliser fr, en, ou es uniquement
  */
 
-interface HomePageProps {
-  params: {
-    locale?: string;
-  };
-}
-
-export default async function Home({ params }: HomePageProps) {
-  // État pour diagnostique et gestion d'erreurs
-  let importError = null;
-  let homeData = null;
-  let preferences = null;
-  let resolvedLanguage = 'fr';
+export default function Home() {
+  // Utilisation des hooks pour récupérer les données
+  const { currentLocale } = useLocaleContext();
+  const { data: homeData, isLoading, error } = useHomeContent(currentLocale);
   
-  // Récupération de la langue depuis l'URL
-  const urlLocale = params?.locale || 'fr';
-
-  try {
-    // ÉTAPE 1 : Test d'import des queries
-    // Ceci vérifie que tous les fichiers sont correctement configurés
-    console.log('[HomePage] Step 1: Testing import...');
-    const queries = await import("@/sanity/lib/queries");
-    console.log('[HomePage] Step 1: Import successful, available functions:', Object.keys(queries));
-
-    // ÉTAPE 2 : Test d'appel de fonction avec gestion d'erreur et langue URL
-    // Ceci teste la récupération des préférences + données Sanity avec la langue de l'URL
-    console.log('[HomePage] Step 2: Testing function call with URL locale:', urlLocale);
-    const result = await getHomeWithNextjsLocale(urlLocale);
-    console.log('[HomePage] Step 2: Function call successful');
-    
-    // ÉTAPE 3 : Extraction des données pour l'interface
-    homeData = result.data;
-    preferences = result.preferences;
-    resolvedLanguage = result.resolvedLanguage;
-    
-    console.log('[HomePage] Step 3: Data received:', { 
-      hasHomeData: !!homeData, 
-      preferences, 
-      resolvedLanguage,
-      urlLocale 
-    });
-    
-  } catch (error) {
-    // Gestion gracieuse des erreurs avec message explicite
-    importError = error instanceof Error ? error.message : String(error);
-    console.error('[HomePage] Import/Call error:', error);
-    
-    // Fallback - valeurs par défaut pour éviter un crash complet
-    preferences = {
-      isMultilingual: false,
-      supportedLanguages: ['fr'],
-      defaultLanguage: 'fr'
-    };
-    resolvedLanguage = urlLocale || 'fr';
-  }
+  const resolvedLanguage = currentLocale;
+  const importError = error?.message;
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
@@ -154,11 +110,6 @@ export default async function Home({ params }: HomePageProps) {
               <span className="font-medium">
                 Langue actuelle : {resolvedLanguage.toUpperCase()}
               </span>
-              {urlLocale !== resolvedLanguage && (
-                <span className="text-sm text-blue-600">
-                  (URL: {urlLocale.toUpperCase()})
-                </span>
-              )}
             </div>
           </div>
 
@@ -179,7 +130,7 @@ export default async function Home({ params }: HomePageProps) {
                 )}
                 <p>• Vérifier que Sanity Studio est configuré correctement</p>
                 <p>• Créer un document "Home" dans Studio (/studio)</p>
-                <p>• Vérifier que la langue {urlLocale} est supportée</p>
+                <p>• Vérifier la configuration de la langue</p>
               </div>
             </div>
           )}
@@ -215,14 +166,10 @@ export default async function Home({ params }: HomePageProps) {
               🔧 Diagnostic du système
             </h4>
             <div className="text-sm text-gray-600 space-y-1">
-              <p><strong>Langue URL:</strong> {urlLocale}</p>
               <p><strong>Langue résolue:</strong> {resolvedLanguage}</p>
-              <p><strong>Mode:</strong> {preferences?.isMultilingual ? '🌍 Multilingue' : '🇫🇷 Monolingue'}</p>
-              <p><strong>Langue par défaut:</strong> {preferences?.defaultLanguage || 'fr'}</p>
-              <p><strong>Langues supportées:</strong> {preferences?.supportedLanguages?.join(', ') || 'fr'}</p>
+              <p><strong>État:</strong> {isLoading ? '🔄 Chargement...' : '✅ Prêt'}</p>
               <p><strong>Récupération des données:</strong> {importError ? '❌ Erreur' : '✅ Succès'}</p>
               <p><strong>Documents Sanity:</strong> {homeData ? '✅ Trouvé' : '⚠️ Aucun document "home"'}</p>
-              <p><strong>Concordance URL/Résolu:</strong> {urlLocale === resolvedLanguage ? '✅ Oui' : '⚠️ Non'}</p>
             </div>
           </div>
           

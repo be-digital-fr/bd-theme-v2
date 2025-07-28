@@ -1,5 +1,6 @@
 import { IAdminPreferencesRepository } from '../../domain/repositories/IAdminPreferencesRepository';
 import { AdminPreferences } from '../../domain/entities/AdminPreferences';
+import { LocaleCodeType } from '../../../locale/domain/schemas/LocaleSchema';
 import { prisma } from '../../../../lib/prisma';
 
 export class PrismaAdminPreferencesRepository implements IAdminPreferencesRepository {
@@ -23,8 +24,8 @@ export class PrismaAdminPreferencesRepository implements IAdminPreferencesReposi
       return new AdminPreferences(
         preferences.id,
         preferences.isMultilingual,
-        preferences.supportedLanguages,
-        preferences.defaultLanguage
+        preferences.supportedLanguages as LocaleCodeType[],
+        preferences.defaultLanguage as LocaleCodeType
       );
     } catch (error) {
       console.error('Error fetching admin preferences:', error);
@@ -61,8 +62,8 @@ export class PrismaAdminPreferencesRepository implements IAdminPreferencesReposi
       return new AdminPreferences(
         updated.id,
         updated.isMultilingual,
-        updated.supportedLanguages,
-        updated.defaultLanguage
+        updated.supportedLanguages as LocaleCodeType[],
+        updated.defaultLanguage as LocaleCodeType
       );
     } catch (error) {
       console.error('Error updating admin preferences:', error);
@@ -74,8 +75,8 @@ export class PrismaAdminPreferencesRepository implements IAdminPreferencesReposi
     return new AdminPreferences(
       PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.id,
       PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.isMultilingual,
-      PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.supportedLanguages,
-      PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.defaultLanguage
+      PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.supportedLanguages as LocaleCodeType[],
+      PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.defaultLanguage as LocaleCodeType
     );
   }
 }

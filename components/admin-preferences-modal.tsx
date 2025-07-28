@@ -32,12 +32,12 @@ import {
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { MultiSelect } from '@/components/ui/multi-select'
-import { useAdminPreferences, useUpdateAdminPreferences } from '@/hooks/use-admin-preferences'
+import { useAdminPreferences, useUpdateAdminPreferences } from '@/features/admin/presentation/hooks/useAdminPreferences'
 import {
   AdminPreferencesFormSchema,
-  AVAILABLE_LANGUAGES,
-  type AdminPreferencesForm,
-} from '@/lib/schemas'
+  type AdminPreferencesFormType,
+} from '@/features/admin/domain/schemas/AdminPreferencesSchema'
+import { AVAILABLE_LANGUAGES } from '@/features/locale/domain/schemas/LocaleSchema'
 
 interface AdminPreferencesModalProps {
   children?: React.ReactNode
@@ -49,7 +49,7 @@ export function AdminPreferencesModal({ children }: AdminPreferencesModalProps) 
   const updatePreferences = useUpdateAdminPreferences()
   const initializedRef = useRef(false)
 
-  const form = useForm<AdminPreferencesForm>({
+  const form = useForm<AdminPreferencesFormType>({
     resolver: zodResolver(AdminPreferencesFormSchema),
     defaultValues: {
       isMultilingual: false,
@@ -79,7 +79,7 @@ export function AdminPreferencesModal({ children }: AdminPreferencesModalProps) 
     }
   }, [open])
 
-  const onSubmit = (data: AdminPreferencesForm) => {
+  const onSubmit = (data: AdminPreferencesFormType) => {
     updatePreferences.mutate(data, {
       onSuccess: () => {
         setOpen(false)

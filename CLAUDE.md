@@ -13,9 +13,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Database Commands
 
-- `npx prisma generate` - Generate Prisma client
-- `npx prisma db push` - Apply database schema changes
-- `npx prisma studio` - Open Prisma Studio for database management
+- `pnpm dlx prisma generate` - Generate Prisma client
+- `pnpm dlx prisma db push` - Apply database schema changes
+- `pnpm dlx prisma studio` - Open Prisma Studio for database management
 
 ## Project Architecture
 
@@ -29,22 +29,23 @@ This is a multilingual Next.js 15 application built with the App Router, featuri
 - **Styling**: Tailwind CSS with shadcn/ui components
 - **State Management**: TanStack React Query for server state
 - **Forms**: React Hook Form with Zod validation
-- Typescript: zod
+- **Validation**: Zod schemas for type-safe validation
 
 ### Internationalization System
 
 The project implements a unique dual-approach multilingual system:
 
-1. **URL-based Language Management**: Uses Next.js i18n with supported locales `['fr', 'en', 'es']`
+1. **Client-side Language Management**: Uses localStorage-based localization (Next.js i18n is not supported in App Router)
 2. **Admin-configurable Preferences**: Database-stored preferences for multilingual content management
 3. **Dynamic Sanity Components**: CMS fields adapt based on admin preferences
 
 ### Language Resolution Priority
 
-1. Next.js locale from URL (highest priority)
-2. User preferred language (if provided)
-3. Admin default language from preferences
-4. System default (`fr`)
+1. User preferred language from localStorage/session (highest priority)
+2. Admin default language from preferences
+3. System default (`fr`)
+
+**Note**: The system has moved away from Next.js i18n to a localStorage-based approach since i18n is not supported in App Router.
 
 ### Key Directories
 
@@ -144,11 +145,11 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 
 ## Special Features
 
-### URL-based Language Switching
+### Client-side Language Switching
 
-- Access different languages via `/{locale}` routes
-- Automatic redirection for unsupported locales
+- Language preference stored in localStorage/session
 - Language selector components with flags and native names
+- Dynamic content loading based on selected language
 
 ### Admin Configuration Interface
 
@@ -164,10 +165,10 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 
 ## Common Tasks
 
-1. **Adding a new language**: Update `SUPPORTED_LOCALES` in relevant files and Next.js i18n config
+1. **Adding a new language**: Update `SUPPORTED_LOCALES` in relevant files
 2. **Creating adaptive content**: Use `adaptiveString` or `adaptiveText` types in Sanity schemas
 3. **Testing multilingual features**: Use admin preferences modal to switch between modes
-4. **Database changes**: Always run `npx prisma generate` after schema updates
+4. **Database changes**: Always run `pnpm dlx prisma generate` after schema updates
 
 ## Important Notes
 

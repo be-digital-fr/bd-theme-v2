@@ -1,30 +1,48 @@
+import { AdminPreferencesSchema, AdminPreferencesType } from '../schemas/AdminPreferencesSchema';
+import { LocaleCodeType } from '../../../locale/domain/schemas/LocaleSchema';
+
 export class AdminPreferences {
   constructor(
     public readonly id: string,
     public readonly isMultilingual: boolean,
-    public readonly supportedLanguages: string[],
-    public readonly defaultLanguage: string
+    public readonly supportedLanguages: LocaleCodeType[],
+    public readonly defaultLanguage: LocaleCodeType
   ) {
     this.validate();
   }
 
   private validate(): void {
-    if (!this.id) {
-      throw new Error('AdminPreferences ID is required');
-    }
-    if (!this.defaultLanguage) {
-      throw new Error('Default language is required');
-    }
-    if (!this.supportedLanguages.includes(this.defaultLanguage)) {
-      throw new Error('Default language must be included in supported languages');
-    }
+    AdminPreferencesSchema.parse({
+      id: this.id,
+      isMultilingual: this.isMultilingual,
+      supportedLanguages: this.supportedLanguages,
+      defaultLanguage: this.defaultLanguage,
+    });
+  }
+
+  static fromData(data: AdminPreferencesType): AdminPreferences {
+    return new AdminPreferences(
+      data.id,
+      data.isMultilingual,
+      data.supportedLanguages,
+      data.defaultLanguage
+    );
+  }
+
+  toData(): AdminPreferencesType {
+    return {
+      id: this.id,
+      isMultilingual: this.isMultilingual,
+      supportedLanguages: this.supportedLanguages,
+      defaultLanguage: this.defaultLanguage,
+    };
   }
 
   isLanguageSupported(locale: string): boolean {
-    return this.supportedLanguages.includes(locale);
+    return this.supportedLanguages.includes(locale as LocaleCodeType);
   }
 
-  updateDefaultLanguage(locale: string): AdminPreferences {
+  updateDefaultLanguage(locale: LocaleCodeType): AdminPreferences {
     if (!this.supportedLanguages.includes(locale)) {
       throw new Error('Cannot set unsupported language as default');
     }

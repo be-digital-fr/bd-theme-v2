@@ -1,38 +1,42 @@
 import { IHomeRepository } from '../../domain/repositories/IHomeRepository';
 import { HomeContent } from '../../domain/entities/HomeContent';
-
-export interface LocalizedHomeContent {
-  id: string;
-  title?: string;
-  welcoming?: string;
-  subtitle?: string;
-  description?: string;
-  content?: string;
-}
+import { LocalizedHomeContentType } from '../../domain/schemas/HomeContentSchema';
+import { LocaleCodeSchema } from '../../../locale/domain/schemas/LocaleSchema';
+import { z } from 'zod';
 
 export class GetLocalizedHomeContentUseCase {
   constructor(private homeRepository: IHomeRepository) {}
 
-  async execute(locale: string = 'fr'): Promise<LocalizedHomeContent | null> {
+  async execute(locale: string = 'fr'): Promise<LocalizedHomeContentType | null> {
+    // Validate locale input
+    const validatedLocale = LocaleCodeSchema.parse(locale);
+    
     const homeContent = await this.homeRepository.findFirst();
     if (!homeContent) {
       return null;
     }
 
-    return homeContent.toLocalizedObject(locale);
+    return homeContent.toLocalizedObject(validatedLocale);
   }
 
-  async executeAll(locale: string = 'fr'): Promise<LocalizedHomeContent[]> {
+  async executeAll(locale: string = 'fr'): Promise<LocalizedHomeContentType[]> {
+    // Validate locale input
+    const validatedLocale = LocaleCodeSchema.parse(locale);
+    
     const homeContents = await this.homeRepository.findAll();
-    return homeContents.map(homeContent => homeContent.toLocalizedObject(locale));
+    return homeContents.map(homeContent => homeContent.toLocalizedObject(validatedLocale));
   }
 
-  async executeById(id: string, locale: string = 'fr'): Promise<LocalizedHomeContent | null> {
-    const homeContent = await this.homeRepository.findById(id);
+  async executeById(id: string, locale: string = 'fr'): Promise<LocalizedHomeContentType | null> {
+    // Validate inputs
+    const validatedId = z.string().min(1).parse(id);
+    const validatedLocale = LocaleCodeSchema.parse(locale);
+    
+    const homeContent = await this.homeRepository.findById(validatedId);
     if (!homeContent) {
       return null;
     }
 
-    return homeContent.toLocalizedObject(locale);
+    return homeContent.toLocalizedObject(validatedLocale);
   }
 }

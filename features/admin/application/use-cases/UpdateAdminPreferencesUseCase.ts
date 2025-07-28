@@ -1,31 +1,33 @@
 import { IAdminPreferencesRepository } from '../../domain/repositories/IAdminPreferencesRepository';
 import { AdminPreferences } from '../../domain/entities/AdminPreferences';
-
-export interface UpdatePreferencesRequest {
-  isMultilingual?: boolean;
-  supportedLanguages?: string[];
-  defaultLanguage?: string;
-}
+import { UpdatePreferencesSchema, UpdatePreferencesType } from '../../domain/schemas/AdminPreferencesSchema';
+import { LocaleCodeSchema, LocaleCodeType } from '../../../locale/domain/schemas/LocaleSchema';
 
 export class UpdateAdminPreferencesUseCase {
   constructor(private adminPreferencesRepository: IAdminPreferencesRepository) {}
 
-  async execute(request: UpdatePreferencesRequest): Promise<AdminPreferences> {
+  async execute(request: UpdatePreferencesType): Promise<AdminPreferences> {
+    // Validate input with Zod
+    const validatedRequest = UpdatePreferencesSchema.parse(request);
+    
     const currentPreferences = await this.adminPreferencesRepository.get();
     
     const updatedPreferences = new AdminPreferences(
       currentPreferences.id,
-      request.isMultilingual ?? currentPreferences.isMultilingual,
-      request.supportedLanguages ?? currentPreferences.supportedLanguages,
-      request.defaultLanguage ?? currentPreferences.defaultLanguage
+      validatedRequest.isMultilingual ?? currentPreferences.isMultilingual,
+      validatedRequest.supportedLanguages ?? currentPreferences.supportedLanguages,
+      validatedRequest.defaultLanguage ?? currentPreferences.defaultLanguage
     );
 
     return await this.adminPreferencesRepository.update(updatedPreferences);
   }
 
   async setDefaultLanguage(locale: string): Promise<AdminPreferences> {
+    // Validate locale with Zod
+    const validatedLocale = LocaleCodeSchema.parse(locale);
+    
     const currentPreferences = await this.adminPreferencesRepository.get();
-    const updatedPreferences = currentPreferences.updateDefaultLanguage(locale);
+    const updatedPreferences = currentPreferences.updateDefaultLanguage(validatedLocale);
     
     return await this.adminPreferencesRepository.update(updatedPreferences);
   }

@@ -2,13 +2,13 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { HomeContainer } from '../../infrastructure/di/HomeContainer';
-import { LocalizedHomeContent } from '../../application/use-cases/GetLocalizedHomeContentUseCase';
+import { LocalizedHomeContentType } from '../../domain/schemas/HomeContentSchema';
 import { HomeContent } from '../../domain/entities/HomeContent';
 
 export function useHomeContent(locale?: string) {
   return useQuery({
     queryKey: ['home-content', locale],
-    queryFn: async (): Promise<LocalizedHomeContent | null> => {
+    queryFn: async (): Promise<LocalizedHomeContentType | null> => {
       const container = HomeContainer.getInstance();
       const useCase = container.getGetLocalizedHomeContentUseCase();
       return await useCase.execute(locale);
@@ -19,7 +19,7 @@ export function useHomeContent(locale?: string) {
 export function useAllHomeContent(locale?: string) {
   return useQuery({
     queryKey: ['home-content-all', locale],
-    queryFn: async (): Promise<LocalizedHomeContent[]> => {
+    queryFn: async (): Promise<LocalizedHomeContentType[]> => {
       const container = HomeContainer.getInstance();
       const useCase = container.getGetLocalizedHomeContentUseCase();
       return await useCase.executeAll(locale);
@@ -41,7 +41,7 @@ export function useRawHomeContent() {
 export function useHomeContentById(id: string, locale?: string) {
   return useQuery({
     queryKey: ['home-content-by-id', id, locale],
-    queryFn: async (): Promise<LocalizedHomeContent | null> => {
+    queryFn: async (): Promise<LocalizedHomeContentType | null> => {
       const container = HomeContainer.getInstance();
       const useCase = container.getGetLocalizedHomeContentUseCase();
       return await useCase.executeById(id, locale);

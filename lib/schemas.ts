@@ -19,12 +19,14 @@ export const AdminPreferencesSchema = z.object({
   defaultLanguage: LanguageCodeSchema.default('fr'),
 })
 
-export const AdminPreferencesFormSchema = AdminPreferencesSchema.extend({
+export const AdminPreferencesFormSchema = z.object({
+  isMultilingual: z.boolean(),
   supportedLanguages: z.array(LanguageCodeSchema)
     .min(1, 'Au moins une langue doit être sélectionnée')
     .refine((languages) => {
       return languages.length === new Set(languages).size
     }, 'Les langues ne peuvent pas être dupliquées'),
+  defaultLanguage: LanguageCodeSchema,
 }).refine((data) => {
   // Si multilingue est activé, la langue par défaut doit être dans les langues supportées
   if (data.isMultilingual && !data.supportedLanguages.includes(data.defaultLanguage)) {

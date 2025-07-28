@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminContainer } from '../../infrastructure/di/AdminContainer';
 import { AdminPreferences } from '../../domain/entities/AdminPreferences';
-import { UpdatePreferencesRequest } from '../../application/use-cases/UpdateAdminPreferencesUseCase';
+import { UpdatePreferencesType } from '../../domain/schemas/AdminPreferencesSchema';
 
 export function useAdminPreferences() {
   return useQuery({
@@ -20,7 +20,7 @@ export function useUpdateAdminPreferences() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: UpdatePreferencesRequest): Promise<AdminPreferences> => {
+    mutationFn: async (data: UpdatePreferencesType): Promise<AdminPreferences> => {
       const container = AdminContainer.getInstance();
       const useCase = container.getUpdateAdminPreferencesUseCase();
       return await useCase.execute(data);

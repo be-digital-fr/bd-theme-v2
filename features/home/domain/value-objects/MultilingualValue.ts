@@ -1,13 +1,19 @@
+import { MultilingualValueSchema, MultilingualValueType } from '../schemas/HomeContentSchema';
+import { LocaleCodeType } from '../../../locale/domain/schemas/LocaleSchema';
+
 export class MultilingualValue {
   private readonly values: Map<string, string>;
 
-  constructor(values: Record<string, string> | string, defaultLocale: string = 'fr') {
+  constructor(values: MultilingualValueType, defaultLocale: LocaleCodeType = 'fr') {
+    // Validate input with Zod
+    const validatedValues = MultilingualValueSchema.parse(values);
+    
     this.values = new Map();
     
-    if (typeof values === 'string') {
-      this.values.set(defaultLocale, values);
+    if (typeof validatedValues === 'string') {
+      this.values.set(defaultLocale, validatedValues);
     } else {
-      Object.entries(values).forEach(([locale, value]) => {
+      Object.entries(validatedValues).forEach(([locale, value]) => {
         if (value && value.trim()) {
           this.values.set(locale, value);
         }
@@ -15,7 +21,11 @@ export class MultilingualValue {
     }
   }
 
-  getLocalizedValue(locale: string, fallbackLocale: string = 'fr'): string | undefined {
+  static fromData(data: MultilingualValueType, defaultLocale: LocaleCodeType = 'fr'): MultilingualValue {
+    return new MultilingualValue(data, defaultLocale);
+  }
+
+  getLocalizedValue(locale: string, fallbackLocale: LocaleCodeType = 'fr'): string | undefined {
     return this.values.get(locale) || 
            this.values.get(fallbackLocale) || 
            this.getFirstAvailableValue();
@@ -39,5 +49,12 @@ export class MultilingualValue {
 
   toObject(): Record<string, string> {
     return Object.fromEntries(this.values);
+  }
+
+  toData(): MultilingualValueType {
+    const obj = this.toObject();
+    return Object.keys(obj).length === 1 && obj[Object.keys(obj)[0]] 
+      ? Object.values(obj)[0] 
+      : obj;
   }
 }
