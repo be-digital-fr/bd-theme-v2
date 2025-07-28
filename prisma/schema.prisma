@@ -23,3 +23,20 @@ model AdminPreferences {
 
   @@map("admin_preferences")
 }
+
+model Translation {
+  id              String   @id @default(cuid())
+  sourceText      String
+  translatedText  String
+  sourceLanguage  String
+  targetLanguage  String
+  fieldName       String
+  documentId      String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([sourceText, sourceLanguage, targetLanguage, fieldName, documentId])
+  @@index([documentId])
+  @@index([documentId, fieldName])
+  @@map("translations")
+}

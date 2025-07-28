@@ -1,34 +1,35 @@
-import { defineType, defineField } from 'sanity'
-import React from 'react'
+import { defineField } from 'sanity'
+import { HomeIcon } from '@sanity/icons'
+import { createSingleton } from '../lib/singletons'
 
-export default defineType({
+export default createSingleton({
   name: 'home',
   title: 'Page d\'accueil',
-  type: 'document',
+  icon: HomeIcon,
   fields: [
     defineField({
       name: 'title',
-      type: 'adaptiveString',
+      type: 'autoMultilingualString',
       title: 'Titre de la page',
-      description: 'Titre principal de la page d\'accueil',
+      description: 'Titre principal de la page d\'accueil avec traduction automatique',
     }),
     defineField({
       name: 'welcoming',
-      type: 'multilingualString',
+      type: 'autoMultilingualString',
       title: 'Message de bienvenue',
-      description: 'Message d\'accueil affiché sur la page',
+      description: 'Message d\'accueil affiché sur la page avec traduction automatique',
     }),
     defineField({
       name: 'subtitle',
-      type: 'adaptiveString',
+      type: 'autoMultilingualString',
       title: 'Sous-titre',
-      description: 'Sous-titre de la page d\'accueil',
+      description: 'Sous-titre de la page d\'accueil avec traduction automatique',
     }),
     defineField({
       name: 'description',
-      type: 'multilingualText',
+      type: 'autoMultilingualText',
       title: 'Description',
-      description: 'Description détaillée de la page',
+      description: 'Description détaillée de la page avec traduction automatique',
     }),
     defineField({
       name: 'content',
@@ -37,22 +38,4 @@ export default defineType({
       description: 'Contenu supplémentaire (champ standard)',
     }),
   ],
-  preview: {
-    select: {
-      title: 'title',
-      welcoming: 'welcoming',
-      subtitle: 'subtitle',
-    },
-    prepare({ title, welcoming, subtitle }) {
-      // Résoudre les valeurs multilingues pour l'aperçu
-      const resolvedTitle = typeof title === 'string' ? title : title?.fr || title?.en || 'Page d\'accueil'
-      const resolvedWelcoming = typeof welcoming === 'string' ? welcoming : welcoming?.fr || welcoming?.en || 'Message de bienvenue'
-      const resolvedSubtitle = typeof subtitle === 'string' ? subtitle : subtitle?.fr || subtitle?.en || ''
-      
-      return {
-        title: resolvedTitle,
-        subtitle: resolvedSubtitle || resolvedWelcoming,
-      }
-    },
-  },
-}) 
+});
