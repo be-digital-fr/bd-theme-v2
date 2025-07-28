@@ -1,8 +1,7 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { useRouter } from 'next/router';
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, isValidLocale } from '@/lib/locale';
+import { createContext, useContext, ReactNode } from 'react';
+import { useCurrentLocale, useLocaleChange } from '@/lib/locale';
 
 interface LocaleContextType {
   locale: string;
@@ -17,31 +16,16 @@ interface LocaleProviderProps {
   initialLocale?: string;
 }
 
-export function LocaleProvider({ children, initialLocale }: LocaleProviderProps) {
-  const router = useRouter();
-  const [locale, setLocaleState] = useState<string>(initialLocale || DEFAULT_LOCALE);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Synchroniser avec le router Next.js
-  useEffect(() => {
-    if (router.locale && isValidLocale(router.locale)) {
-      setLocaleState(router.locale);
-    }
-  }, [router.locale]);
-
-  const setLocale = (newLocale: string) => {
-    if (!isValidLocale(newLocale)) {
-      console.warn(`Locale "${newLocale}" is not supported`);
-      return;
-    }
-
-    setIsLoading(true);
-    router.push(router.asPath, router.asPath, { locale: newLocale })
-      .finally(() => setIsLoading(false));
-  };
+export function LocaleProvider({ children }: LocaleProviderProps) {
+  const locale = useCurrentLocale();
+  const { changeLocale } = useLocaleChange();
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, isLoading }}>
+    <LocaleContext.Provider value={{ 
+      locale, 
+      setLocale: changeLocale, 
+      isLoading: false 
+    }}>
       {children}
     </LocaleContext.Provider>
   );
@@ -60,5 +44,5 @@ export function useLocale() {
  */
 export function useCurrentLocaleWithFallback(): string {
   const { locale } = useLocale();
-  return isValidLocale(locale) ? locale : DEFAULT_LOCALE;
+  return locale || 'fr';
 } 

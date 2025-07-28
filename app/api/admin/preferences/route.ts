@@ -1,24 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { AdminContainer } from '@/features/admin/infrastructure/di/AdminContainer'
 import { AdminPreferencesFormSchema } from '@/lib/schemas'
 
 export async function GET() {
   try {
-    let preferences = await prisma.adminPreferences.findFirst({
-      orderBy: { createdAt: 'desc' }
-    })
-
-    if (!preferences) {
-      // Créer des préférences par défaut si aucune n'existe
-      preferences = await prisma.adminPreferences.create({
-        data: {
-          isMultilingual: false,
-          supportedLanguages: ['fr'],
-          defaultLanguage: 'fr',
-        }
-      })
-    }
-
+    const container = AdminContainer.getInstance()
+    const useCase = container.getGetAdminPreferencesUseCase()
+    const preferences = await useCase.execute()
+    
     return NextResponse.json({
       id: preferences.id,
       isMultilingual: preferences.isMultilingual,
@@ -26,9 +15,9 @@ export async function GET() {
       defaultLanguage: preferences.defaultLanguage,
     })
   } catch (error) {
-    console.error('Erreur lors de la récupération des préférences:', error)
+    console.error('Error fetching admin preferences:', error)
     return NextResponse.json(
-      { error: 'Erreur lors de la récupération des préférences' },
+      { error: 'Error fetching admin preferences' },
       { status: 500 }
     )
   }
@@ -37,50 +26,27 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
-    
-    // Validation avec Zod
     const validatedData = AdminPreferencesFormSchema.parse(body)
-
-    // Si pas multilingue, on force supportedLanguages à contenir seulement defaultLanguage
-    if (!validatedData.isMultilingual) {
-      validatedData.supportedLanguages = [validatedData.defaultLanguage]
-    }
-
-    // Récupérer l'ID de la préférence existante ou créer
-    let existingPreference = await prisma.adminPreferences.findFirst({
-      orderBy: { createdAt: 'desc' }
+    
+    const container = AdminContainer.getInstance()
+    const useCase = container.getUpdateAdminPreferencesUseCase()
+    
+    const updatedPreferences = await useCase.execute({
+      isMultilingual: validatedData.isMultilingual,
+      supportedLanguages: validatedData.supportedLanguages,
+      defaultLanguage: validatedData.defaultLanguage,
     })
-
-    let preferences
-    if (existingPreference) {
-      preferences = await prisma.adminPreferences.update({
-        where: { id: existingPreference.id },
-        data: {
-          isMultilingual: validatedData.isMultilingual,
-          supportedLanguages: validatedData.supportedLanguages,
-          defaultLanguage: validatedData.defaultLanguage,
-        }
-      })
-    } else {
-      preferences = await prisma.adminPreferences.create({
-        data: {
-          isMultilingual: validatedData.isMultilingual,
-          supportedLanguages: validatedData.supportedLanguages,
-          defaultLanguage: validatedData.defaultLanguage,
-        }
-      })
-    }
 
     return NextResponse.json({
-      id: preferences.id,
-      isMultilingual: preferences.isMultilingual,
-      supportedLanguages: preferences.supportedLanguages,
-      defaultLanguage: preferences.defaultLanguage,
+      id: updatedPreferences.id,
+      isMultilingual: updatedPreferences.isMultilingual,
+      supportedLanguages: updatedPreferences.supportedLanguages,
+      defaultLanguage: updatedPreferences.defaultLanguage,
     })
   } catch (error) {
-    console.error('Erreur lors de la sauvegarde des préférences:', error)
+    console.error('Error saving admin preferences:', error)
     return NextResponse.json(
-      { error: 'Erreur lors de la sauvegarde des préférences' },
+      { error: 'Error saving admin preferences' },
       { status: 500 }
     )
   }
