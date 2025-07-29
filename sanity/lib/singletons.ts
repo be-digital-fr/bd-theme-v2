@@ -25,6 +25,11 @@ export interface SingletonConfig {
   icon?: React.ComponentType;
   initialData?: Record<string, any>;
   fields: any[];
+  groups?: Array<{
+    name: string;
+    title: string;
+    default?: boolean;
+  }>;
 }
 
 /**
@@ -36,6 +41,7 @@ export function createSingleton(config: SingletonConfig) {
     title: config.title,
     type: 'document',
     icon: config.icon,
+    groups: config.groups,
     fields: [
       // Champ caché pour identifier les singletons
       defineField({
@@ -104,10 +110,93 @@ export async function initializeSingletons(): Promise<void> {
     isMultilingual: false,
     supportedLanguages: ['fr'],
     defaultLanguage: 'fr',
+    headerSettings: {
+      logoType: 'text',
+      logoText: 'BD Theme',
+      headerStyle: 'transparent',
+      stickyHeader: true,
+      showSearchIcon: true,
+      showUserIcon: true,
+      showCartIcon: true,
+      cartBadgeCount: 0,
+    },
+    navigationSettings: {
+      menuItems: [
+        {
+          label: {
+            fr: 'Accueil',
+            en: 'Home',
+          },
+          slug: {
+            current: 'accueil',
+          },
+          href: '/',
+          isExternal: false,
+          openInNewTab: false,
+          isActive: true,
+        },
+        {
+          label: {
+            fr: 'Menu',
+            en: 'Menu',
+          },
+          slug: {
+            current: 'menu',
+          },
+          href: '/menu',
+          isExternal: false,
+          openInNewTab: false,
+          isActive: true,
+        },
+        {
+          label: {
+            fr: 'À propos',
+            en: 'About',
+          },
+          slug: {
+            current: 'a-propos',
+          },
+          href: '/about',
+          isExternal: false,
+          openInNewTab: false,
+          isActive: true,
+        },
+        {
+          label: {
+            fr: 'Blog',
+            en: 'Blog',
+          },
+          slug: {
+            current: 'blog',
+          },
+          href: '/blog',
+          isExternal: false,
+          openInNewTab: false,
+          isActive: true,
+        },
+        {
+          label: {
+            fr: 'Contact',
+            en: 'Contact',
+          },
+          slug: {
+            current: 'contact',
+          },
+          href: '/contact',
+          isExternal: false,
+          openInNewTab: false,
+          isActive: true,
+        },
+      ],
+      mobileMenuTitle: {
+        fr: 'Menu',
+        en: 'Menu',
+      },
+    },
     translationSettings: {
       autoTranslate: true,
-      translationModel: 'gpt-3.5-turbo',
-      translationDelay: 2000,
+      translationModel: process.env.TRANSLATION_MODEL || 'gpt-3.5-turbo',
+      translationDelay: parseInt(process.env.TRANSLATION_DELAY || '2000'),
       apiKeyInfo: {
         info: 'La clé API OpenAI est configurée dans les variables d\'environnement (.env) pour des raisons de sécurité. Variable: OPENAI_API_KEY',
       },

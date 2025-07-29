@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
-import { LocaleProvider } from "@/features/locale/presentation/providers/LocaleProvider";
+import { LocaleProvider } from "@/components/providers/locale-provider";
+import { NavigationWrapper } from "@/components/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,10 @@ export default function RootLayout({
       >
         <QueryProvider>
           <LocaleProvider>
-            {children}
+            <NavigationWrapper />
+            <main className="pt-16 lg:pt-20">
+              {children}
+            </main>
           </LocaleProvider>
         </QueryProvider>
       </body>

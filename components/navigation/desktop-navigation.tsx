@@ -1,0 +1,63 @@
+"use client";
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useLocale } from '@/components/providers/locale-provider';
+import { cn } from '@/lib/utils';
+import { LanguageSelector } from '@/components/language-selector';
+
+import { MenuItem } from '@/hooks/useNavigation';
+
+interface DesktopNavigationProps {
+  menuItems: MenuItem[];
+  showLanguageSelector?: boolean;
+  className?: string;
+}
+
+export function DesktopNavigation({ menuItems, showLanguageSelector = false, className }: DesktopNavigationProps) {
+  const pathname = usePathname();
+  const { resolveMultilingualValue } = useLocale();
+
+  return (
+    <nav className={cn("flex items-center space-x-8", className)}>
+      {menuItems.filter(item => item.isActive).map((item, index) => {
+        const label = resolveMultilingualValue(item.label);
+        const isActive = pathname === item.href;
+        
+        const LinkComponent = item.isExternal ? 'a' : Link;
+        const linkProps = item.isExternal 
+          ? { 
+              href: item.href, 
+              target: item.openInNewTab ? "_blank" : "_self", 
+              rel: item.openInNewTab ? "noopener noreferrer" : undefined 
+            }
+          : { href: item.href };
+
+        return (
+          <LinkComponent
+            key={item.slug?.current || index}
+            {...linkProps}
+            className={cn(
+              "relative text-sm font-medium transition-colors duration-200",
+              "hover:text-primary",
+              "before:absolute before:inset-x-0 before:-bottom-1 before:h-0.5 before:bg-primary before:scale-x-0 before:transition-transform before:duration-200",
+              "hover:before:scale-x-100",
+              isActive 
+                ? "text-primary before:scale-x-100" 
+                : "text-foreground/80"
+            )}
+          >
+            {label}
+          </LinkComponent>
+        );
+      })}
+      
+      {/* Language Selector */}
+      {showLanguageSelector && (
+        <div className="ml-4">
+          <LanguageSelector variant="dropdown" />
+        </div>
+      )}
+    </nav>
+  );
+}

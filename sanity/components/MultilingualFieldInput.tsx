@@ -21,8 +21,16 @@ export function MultilingualFieldInput(props: MultilingualFieldInputProps) {
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [hasBeenTranslated, setHasBeenTranslated] = useState(false);
 
-  const sourceLanguage = 'fr'; // Langue source fixée à français
-  const targetLanguages = languages.supported.filter(lang => lang !== sourceLanguage);
+  const sourceLanguage = languages.default || 'fr'; // Langue source basée sur la langue par défaut
+  
+  // Récupérer les langues définies dans le schéma à partir des membres du type
+  const schemaType = props.schemaType as any;
+  const schemaFields = schemaType?.fields || [];
+  const schemaLanguages = schemaFields.map((field: any) => field.name).filter((name: string) => name.length === 2);
+  
+  // Filtrer uniquement les langues qui sont à la fois supportées dans les settings ET définies dans le schéma
+  const targetLanguages = languages.supported
+    .filter(lang => lang !== sourceLanguage && schemaLanguages.includes(lang));
 
   // Écouter les événements de traduction personnalisés
   useEffect(() => {
@@ -165,28 +173,41 @@ export function MultilingualFieldInput(props: MultilingualFieldInputProps) {
 
   const InputComponent = inputType === 'text' ? 'textarea' : 'input';
 
+  // Mapping des noms de langues
+  const languageNames: Record<string, string> = {
+    fr: 'Français',
+    en: 'English',
+    es: 'Español',
+    de: 'Deutsch',
+    it: 'Italiano',
+    pt: 'Português',
+    nl: 'Nederlands',
+    ru: 'Русский',
+    zh: '中文',
+    ja: '日本語',
+    ko: '한국어',
+    ar: 'العربية',
+  };
+
   return (
     <Card>
       <Stack space={4}>
-        {/* Champ source (français) */}
+        {/* Champ source */}
         <Stack space={2}>
           <Text weight="semibold" size={1}>
-            Français (source) *
+            {languageNames[sourceLanguage] || sourceLanguage.toUpperCase()} (source) *
           </Text>
           <TextInput
             value={value?.[sourceLanguage] || ''}
             onChange={(event) => handleSourceChange(event.currentTarget.value)}
-            placeholder="Tapez votre texte en français..."
+            placeholder={`Tapez votre texte en ${languageNames[sourceLanguage]?.toLowerCase() || sourceLanguage}...`}
           />
           {renderTranslationStatus()}
         </Stack>
 
         {/* Champs traduits */}
         {languages.isMultilingual && targetLanguages.map((lang) => {
-          const langName = {
-            en: 'English',
-            es: 'Español',
-          }[lang] || lang.toUpperCase();
+          const langName = languageNames[lang] || lang.toUpperCase();
 
           return (
             <Stack space={2} key={lang}>

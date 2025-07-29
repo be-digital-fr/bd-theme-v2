@@ -61,6 +61,6 @@ if (SENTRY_DSN && ENABLE_SENTRY) {
       process.env.NEXT_PUBLIC_BASE_URL,
       // Development
       "http://localhost:3000",
-    ].filter(Boolean),
+    ].filter(Boolean) as string[],
   });
 }

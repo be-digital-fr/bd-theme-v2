@@ -1,73 +1,82 @@
 import { IHomeRepository } from '../../domain/repositories/IHomeRepository';
-import { HomeContent } from '../../domain/entities/HomeContent';
-import { MultilingualValue } from '../../domain/value-objects/MultilingualValue';
-import { SanityHomeDocumentSchema, SanityHomeDocumentType } from '../../domain/schemas/HomeContentSchema';
-import { client } from '../../../../sanity/lib/client';
-import { z } from 'zod';
+import { HomeContentType } from '../../domain/schemas/HomeContentSchema';
+import { LocaleCodeType } from '../../../locale/domain/schemas/LocaleSchema';
+import { 
+  getHome, 
+  getResolvedHome, 
+  getFirstResolvedHome,
+  type HomeDocument,
+  type ResolvedHomeData 
+} from '@/sanity/lib/queries';
 
 export class SanityHomeRepository implements IHomeRepository {
-  async findAll(): Promise<HomeContent[]> {
-    const documents = await this.fetchHomeDocuments();
-    return documents.map(doc => this.mapToEntity(doc));
+  private mapToHomeContentType(data: ResolvedHomeData | HomeDocument): HomeContentType {
+    return {
+      id: data._id,
+      title: (data as any).title,
+      welcoming: (data as any).welcoming,
+      subtitle: (data as any).subtitle,
+      description: (data as any).description,
+      content: (data as any).content,
+    };
   }
 
-  async findById(id: string): Promise<HomeContent | null> {
-    // Validate ID input
-    const validatedId = z.string().min(1).parse(id);
-    
-    const document = await client.fetch(`*[_type == "home" && _id == $id][0]{
-      _id,
-      _type,
-      title,
-      welcoming,
-      subtitle,
-      description,
-      content
-    }`, { id: validatedId });
-
-    return document ? this.mapToEntity(document) : null;
-  }
-
-  async findFirst(): Promise<HomeContent | null> {
-    const documents = await this.findAll();
-    return documents.length > 0 ? documents[0] : null;
-  }
-
-  private async fetchHomeDocuments(): Promise<SanityHomeDocumentType[]> {
-    const result = await client.fetch(`*[_type == "home"]{
-      _id,
-      _type,
-      title,
-      welcoming,
-      subtitle,
-      description,
-      content
-    }`);
-    
-    console.log('SanityHomeRepository - fetched documents:', result?.length || 0);
-    
-    // Validate and filter valid documents
-    const validDocuments: SanityHomeDocumentType[] = [];
-    for (const doc of (result || [])) {
-      try {
-        const validatedDoc = SanityHomeDocumentSchema.parse(doc);
-        validDocuments.push(validatedDoc);
-      } catch (error) {
-        console.warn('Invalid Sanity document skipped:', doc, error);
-      }
+  async getHomeContent(locale: LocaleCodeType): Promise<HomeContentType | null> {
+    try {
+      const content = await getFirstResolvedHome(locale);
+      return content ? this.mapToHomeContentType(content) : null;
+    } catch (error) {
+      console.error('Error fetching home content from Sanity:', error);
+      throw error;
     }
-    
-    return validDocuments;
   }
 
-  private mapToEntity(doc: SanityHomeDocumentType): HomeContent {
-    return new HomeContent(
-      doc._id,
-      doc.title,
-      doc.welcoming ? MultilingualValue.fromData(doc.welcoming) : undefined,
-      doc.subtitle ? MultilingualValue.fromData(doc.subtitle) : undefined,
-      doc.description ? MultilingualValue.fromData(doc.description) : undefined,
-      doc.content
-    );
+  async getAllHomeContent(): Promise<HomeContentType[]> {
+    try {
+      const content = await getResolvedHome('fr');
+      return content ? content.map(c => this.mapToHomeContentType(c)) : [];
+    } catch (error) {
+      console.error('Error fetching all home content from Sanity:', error);
+      throw error;
+    }
+  }
+
+  async getHomeContentById(id: string): Promise<HomeContentType | null> {
+    try {
+      const allContent = await getHome();
+      const found = allContent.find(doc => doc._id === id);
+      return found ? this.mapToHomeContentType(found) : null;
+    } catch (error) {
+      console.error('Error fetching home content by ID from Sanity:', error);
+      throw error;
+    }
+  }
+
+  async findAll(): Promise<HomeContentType[]> {
+    return this.getAllHomeContent();
+  }
+
+  async findById(id: string): Promise<HomeContentType | null> {
+    return this.getHomeContentById(id);
+  }
+
+  async findFirst(): Promise<HomeContentType | null> {
+    try {
+      const content = await getFirstResolvedHome('fr');
+      return content ? this.mapToHomeContentType(content) : null;
+    } catch (error) {
+      console.error('Error fetching first home content from Sanity:', error);
+      throw error;
+    }
+  }
+
+  async getRawHomeContent(): Promise<HomeDocument[]> {
+    try {
+      const content = await getHome();
+      return content;
+    } catch (error) {
+      console.error('Error fetching raw home content from Sanity:', error);
+      throw error;
+    }
   }
 }

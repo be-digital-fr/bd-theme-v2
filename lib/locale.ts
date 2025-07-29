@@ -10,7 +10,15 @@ export {
 
 // Legacy utility functions for backward compatibility
 const DEFAULT_LOCALE_VALUE = 'fr';
-const SUPPORTED_LOCALES_VALUE = [
+
+export interface LocaleInfo {
+  code: string;
+  name: string;
+  nativeName: string;
+  flag: string;
+}
+
+const SUPPORTED_LOCALES_VALUE: LocaleInfo[] = [
   { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷' },
   { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧' },
   { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸' },
@@ -109,7 +117,7 @@ export function isValidLocale(locale: string): boolean {
   return SUPPORTED_LOCALES_VALUE.some(l => l.code === locale);
 }
 
-export function getLocaleInfo(locale: string): any {
+export function getLocaleInfo(locale: string): LocaleInfo | null {
   return SUPPORTED_LOCALES_VALUE.find(l => l.code === locale) || null;
 }
 

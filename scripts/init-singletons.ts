@@ -67,8 +67,8 @@ async function main() {
       defaultLanguage: 'fr',
       translationSettings: {
         autoTranslate: true,
-        translationModel: 'gpt-3.5-turbo',
-        translationDelay: 2000,
+        translationModel: process.env.TRANSLATION_MODEL || 'gpt-3.5-turbo',
+        translationDelay: parseInt(process.env.TRANSLATION_DELAY || '2000'),
         apiKeyInfo: {
           info: 'La clé API OpenAI est configurée dans les variables d\'environnement (.env) pour des raisons de sécurité. Variable: OPENAI_API_KEY',
         },

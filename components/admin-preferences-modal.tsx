@@ -220,9 +220,9 @@ export function AdminPreferencesModal({ children }: AdminPreferencesModalProps) 
               </Button>
               <Button 
                 type="submit" 
-                disabled={isLoading || updatePreferences.isPending}
+                disabled={isLoading || updatePreferences.isLoading}
               >
-                {updatePreferences.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
+                {updatePreferences.isLoading ? 'Sauvegarde...' : 'Sauvegarder'}
               </Button>
             </div>
           </form>

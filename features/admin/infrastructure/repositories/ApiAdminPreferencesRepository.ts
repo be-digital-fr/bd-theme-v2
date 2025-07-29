@@ -1,38 +1,36 @@
 import { IAdminPreferencesRepository } from '../../domain/repositories/IAdminPreferencesRepository';
 import { AdminPreferences } from '../../domain/entities/AdminPreferences';
-import { AdminPreferencesSchema, AdminPreferencesType } from '../../domain/schemas/AdminPreferencesSchema';
+import { LocaleCodeType } from '../../../locale/domain/schemas/LocaleSchema';
 
 export class ApiAdminPreferencesRepository implements IAdminPreferencesRepository {
-  private static readonly DEFAULT_PREFERENCES: AdminPreferencesType = {
-    id: 'default',
-    isMultilingual: false,
-    supportedLanguages: ['fr'],
-    defaultLanguage: 'fr'
-  };
+  private baseUrl = '/api/admin/preferences';
 
   async get(): Promise<AdminPreferences> {
     try {
-      const response = await fetch('/api/admin/preferences');
-      
+      const response = await fetch(this.baseUrl);
       if (!response.ok) {
-        console.error('Failed to fetch admin preferences');
-        return this.createDefaultPreferences();
+        if (response.status === 404) {
+          // Retourner des valeurs par défaut si pas de préférences
+          return new AdminPreferences(
+            '1',
+            false,
+            ['fr'],
+            'fr'
+          );
+        }
+        throw new Error(`Failed to fetch preferences: ${response.statusText}`);
       }
-
       const data = await response.json();
-      
-      // Validate response data with Zod
-      const validatedData = AdminPreferencesSchema.parse(data);
-      return AdminPreferences.fromData(validatedData);
+      return AdminPreferences.fromData(data);
     } catch (error) {
       console.error('Error fetching admin preferences:', error);
-      return this.createDefaultPreferences();
+      throw error;
     }
   }
 
   async update(preferences: AdminPreferences): Promise<AdminPreferences> {
     try {
-      const response = await fetch('/api/admin/preferences', {
+      const response = await fetch(this.baseUrl, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -41,22 +39,34 @@ export class ApiAdminPreferencesRepository implements IAdminPreferencesRepositor
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to update admin preferences: ${errorData.error}`);
+        throw new Error(`Failed to update preferences: ${response.statusText}`);
       }
 
       const data = await response.json();
-      
-      // Validate response data with Zod
-      const validatedData = AdminPreferencesSchema.parse(data);
-      return AdminPreferences.fromData(validatedData);
+      return AdminPreferences.fromData(data);
     } catch (error) {
       console.error('Error updating admin preferences:', error);
-      throw new Error('Failed to update admin preferences');
+      throw error;
     }
   }
 
-  private createDefaultPreferences(): AdminPreferences {
-    return AdminPreferences.fromData(ApiAdminPreferencesRepository.DEFAULT_PREFERENCES);
+  // Méthodes utilitaires
+  async getPreferences(): Promise<AdminPreferences> {
+    return this.get();
+  }
+
+  async updatePreferences(preferences: Partial<AdminPreferences>): Promise<AdminPreferences> {
+    const current = await this.get();
+    const updatedData = { ...current.toData(), ...preferences };
+    const updated = AdminPreferences.fromData(updatedData);
+    return this.update(updated);
+  }
+
+  async setDefaultLanguage(language: LocaleCodeType): Promise<AdminPreferences> {
+    return this.updatePreferences({ defaultLanguage: language });
+  }
+
+  async toggleMultilingual(isMultilingual: boolean): Promise<AdminPreferences> {
+    return this.updatePreferences({ isMultilingual });
   }
 }

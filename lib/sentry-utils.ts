@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 
-export function captureError(error: Error, context?: Record<string, any>) {
+export function captureError(error: Error, context?: Record<string, unknown>) {
   if (process.env.NEXT_PUBLIC_ENABLE_SENTRY === "false") {
     console.error("Sentry disabled - Error:", error);
     return;
@@ -23,7 +23,7 @@ export function captureMessage(message: string, level: Sentry.SeverityLevel = "i
   Sentry.captureMessage(message, level);
 }
 
-export function addBreadcrumb(message: string, category?: string, data?: Record<string, any>) {
+export function addBreadcrumb(message: string, category?: string, data?: Record<string, unknown>) {
   if (process.env.NEXT_PUBLIC_ENABLE_SENTRY === "false") {
     return;
   }

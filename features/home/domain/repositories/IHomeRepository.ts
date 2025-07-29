@@ -1,7 +1,11 @@
-import { HomeContent } from '../entities/HomeContent';
+import { HomeContentType } from '../schemas/HomeContentSchema';
+import { LocaleCodeType } from '../../../locale/domain/schemas/LocaleSchema';
 
 export interface IHomeRepository {
-  findAll(): Promise<HomeContent[]>;
-  findById(id: string): Promise<HomeContent | null>;
-  findFirst(): Promise<HomeContent | null>;
+  getHomeContent(locale: LocaleCodeType): Promise<HomeContentType | null>;
+  getAllHomeContent(): Promise<HomeContentType[]>;
+  getHomeContentById(id: string): Promise<HomeContentType | null>;
+  findAll(): Promise<HomeContentType[]>;
+  findById(id: string): Promise<HomeContentType | null>;
+  findFirst(): Promise<HomeContentType | null>;
 }

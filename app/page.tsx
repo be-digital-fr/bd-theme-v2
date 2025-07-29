@@ -2,10 +2,11 @@
 
 import { AdminPreferencesModal } from "@/components/admin-preferences-modal";
 import { Button } from "@/components/ui/button";
-import { LanguageSelector, CurrentLanguageDisplay } from "@/components/language-selector";
+import { CurrentLanguageDisplay, LanguageSelector } from "@/components/language-selector-v2";
 import { Settings, Globe } from "lucide-react";
 import { useHomeContent } from "@/hooks/use-locale-data";
-import { useLocaleContext } from "@/features/locale/presentation/providers/LocaleProvider";
+import { useLocale } from "@/components/providers/locale-provider";
+import { useSettings } from "@/hooks/useNavigation";
 
 /**
  * PAGE PRINCIPALE - DIAGNOSTIC ET DÉMONSTRATION AVEC GESTION DE L'URL
@@ -68,17 +69,18 @@ import { useLocaleContext } from "@/features/locale/presentation/providers/Local
 
 export default function Home() {
   // Utilisation des hooks pour récupérer les données
-  const { currentLocale } = useLocaleContext();
-  const { data: homeData, isLoading, error } = useHomeContent(currentLocale);
+  const { locale } = useLocale();
+  const { data: homeData, isLoading, error } = useHomeContent(locale);
+  const { data: settings } = useSettings();
   
-  const resolvedLanguage = currentLocale;
+  const resolvedLanguage = locale;
   const importError = error?.message;
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         
-        {/* HEADER AVEC SÉLECTEUR DE LANGUE */}
+        {/* HEADER */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
             <Globe className="h-8 w-8 text-blue-600" />
@@ -89,7 +91,6 @@ export default function Home() {
               <CurrentLanguageDisplay />
             </div>
           </div>
-          <LanguageSelector />
         </div>
 
         <div className="text-center mb-12">
@@ -111,6 +112,11 @@ export default function Home() {
                 Langue actuelle : {resolvedLanguage.toUpperCase()}
               </span>
             </div>
+            {settings?.isMultilingual && (
+              <div className="mt-2 text-sm text-blue-700">
+                Langues autorisées : {settings.supportedLanguages?.join(', ').toUpperCase() || 'FR'}
+              </div>
+            )}
           </div>
 
           {/* ALERTE D'ERREUR - Visible uniquement en cas de problème */}
@@ -129,7 +135,7 @@ export default function Home() {
                   <p>• Supprimer le dossier .next et relancer <code className="bg-red-200 px-1 rounded">pnpm dev</code></p>
                 )}
                 <p>• Vérifier que Sanity Studio est configuré correctement</p>
-                <p>• Créer un document "Home" dans Studio (/studio)</p>
+                <p>• Créer un document &quot;Home&quot; dans Studio (/studio)</p>
                 <p>• Vérifier la configuration de la langue</p>
               </div>
             </div>
@@ -174,32 +180,6 @@ export default function Home() {
           </div>
           
           <div className="space-y-6">
-            {/* SECTION TEST DE LANGUE */}
-            <div className="border border-gray-200 rounded-lg p-6">
-              <h4 className="text-lg font-medium text-gray-800 mb-4">
-                🌐 Test de Langue
-              </h4>
-              <p className="text-gray-600 mb-4">
-                Testez les différentes langues disponibles. La langue sera changée dans l'URL.
-              </p>
-              
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <LanguageSelector variant="select" className="w-48" />
-                  <span className="text-sm text-gray-500">
-                    Sélecteur dropdown
-                  </span>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <LanguageSelector variant="dropdown" />
-                  <span className="text-sm text-gray-500">
-                    Sélecteur bouton
-                  </span>
-                </div>
-              </div>
-            </div>
-
             {/* SECTION CONFIGURATION DES PRÉFÉRENCES */}
             <div className="border border-gray-200 rounded-lg p-6">
               <h4 className="text-lg font-medium text-gray-800 mb-4">
@@ -218,6 +198,33 @@ export default function Home() {
               </AdminPreferencesModal>
             </div>
 
+            {/* SECTION SÉLECTEUR DE LANGUE */}
+            <div className="border border-gray-200 rounded-lg p-6">
+              <h4 className="text-lg font-medium text-gray-800 mb-4">
+                🌐 Sélecteur de Langue
+              </h4>
+              <p className="text-gray-600 mb-4">
+                Le sélecteur de langue affiche uniquement les langues autorisées par l&apos;administrateur via Sanity Settings.
+                {settings?.isMultilingual && settings?.supportedLanguages && (
+                  <span className="block mt-2 font-medium">
+                    Langues disponibles dans Sanity : {settings.supportedLanguages.join(', ').toUpperCase()}
+                  </span>
+                )}
+              </p>
+              
+              <div className="flex flex-col gap-4 items-center">
+                <div className="flex gap-4">
+                  <LanguageSelector showFlag={true} showNativeName={true} />
+                  <LanguageSelector showFlag={true} showNativeName={false} />
+                  <LanguageSelector showFlag={false} showNativeName={true} />
+                </div>
+                
+                <div className="text-sm text-gray-500 mt-2">
+                  Le sélecteur récupère les langues directement depuis Sanity et n&apos;affiche que celles configurées par l&apos;admin.
+                </div>
+              </div>
+            </div>
+
             {/* SECTION SANITY STUDIO */}
             <div className="border border-gray-200 rounded-lg p-6">
               <h4 className="text-lg font-medium text-gray-800 mb-4">
@@ -225,7 +232,7 @@ export default function Home() {
               </h4>
               <p className="text-gray-600 mb-4">
                 Accédez à Sanity Studio pour gérer le contenu de votre application.
-                L'interface s'adaptera automatiquement à vos préférences linguistiques.
+                L&apos;interface s&apos;adaptera automatiquement à vos préférences linguistiques.
               </p>
               
               <Button variant="outline" asChild className="w-full sm:w-auto">
@@ -251,6 +258,7 @@ export default function Home() {
                 </a>
               </Button>
             </div>
+
           </div>
         </div>
       </div>

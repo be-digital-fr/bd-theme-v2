@@ -2,8 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { HomeContainer } from '../../infrastructure/di/HomeContainer';
-import { LocalizedHomeContentType } from '../../domain/schemas/HomeContentSchema';
-import { HomeContent } from '../../domain/entities/HomeContent';
+import { LocalizedHomeContentType, HomeContentType } from '../../domain/schemas/HomeContentSchema';
 
 export function useHomeContent(locale?: string) {
   return useQuery({
@@ -30,7 +29,7 @@ export function useAllHomeContent(locale?: string) {
 export function useRawHomeContent() {
   return useQuery({
     queryKey: ['home-content-raw'],
-    queryFn: async (): Promise<HomeContent[]> => {
+    queryFn: async (): Promise<HomeContentType[]> => {
       const container = HomeContainer.getInstance();
       const useCase = container.getGetHomeContentUseCase();
       return await useCase.execute();

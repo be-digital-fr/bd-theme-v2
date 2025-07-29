@@ -1,82 +1,82 @@
 import { IAdminPreferencesRepository } from '../../domain/repositories/IAdminPreferencesRepository';
 import { AdminPreferences } from '../../domain/entities/AdminPreferences';
 import { LocaleCodeType } from '../../../locale/domain/schemas/LocaleSchema';
-import { prisma } from '../../../../lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export class PrismaAdminPreferencesRepository implements IAdminPreferencesRepository {
-  private static readonly DEFAULT_PREFERENCES = {
-    id: 'default',
-    isMultilingual: false,
-    supportedLanguages: ['fr'],
-    defaultLanguage: 'fr'
-  };
-
   async get(): Promise<AdminPreferences> {
     try {
-      const preferences = await prisma.adminPreferences.findFirst({
-        orderBy: { createdAt: 'desc' }
-      });
-      
+      const preferences = await prisma.adminPreferences.findFirst();
       if (!preferences) {
-        return this.createDefaultPreferences();
+        // Retourner des valeurs par défaut si pas de préférences
+        return new AdminPreferences(
+          '1',
+          false,
+          ['fr'],
+          'fr'
+        );
       }
-
-      return new AdminPreferences(
-        preferences.id,
-        preferences.isMultilingual,
-        preferences.supportedLanguages as LocaleCodeType[],
-        preferences.defaultLanguage as LocaleCodeType
-      );
+      return AdminPreferences.fromData({
+        id: preferences.id,
+        isMultilingual: preferences.isMultilingual,
+        supportedLanguages: preferences.supportedLanguages as LocaleCodeType[],
+        defaultLanguage: preferences.defaultLanguage as LocaleCodeType,
+      });
     } catch (error) {
-      console.error('Error fetching admin preferences:', error);
-      return this.createDefaultPreferences();
+      console.error('Error fetching admin preferences from database:', error);
+      throw error;
     }
   }
 
   async update(preferences: AdminPreferences): Promise<AdminPreferences> {
     try {
-      const existingPreference = await prisma.adminPreferences.findFirst({
-        orderBy: { createdAt: 'desc' }
-      });
-
-      let updated;
-      if (existingPreference) {
-        updated = await prisma.adminPreferences.update({
-          where: { id: existingPreference.id },
-          data: {
-            isMultilingual: preferences.isMultilingual,
-            supportedLanguages: preferences.supportedLanguages,
-            defaultLanguage: preferences.defaultLanguage,
-          }
+      const existing = await prisma.adminPreferences.findFirst();
+      
+      if (existing) {
+        const updated = await prisma.adminPreferences.update({
+          where: { id: existing.id },
+          data: preferences.toData(),
+        });
+        return AdminPreferences.fromData({
+          id: updated.id,
+          isMultilingual: updated.isMultilingual,
+          supportedLanguages: updated.supportedLanguages as LocaleCodeType[],
+          defaultLanguage: updated.defaultLanguage as LocaleCodeType,
         });
       } else {
-        updated = await prisma.adminPreferences.create({
-          data: {
-            isMultilingual: preferences.isMultilingual,
-            supportedLanguages: preferences.supportedLanguages,
-            defaultLanguage: preferences.defaultLanguage,
-          }
+        const created = await prisma.adminPreferences.create({
+          data: preferences.toData(),
+        });
+        return AdminPreferences.fromData({
+          id: created.id,
+          isMultilingual: created.isMultilingual,
+          supportedLanguages: created.supportedLanguages as LocaleCodeType[],
+          defaultLanguage: created.defaultLanguage as LocaleCodeType,
         });
       }
-
-      return new AdminPreferences(
-        updated.id,
-        updated.isMultilingual,
-        updated.supportedLanguages as LocaleCodeType[],
-        updated.defaultLanguage as LocaleCodeType
-      );
     } catch (error) {
-      console.error('Error updating admin preferences:', error);
-      throw new Error('Failed to update admin preferences');
+      console.error('Error updating admin preferences in database:', error);
+      throw error;
     }
   }
 
-  private createDefaultPreferences(): AdminPreferences {
-    return new AdminPreferences(
-      PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.id,
-      PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.isMultilingual,
-      PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.supportedLanguages as LocaleCodeType[],
-      PrismaAdminPreferencesRepository.DEFAULT_PREFERENCES.defaultLanguage as LocaleCodeType
-    );
+  // Méthodes utilitaires
+  async getPreferences(): Promise<AdminPreferences> {
+    return this.get();
+  }
+
+  async updatePreferences(preferences: Partial<AdminPreferences>): Promise<AdminPreferences> {
+    const current = await this.get();
+    const updatedData = { ...current.toData(), ...preferences };
+    const updated = AdminPreferences.fromData(updatedData);
+    return this.update(updated);
+  }
+
+  async setDefaultLanguage(language: LocaleCodeType): Promise<AdminPreferences> {
+    return this.updatePreferences({ defaultLanguage: language });
+  }
+
+  async toggleMultilingual(isMultilingual: boolean): Promise<AdminPreferences> {
+    return this.updatePreferences({ isMultilingual });
   }
 }

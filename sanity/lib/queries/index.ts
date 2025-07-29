@@ -6,3 +6,6 @@ export {
   type HomeDocument,
   type ResolvedHomeData 
 } from './getHome'
+
+export { getSettingsQuery } from './getSettings'
+export { getNavigationQuery } from './getNavigation'

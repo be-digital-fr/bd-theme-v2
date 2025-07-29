@@ -7,6 +7,7 @@ interface LocaleContextType {
   locale: string;
   setLocale: (locale: string) => void;
   isLoading: boolean;
+  resolveMultilingualValue: (value: Record<string, string> | string | undefined) => string;
 }
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
@@ -20,11 +21,21 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
   const locale = useCurrentLocale();
   const { changeLocale } = useLocaleChange();
 
+  const resolveMultilingualValue = (value: Record<string, string> | string | undefined): string => {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object') {
+      return value[locale] || value['fr'] || value['en'] || Object.values(value)[0] || '';
+    }
+    return '';
+  };
+
   return (
     <LocaleContext.Provider value={{ 
       locale, 
       setLocale: changeLocale, 
-      isLoading: false 
+      isLoading: false,
+      resolveMultilingualValue
     }}>
       {children}
     </LocaleContext.Provider>

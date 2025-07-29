@@ -1,11 +1,12 @@
 'use client';
 
-import { Suspense } from 'react'
+// import { Suspense } from 'react'
+import Link from 'next/link'
 import { LanguageSelector, CurrentLanguageDisplay } from '@/components/language-selector'
 import { Button } from '@/components/ui/button'
 import { Globe, ArrowLeft } from 'lucide-react'
-import { useHomeContent } from '@/hooks/use-locale-data'
-import { useLocaleContext } from '@/features/locale/presentation/providers/LocaleProvider'
+import { useHomeContent, useAdminPreferences } from '@/hooks/use-locale-data'
+import { useCurrentLocale } from '@/lib/locale'
 
 /**
  * PAGE DE TEST DES DONNÉES AVEC GESTION DES LANGUES
@@ -18,177 +19,165 @@ import { useLocaleContext } from '@/features/locale/presentation/providers/Local
  * - Récupération des données selon la langue URL
  * - Affichage des préférences admin
  * - Résolution automatique des langues
- * - Gestion d'erreurs et fallbacks
- * - Comparaison des données multilingues
- * 
- * UTILISATION :
- * - /fr/test-data → données en français
- * - /en/test-data → données en anglais
- * - /es/test-data → données en espagnol
+ * - Changement de langue avec navigation
+ * - Tests de différents cas : multilingue activé/désactivé
  */
 
-// Composant de test des données avec affichage détaillé
+/**
+ * Composant pour tester les données
+ */
 function DataTest() {
-  const { currentLocale } = useLocaleContext();
-  const { data: homeData, isLoading, error } = useHomeContent(currentLocale);
-  
+  const { data: homeData, error: homeError, isLoading } = useHomeContent()
+  const { data: adminPreferences } = useAdminPreferences()
+  const currentLocale = useCurrentLocale()
+  const urlLocale = currentLocale // Using current locale
+
+  // États de chargement
   if (isLoading) {
-    return (
-      <div className="text-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-2 text-gray-600">Récupération des données pour {currentLocale.toUpperCase()}...</p>
-      </div>
-    );
-  }
-  
-  if (error) {
-    return (
-      <div className="p-4 bg-red-100 border border-red-400 rounded">
-        <h3 className="text-red-800 font-bold">❌ Erreur de récupération des données :</h3>
-        <p className="text-red-700 mb-2">{error.message}</p>
-        <div className="text-sm text-red-600">
-          <p><strong>Langue :</strong> {currentLocale}</p>
-          <p><strong>Solutions :</strong></p>
-          <ul className="list-disc ml-5 mt-1">
-            <li>Vérifier la configuration Sanity</li>
-            <li>Créer du contenu dans Sanity Studio</li>
-          </ul>
-        </div>
-      </div>
-    );
-  }
-  
-  if (!homeData) {
-    return (
-      <div className="p-4 bg-yellow-100 border border-yellow-400 rounded">
-        <h3 className="text-yellow-800 font-bold">⚠️ Aucune donnée disponible</h3>
-        <p className="text-yellow-700">
-          Langue : {currentLocale}
-        </p>
-      </div>
-    );
+    return <div className="p-4 bg-gray-50 rounded">⏳ Chargement des données...</div>
   }
 
+  // Erreurs
+  if (homeError) {
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded">
+        <p className="font-medium text-red-800">❌ Erreur lors du chargement</p>
+        <p className="text-sm text-red-600 mt-1">{homeError.message}</p>
+      </div>
+    )
+  }
+
+  // Affichage des données de test
   return (
-    <div className="space-y-6">
-      {/* STATUT DE SUCCÈS */}
-      <div className="p-4 bg-green-100 border border-green-400 rounded">
-        <h3 className="text-green-800 font-bold">✅ Récupération des données réussie !</h3>
-        <div className="mt-2 text-sm text-green-700">
-          <p><strong>Langue :</strong> {currentLocale}</p>
+    <div className="space-y-8">
+      {/* INFOS CONTEXTE */}
+      <div className="bg-blue-50 p-4 rounded">
+        <h3 className="font-semibold text-blue-900 mb-2">📊 Contexte de Test</h3>
+        <div className="space-y-1 text-sm">
+          <p><strong>URL Locale:</strong> {urlLocale}</p>
+          <p><strong>Current Locale:</strong> {currentLocale}</p>
+          <p><strong>Mode multilingue:</strong> {adminPreferences?.isMultilingual ? 'Activé ✅' : 'Désactivé ❌'}</p>
+          <p><strong>Langue par défaut:</strong> {adminPreferences?.defaultLanguage || 'Non définie'}</p>
+          <p><strong>Langues supportées:</strong> {adminPreferences?.supportedLanguages?.join(', ') || 'Aucune'}</p>
         </div>
       </div>
 
-      {/* INFORMATIONS DE DIAGNOSTIC */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-4 bg-orange-50 rounded-lg">
-          <h4 className="font-bold text-orange-800 mb-2">📊 Données Home</h4>
-          <div className="text-sm text-orange-700 space-y-1">
-            <p><strong>ID :</strong> {homeData?.id || 'Non trouvé'}</p>
-            <p><strong>Titre :</strong> {homeData?.title ? '✅ Présent' : '❌ Absent'}</p>
-            <p><strong>Sous-titre :</strong> {homeData?.subtitle ? '✅ Présent' : '❌ Absent'}</p>
-            <p><strong>Welcoming :</strong> {homeData?.welcoming ? '✅ Présent' : '❌ Absent'}</p>
+      {/* DONNÉES RÉSOLUES */}
+      <div className="bg-green-50 p-4 rounded">
+        <h3 className="font-semibold text-green-900 mb-2">✅ Données Résolues</h3>
+        
+        {homeData ? (
+          <div className="space-y-2 text-sm">
+            <div>
+              <strong>Title:</strong> 
+              <span className="ml-2">{homeData.title || '(vide)'}</span>
+            </div>
+            <div>
+              <strong>Subtitle:</strong> 
+              <span className="ml-2">{homeData.subtitle || '(vide)'}</span>
+            </div>
+            <div>
+              <strong>Welcoming:</strong> 
+              <span className="ml-2">{homeData.welcoming || '(vide)'}</span>
+            </div>
+            <div>
+              <strong>Description:</strong> 
+              <p className="ml-2 text-gray-600">{homeData.description || '(vide)'}</p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <p className="text-gray-600">Aucune donnée disponible</p>
+        )}
+      </div>
 
-        <div className="p-4 bg-purple-50 rounded-lg">
-          <h4 className="font-bold text-purple-800 mb-2">🌐 Langue</h4>
-          <div className="text-sm text-purple-700 space-y-1">
-            <p><strong>Actuelle :</strong> {currentLocale}</p>
-            <p><strong>État :</strong> {isLoading ? 'Chargement...' : 'Prêt'}</p>
+      {/* TESTS DE RÉSOLUTION */}
+      <div className="bg-yellow-50 p-4 rounded">
+        <h3 className="font-semibold text-yellow-900 mb-2">🧪 Tests de Résolution</h3>
+        
+        <div className="space-y-3 text-sm">
+          {/* Test multilingue désactivé */}
+          <div className="p-3 bg-white rounded border">
+            <p className="font-medium">Test 1: Mode Monolingue</p>
+            <p className="text-gray-600 mt-1">
+              Si multilingue = false, les données devraient être des strings simples
+            </p>
+            <div className="mt-2 font-mono text-xs bg-gray-100 p-2 rounded">
+              {homeData?.title && typeof homeData.title === 'string' ? 
+                '✅ String simple détecté' : 
+                '❌ Format incorrect'
+              }
+            </div>
+          </div>
+
+          {/* Test multilingue activé */}
+          <div className="p-3 bg-white rounded border">
+            <p className="font-medium">Test 2: Mode Multilingue</p>
+            <p className="text-gray-600 mt-1">
+              Si multilingue = true, les données devraient être résolues selon la langue URL
+            </p>
+            <div className="mt-2 font-mono text-xs bg-gray-100 p-2 rounded">
+              {adminPreferences?.isMultilingual ? 
+                `Langue demandée: ${urlLocale} → Résultat: ${typeof homeData?.title}` : 
+                'Mode monolingue actif'
+              }
+            </div>
+          </div>
+
+          {/* Test langue manquante */}
+          <div className="p-3 bg-white rounded border">
+            <p className="font-medium">Test 3: Fallback sur langue par défaut</p>
+            <p className="text-gray-600 mt-1">
+              Si la langue demandée n&apos;existe pas, fallback sur defaultLanguage
+            </p>
+            <div className="mt-2 font-mono text-xs bg-gray-100 p-2 rounded">
+              {`Fallback actif: ${adminPreferences?.defaultLanguage || 'fr'}`}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* RENDU DES DONNÉES */}
-      {homeData && (
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-bold text-gray-800 mb-4">📝 Rendu des données résolues :</h4>
-          <div className="space-y-3">
-            <div className="p-3 bg-white rounded border">
-              <p className="text-sm font-medium text-gray-600">Titre</p>
-              <p className="text-lg font-semibold text-gray-900">
-                {homeData.title || <span className="text-gray-400 italic">Non défini</span>}
-              </p>
-            </div>
-            
-            <div className="p-3 bg-white rounded border">
-              <p className="text-sm font-medium text-gray-600">Sous-titre</p>
-              <p className="text-gray-800">
-                {homeData.subtitle || <span className="text-gray-400 italic">Non défini</span>}
-              </p>
-            </div>
-            
-            <div className="p-3 bg-white rounded border">
-              <p className="text-sm font-medium text-gray-600">Message de bienvenue</p>
-              <p className="text-gray-800">
-                {homeData.welcoming || <span className="text-gray-400 italic">Non défini</span>}
-              </p>
-            </div>
-            
-            <div className="p-3 bg-white rounded border">
-              <p className="text-sm font-medium text-gray-600">Description</p>
-              <p className="text-gray-800">
-                {homeData.description || <span className="text-gray-400 italic">Non défini</span>}
-              </p>
-            </div>
-            
-            <div className="p-3 bg-white rounded border">
-              <p className="text-sm font-medium text-gray-600">Contenu</p>
-              <p className="text-gray-800">
-                {homeData.content || <span className="text-gray-400 italic">Non défini</span>}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* DONNÉES BRUTES POUR DÉVELOPPEURS */}
-      <details className="p-4 bg-gray-50 rounded-lg">
-        <summary className="font-bold text-gray-800 cursor-pointer mb-2">
-          🔧 Données brutes (développeurs)
+      {/* DONNÉES BRUTES (DEBUG) */}
+      <details className="bg-gray-50 p-4 rounded">
+        <summary className="cursor-pointer font-semibold text-gray-700">
+          🔍 Données brutes (debug)
         </summary>
-        <div className="mt-4">
-          <h5 className="font-medium text-gray-700 mb-2">Données localisées :</h5>
-          <pre className="text-xs bg-white p-3 rounded border overflow-auto h-64">
-            {JSON.stringify(homeData, null, 2)}
-          </pre>
-        </div>
+        <pre className="mt-4 text-xs bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto">
+          {JSON.stringify({ homeData, adminPreferences, urlLocale, currentLocale }, null, 2)}
+        </pre>
       </details>
     </div>
-  );
+  )
 }
 
+/**
+ * Page principale de test
+ */
 export default function TestDataPage() {
-  const { currentLocale } = useLocaleContext();
-
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* HEADER AVEC NAVIGATION */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-4">
-            <Globe className="h-8 w-8 text-blue-600" />
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Test de Récupération des Données
-              </h1>
-              <CurrentLanguageDisplay />
+    <main className="min-h-screen bg-gray-50 py-12">
+      <div className="container mx-auto px-4 max-w-4xl">
+        {/* HEADER */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-bold text-gray-800">
+              🧪 Test des Données Multilingues
+            </h1>
+            <CurrentLanguageDisplay />
+          </div>
+
+          {/* SÉLECTEUR DE LANGUE */}
+          <div className="bg-gray-50 p-4 rounded mb-4">
+            <div className="flex items-center gap-4">
+              <Globe className="h-5 w-5 text-gray-600" />
+              <span className="font-medium">Sélecteur de langue :</span>
+              <LanguageSelector variant="select" />
             </div>
           </div>
-          <LanguageSelector />
-        </div>
 
-        {/* INFORMATIONS DE LA PAGE */}
-        <div className="mb-8 p-4 bg-blue-50 rounded-lg">
-          <h2 className="text-lg font-semibold text-blue-800 mb-2">
-            📋 Informations de test
-          </h2>
-          <div className="text-sm text-blue-700 space-y-1">
-            <p><strong>Langue testée :</strong> {currentLocale.toUpperCase()}</p>
+          {/* INFOS */}
+          <div className="text-sm text-gray-600 space-y-1">
             <p><strong>Objectif :</strong> Tester la récupération et résolution des données selon la langue</p>
-            <p><strong>Changez de langue :</strong> Utilisez le sélecteur ci-dessus pour tester d'autres langues</p>
+            <p><strong>Changez de langue :</strong> Utilisez le sélecteur ci-dessus pour tester d&apos;autres langues</p>
           </div>
         </div>
 
@@ -198,10 +187,10 @@ export default function TestDataPage() {
         {/* NAVIGATION */}
         <div className="mt-8 flex justify-center gap-4">
           <Button variant="outline" asChild>
-            <a href="/">
+            <Link href="/">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour à l'accueil
-            </a>
+              Retour à l&apos;accueil
+            </Link>
           </Button>
           
           <Button variant="outline" asChild>
@@ -211,6 +200,6 @@ export default function TestDataPage() {
           </Button>
         </div>
       </div>
-    </div>
-  );
-} 
+    </main>
+  )
+}
