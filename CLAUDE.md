@@ -2,6 +2,104 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 1. General Overview
+
+**Be Digital** is a Next.js theme designed for restaurants and food businesses to digitize their operations.  
+It is **SEO optimized**, follows a **clean code architecture** (Cursor compatible), and includes **complete e-commerce solutions** (click-and-collect, online payments, order management).
+
+### Main Technologies
+
+- **Next.js 15**
+- **Neon (PostgreSQL) via Prisma**
+- **Better Auth** for authentication
+- **Sanity** for text & image content (multilingual)
+- **Stripe & SumUp** for payments
+- **Uber Eats & Deliveroo integrations** to centralize orders
+- **Code protection**: theme can only be used by the client after purchase
+- **Zod** for typescript
+- **Paywright** for testing
+
+---
+
+## 2. Main Pages
+
+- **Home**
+- **Menu (products)**
+- **About**
+- **Blog**
+- **Contact**
+- **E-commerce pages**: cart, checkout, order tracking
+- **Authentication pages**: login, signup, password reset
+- **Admin dashboard**
+
+---
+
+## 3. Key Features
+
+### A. E-commerce & Orders
+
+1. **Click-and-Collect** with the ability to choose the pick-up restaurant.
+2. **Secure online payments** (Stripe, SumUp) and **cash payment on pick-up**.
+   - Security features to avoid abuse (block repeat offenders).
+3. **Real-time order management** with a "Rush Hour" type system to visualize orders and their status.
+4. **Order aggregation** from the website, Uber Eats, and Deliveroo into a **single interface**.
+
+---
+
+### B. Customer Experience
+
+1. **Complete customer profiles**:
+   - Personal information
+   - Order history
+   - Payment methods and delivery addresses
+   - Newsletter subscriptions and favorites
+   - Ability to delete account
+2. **Multilingual support** enabled by the admin (automatic translation via Sanity).
+3. **Promotional banners**: fully customizable and can be activated/deactivated by the admin.
+
+---
+
+### C. Gamification & Marketing
+
+1. **Interactive games** to engage and retain customers:
+   - Wheel of Fortune
+   - Flavor Memory Game (later release)
+   - Bubble Click
+   - Scratch & Win
+   - Virtual Archery
+2. **QR code integration**: customers scan codes to play after completing an action (leave a review, place an order, etc.).
+3. **Coupon & discount system** linked directly to games and customer loyalty.
+4. **Integrated email marketing** for campaigns and customer engagement.
+
+---
+
+### D. Customer Reviews Management
+
+1. Collect and moderate customer reviews.
+2. Public display of reviews on the website.
+3. Direct integration with **Google Reviews**.
+
+---
+
+### E. Reservations
+
+1. **Built-in reservation system**:
+   - Table selection and dietary preferences
+   - Ability to pre-order meals
+2. Manage availability directly from the dashboard.
+
+---
+
+### F. Analytics Dashboard (Top Priority)
+
+1. Real-time statistics on:
+   - Sales and orders
+   - Customer reviews
+   - Website traffic
+   - Marketing campaign performance
+2. Intuitive visualization (charts, KPIs).
+
+
 ## Development Commands
 
 ### Core Commands

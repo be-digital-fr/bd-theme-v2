@@ -165,7 +165,7 @@ export function LanguageSelector({
           {currentLanguageInfo && showFlag && (
             <span className="text-lg">{currentLanguageInfo.flag}</span>
           )}
-          {!showFlag && currentLanguageInfo && (
+          {currentLanguageInfo && (showNativeName || !showFlag) && (
             <span>
               {showNativeName ? currentLanguageInfo.nativeName : currentLanguageInfo.name}
             </span>

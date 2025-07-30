@@ -128,6 +128,6 @@ export const config = {
      * - studio (Sanity Studio)
      * - public folder
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|studio|public).*)',
+    '/((?!api|_next|favicon.ico|studio|public|__webpack_hmr).*)',
   ],
 }; 
