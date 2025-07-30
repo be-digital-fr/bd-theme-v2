@@ -53,7 +53,6 @@ export function middleware(request: NextRequest) {
     // Exemple : /de/about → /fr/about
     const newPath = `/${DEFAULT_LOCALE}/${segments.join('/')}`;
     
-    console.log(`[Middleware] Unsupported locale "${potentialLocale}" redirecting to: ${newPath}`);
     
     return NextResponse.redirect(new URL(newPath, request.url));
   }
@@ -63,7 +62,6 @@ export function middleware(request: NextRequest) {
   if (pathname !== '/' && !pathname.startsWith(`/${DEFAULT_LOCALE}`)) {
     const newPath = `/${DEFAULT_LOCALE}${pathname}`;
     
-    console.log(`[Middleware] No locale in URL, redirecting to: ${newPath}`);
     
     return NextResponse.redirect(new URL(newPath, request.url));
   }
@@ -76,7 +74,6 @@ export function middleware(request: NextRequest) {
     if (preferredLocale && preferredLocale !== DEFAULT_LOCALE) {
       const newPath = `/${preferredLocale}`;
       
-      console.log(`[Middleware] Root path, redirecting to preferred locale: ${newPath}`);
       
       return NextResponse.redirect(new URL(newPath, request.url));
     }

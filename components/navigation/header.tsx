@@ -26,8 +26,6 @@ export function Header({ className }: HeaderProps) {
   const { resolveMultilingualValue } = useLocale();
   
 
-  console.log('Header data:', { data, isLoading });
-
   // useEffect doit aussi être appelé avant tout retour conditionnel
   useEffect(() => {
     const handleScroll = () => {
@@ -58,10 +56,6 @@ export function Header({ className }: HeaderProps) {
     );
   }
 
-  console.log('Header data full:', data);
-  console.log('Settings:', settings);
-  console.log('Navigation:', navigation);
-  console.log('Menu items:', menuItems);
 
   const logoText = headerSettings.logoText || 'BD Theme';
   const logoAlt = headerSettings.logoImage?.alt 
