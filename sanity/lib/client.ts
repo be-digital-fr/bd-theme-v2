@@ -6,5 +6,15 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  //useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
+  useCdn: false, // Désactivé pour toujours avoir les données les plus récentes
+})
+
+// Client pour voir les brouillons (drafts)
+export const previewClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false,
+  perspective: 'previewDrafts', // Pour voir les brouillons
+  token: process.env.NEXT_PUBLIC_SANITY_API_TOKEN,
 })

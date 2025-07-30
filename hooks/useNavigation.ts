@@ -1,9 +1,8 @@
 "use client";
 
 import { useQuery } from '@tanstack/react-query';
-import { client } from '@/sanity/lib/client';
+import { client, previewClient } from '@/sanity/lib/client';
 import { getSettingsQuery } from '@/sanity/lib/queries';
-import { getNavigationQuery } from '@/sanity/lib/queries/getNavigation';
 
 export interface MenuItem {
   _key: string;
@@ -65,14 +64,7 @@ export interface SettingsData {
   supportedLanguages: string[];
   defaultLanguage: string;
   headerSettings?: HeaderSettings;
-  translationSettings?: {
-    autoTranslate: boolean;
-    translationModel: string;
-    translationDelay: number;
-    apiKeyInfo?: {
-      info: string;
-    };
-  };
+  navigation?: NavigationData;
   languageSelectorTexts?: {
     chooseLangText?: Record<string, string> | string;
   };
@@ -84,47 +76,54 @@ export function useSettings() {
     queryKey: ['settings'],
     queryFn: async (): Promise<SettingsData | null> => {
       try {
-        const data = await client.fetch(getSettingsQuery);
+        console.log('Fetching settings from Sanity...');
+        console.log('Query:', getSettingsQuery);
+        const data = await client.fetch(getSettingsQuery, {}, { next: { revalidate: 3600 } });
+        console.log('Settings fetched:', data);
+        if (!data) {
+          console.warn('No settings document found in Sanity. Please create one in Sanity Studio.');
+        }
         return data;
       } catch (error) {
         console.error('Error fetching settings:', error);
+        console.error('Full error details:', {
+          message: (error as any).message,
+          statusCode: (error as any).statusCode,
+          details: (error as any).details
+        });
         return null;
       }
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 }
 
-// Hook pour récupérer les données de navigation (nouveau singleton séparé)
+// Hook pour récupérer les données de navigation (depuis settings)
 export function useNavigation() {
-  return useQuery({
-    queryKey: ['navigation'],
-    queryFn: async (): Promise<NavigationData | null> => {
-      try {
-        const data = await client.fetch(getNavigationQuery);
-        return data || null;
-      } catch (error) {
-        console.error('Failed to fetch navigation:', error);
-        return null;
-      }
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    gcTime: 1000 * 60 * 10, // 10 minutes
-  });
+  const { data: settings, isLoading, error } = useSettings();
+
+  console.log('settings', settings);
+
+  return {
+    data: settings?.navigation || null,
+    isLoading,
+    error,
+  };
 }
 
 // Hook combiné pour la compatibilité (header qui a besoin des deux)
 export function useHeaderData() {
-  const { data: settings, isLoading: settingsLoading, error: settingsError } = useSettings();
-  const { data: navigation, isLoading: navigationLoading, error: navigationError } = useNavigation();
+  const { data: settings, isLoading, error } = useSettings();
 
   return {
     data: {
       settings,
-      navigation,
+      navigation: settings?.navigation,
     },
-    isLoading: settingsLoading || navigationLoading,
-    error: settingsError || navigationError,
+    isLoading,
+    error,
   };
 }

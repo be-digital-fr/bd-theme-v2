@@ -24,11 +24,24 @@ export const getSettingsQuery = defineQuery(`
       showCartIcon,
       cartBadgeCount
     },
-    translationSettings {
-      autoTranslate,
-      apiKeyInfo,
-      translationModel,
-      translationDelay
+    navigation {
+      menuItems[]{
+        _key,
+        label,
+        slug,
+        href,
+        isExternal,
+        openInNewTab,
+        isActive
+      },
+      footerMenuItems[]{
+        _key,
+        label,
+        href,
+        isExternal,
+        isActive
+      },
+      mobileMenuTitle
     }
   }
 `);

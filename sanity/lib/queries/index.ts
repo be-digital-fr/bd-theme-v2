@@ -8,4 +8,3 @@ export {
 } from './getHome'
 
 export { getSettingsQuery } from './getSettings'
-export { getNavigationQuery } from './getNavigation'

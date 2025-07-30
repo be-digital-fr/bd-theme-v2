@@ -20,10 +20,12 @@ interface HeaderProps {
 
 export function Header({ className }: HeaderProps) {
   // Tous les hooks doivent être appelés en premier
-  const { data, isLoading, error } = useHeaderData();
+  const { data, isLoading } = useHeaderData();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { resolveMultilingualValue } = useLocale();
+
+  console.log('Header data:', { data, isLoading });
 
   // useEffect doit aussi être appelé avant tout retour conditionnel
   useEffect(() => {
@@ -48,33 +50,30 @@ export function Header({ className }: HeaderProps) {
     );
   }
 
-  if (error || !data?.settings || !data?.navigation) {
-    return (
-      <div className="h-16 bg-white shadow-sm">
-        <div className="container mx-auto px-4 h-full flex items-center justify-center">
-          <p className="text-sm text-gray-500">Erreur de chargement du header</p>
-        </div>
-      </div>
-    );
-  }
-
-  const { settings, navigation } = data;
-  const headerSettings = settings.headerSettings;
+  // Utiliser des valeurs par défaut si pas de données
+  const settings = data?.settings || null;
+  const navigation = settings?.navigation || { menuItems: [], footerMenuItems: [] };
+  const headerSettings = settings?.headerSettings || {};
   const menuItems = navigation.menuItems || [];
 
-  const logoText = headerSettings?.logoText || 'BD Theme';
-  const logoAlt = headerSettings?.logoImage?.alt 
+  console.log('Header data full:', data);
+  console.log('Settings:', settings);
+  console.log('Navigation:', navigation);
+  console.log('Menu items:', menuItems);
+
+  const logoText = headerSettings.logoText || 'BD Theme';
+  const logoAlt = headerSettings.logoImage?.alt 
     ? resolveMultilingualValue(headerSettings.logoImage.alt)
     : 'Logo';
 
-  const logoImage = headerSettings?.logoImage;
+  const logoImage = headerSettings.logoImage;
   return (
     <header 
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled 
           ? "bg-background/95 backdrop-blur-md shadow-sm border-b" 
-          : "bg-transparent",
+          : "bg-background/80 backdrop-blur-sm border-b",
         className
       )}
     >
@@ -150,7 +149,7 @@ export function Header({ className }: HeaderProps) {
             )}
 
             {/* Language Selector - Desktop only */}
-            {settings.isMultilingual && (
+            {settings?.isMultilingual && (
               <div className="hidden lg:block border-l pl-4 ml-2">
                 <LanguageSelector showFlag={true} showNativeName={false} />
               </div>
@@ -171,7 +170,7 @@ export function Header({ className }: HeaderProps) {
               <SheetContent side="right" className="w-full sm:w-80">
                 <MobileNavigation 
                   menuItems={menuItems}
-                  showLanguageSelector={settings.isMultilingual}
+                  showLanguageSelector={settings?.isMultilingual || false}
                   onItemClick={() => setIsMobileMenuOpen(false)}
                 />
               </SheetContent>

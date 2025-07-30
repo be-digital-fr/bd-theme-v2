@@ -1,6 +1,5 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
 interface GlobalErrorProps {
@@ -10,9 +9,11 @@ interface GlobalErrorProps {
 
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_ENABLE_SENTRY !== "false") {
-      Sentry.captureException(error);
-    }
+    // Sentry logging commented out temporarily to fix HMR issue
+    // if (process.env.NEXT_PUBLIC_ENABLE_SENTRY !== "false") {
+    //   Sentry.captureException(error);
+    // }
+    console.error("Global error:", error);
   }, [error]);
 
   return (

@@ -1,4 +1,4 @@
-import type {StructureResolver} from 'sanity/structure'
+import type { StructureResolver } from 'sanity/structure'
 import { CogIcon, HomeIcon } from '@sanity/icons'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
@@ -12,15 +12,15 @@ export const structure: StructureResolver = (S) =>
         .icon(CogIcon)
         .child(
           S.editor()
-            .id('settings')
+            .id('settings-site')
             .schemaType('settings')
-            .documentId('settings')
+            .documentId('settings-site')
             .title('Paramètres du site')
         ),
-      
+
       S.listItem()
         .title('🏠 Page d\'accueil')
-        .icon(HomeIcon) 
+        .icon(HomeIcon)
         .child(
           S.editor()
             .id('home')
@@ -32,19 +32,19 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
 
       // DOCUMENTS AVEC TRADUCTION AUTOMATIQUE
-      S.listItem()
-        .title('🌐 Pages avec traduction auto')
-        .child(
-          S.list()
-            .title('Documents multilingues')
-            .items([
-              S.documentTypeListItem('homeWithAutoTranslate')
-                .title('🏠 Page d\'accueil avancée')
-                .icon(HomeIcon),
-            ])
-        ),
+      // S.listItem()
+      //   .title('🌐 Pages avec traduction auto')
+      //   .child(
+      //     S.list()
+      //       .title('Documents multilingues')
+      //       .items([
+      //         S.documentTypeListItem('homeWithAutoTranslate')
+      //           .title('🏠 Page d\'accueil avancée')
+      //           .icon(HomeIcon),
+      //       ])
+      //   ),
 
-      S.divider(),
+      // S.divider(),
 
       // AUTRES DOCUMENTS
       ...S.documentTypeListItems().filter(

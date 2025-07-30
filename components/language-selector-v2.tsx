@@ -77,9 +77,36 @@ export function LanguageSelector({
           } else {
             setCurrentLocale(settingsData.defaultLanguage || 'fr');
           }
+        } else {
+          // Utiliser des valeurs par défaut si aucun document settings n'existe
+          const defaultSettings: SanitySettings = {
+            isMultilingual: true,
+            supportedLanguages: ['fr', 'en'],
+            defaultLanguage: 'fr'
+          };
+          setSettings(defaultSettings);
+          const savedLocale = localStorage.getItem('preferred-locale');
+          if (savedLocale && defaultSettings.supportedLanguages.includes(savedLocale)) {
+            setCurrentLocale(savedLocale);
+          } else {
+            setCurrentLocale(defaultSettings.defaultLanguage);
+          }
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
+        // En cas d'erreur, utiliser les valeurs par défaut
+        const defaultSettings: SanitySettings = {
+          isMultilingual: true,
+          supportedLanguages: ['fr', 'en'],
+          defaultLanguage: 'fr'
+        };
+        setSettings(defaultSettings);
+        const savedLocale = localStorage.getItem('preferred-locale');
+        if (savedLocale && defaultSettings.supportedLanguages.includes(savedLocale)) {
+          setCurrentLocale(savedLocale);
+        } else {
+          setCurrentLocale(defaultSettings.defaultLanguage);
+        }
       } finally {
         setIsLoading(false);
       }

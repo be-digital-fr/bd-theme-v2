@@ -46,7 +46,7 @@ export function MobileNavigation({
 
         return (
           <LinkComponent
-            key={item.slug?.current || index}
+            key={item._key || item.href || index}
             {...linkProps}
             onClick={onItemClick}
             className={cn(

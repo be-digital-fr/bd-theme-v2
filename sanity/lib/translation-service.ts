@@ -34,7 +34,8 @@ export class SanityTranslationService {
   }
 
   isConfigured(): boolean {
-    return !!(this.settings?.autoTranslate);
+    // Vérifier si la traduction est disponible côté serveur
+    return true; // La vérification de la clé API se fait côté serveur dans l'API route
   }
 
 
@@ -80,7 +81,7 @@ export class SanityTranslationService {
           targetLanguage: request.targetLanguage,
           fieldName: request.fieldName,
           context: request.context,
-          model: this.settings!.translationModel,
+          model: 'gpt-3.5-turbo', // Configuré côté serveur
         }),
       });
 

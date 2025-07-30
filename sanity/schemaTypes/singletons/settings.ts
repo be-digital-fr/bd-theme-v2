@@ -1,5 +1,5 @@
 import { defineField } from 'sanity'
-import { CogIcon } from '@sanity/icons'
+import { CogIcon, MenuIcon, CheckmarkIcon, CloseIcon } from '@sanity/icons'
 import { createSingleton } from '../../lib/singletons'
 
 export const settings = createSingleton({
@@ -21,8 +21,8 @@ export const settings = createSingleton({
       title: 'Langues',
     },
     {
-      name: 'translation',
-      title: 'Traduction',
+      name: 'navigation',
+      title: 'Navigation',
     },
   ],
   fields: [
@@ -174,61 +174,6 @@ export const settings = createSingleton({
       validation: (rule) => rule.required(),
       group: 'languages',
     }),
-    defineField({
-      name: 'translationSettings',
-      title: 'Paramètres de traduction',
-      type: 'object',
-      group: 'translation',
-      fields: [
-        defineField({
-          name: 'autoTranslate',
-          title: 'Traduction automatique',
-          description: 'Activer la traduction automatique avec ChatGPT',
-          type: 'boolean',
-          initialValue: true,
-        }),
-        defineField({
-          name: 'apiKeyInfo',
-          title: 'Configuration API OpenAI',
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'info',
-              title: 'Information',
-              type: 'text',
-              initialValue: 'La clé API OpenAI est configurée dans les variables d\'environnement (.env) pour des raisons de sécurité. Variable: OPENAI_API_KEY',
-              readOnly: true,
-            }),
-          ],
-          hidden: ({ parent }) => !parent?.autoTranslate,
-        }),
-        defineField({
-          name: 'translationModel',
-          title: 'Modèle de traduction',
-          description: 'Modèle ChatGPT à utiliser pour les traductions',
-          type: 'string',
-          options: {
-            list: [
-              { title: 'GPT-3.5 Turbo (Rapide)', value: 'gpt-3.5-turbo' },
-              { title: 'GPT-4 (Précis)', value: 'gpt-4' },
-              { title: 'GPT-4 Turbo (Équilibré)', value: 'gpt-4-turbo' },
-            ]
-          },
-          initialValue: 'gpt-3.5-turbo',
-          hidden: ({ parent }) => !parent?.autoTranslate,
-        }),
-        defineField({
-          name: 'translationDelay',
-          title: 'Délai avant traduction (ms)',
-          description: 'Temps d\'attente après la dernière frappe avant de déclencher la traduction',
-          type: 'number',
-          initialValue: 2000,
-          validation: (rule) => rule.min(500).max(10000),
-          hidden: ({ parent }) => !parent?.autoTranslate,
-        }),
-      ],
-      hidden: ({ parent }) => !parent?.isMultilingual,
-    }),
     
     // Language Selector Texts
     defineField({
@@ -252,6 +197,156 @@ export const settings = createSingleton({
         }),
       ],
       hidden: ({ parent }) => !parent?.isMultilingual,
+    }),
+
+    // NAVIGATION SETTINGS
+    defineField({
+      name: 'navigation',
+      title: 'Navigation',
+      type: 'object',
+      group: 'navigation',
+      fields: [
+        defineField({
+          name: 'menuItems',
+          title: 'Éléments du menu',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              name: 'menuItem',
+              title: 'Élément de menu',
+              fields: [
+                defineField({
+                  name: 'label',
+                  title: 'Libellé',
+                  type: 'autoMultilingualString',
+                  validation: (rule) => rule.required(),
+                }),
+                defineField({
+                  name: 'slug',
+                  title: 'Identifiant',
+                  type: 'slug',
+                  options: {
+                    source: (_, options) => {
+                      const parent = options.parent as any;
+                      const label = parent?.label;
+                      if (typeof label === 'object' && label) {
+                        return label.fr || label.en || Object.values(label)[0] || '';
+                      }
+                      return label || '';
+                    },
+                    maxLength: 96,
+                  },
+                  validation: (rule) => rule.required(),
+                }),
+                defineField({
+                  name: 'href',
+                  title: 'Lien',
+                  type: 'string',
+                  validation: (rule) => rule.required(),
+                }),
+                defineField({
+                  name: 'isExternal',
+                  title: 'Lien externe',
+                  type: 'boolean',
+                  initialValue: false,
+                }),
+                defineField({
+                  name: 'openInNewTab',
+                  title: 'Ouvrir dans un nouvel onglet',
+                  type: 'boolean',
+                  initialValue: false,
+                  hidden: ({ parent }) => !parent?.isExternal,
+                }),
+                defineField({
+                  name: 'isActive',
+                  title: 'Élément actif',
+                  type: 'boolean',
+                  initialValue: true,
+                }),
+              ],
+              preview: {
+                select: {
+                  title: 'label.fr',
+                  subtitle: 'href',
+                  isActive: 'isActive',
+                },
+                prepare: ({ title, subtitle, isActive }) => ({
+                  title: title || 'Sans titre',
+                  subtitle: `${subtitle}${!isActive ? ' - Inactif' : ''}`,
+                  media: isActive ? CheckmarkIcon : CloseIcon,
+                }),
+              },
+            },
+          ],
+          options: {
+            sortable: true,
+          },
+        }),
+        defineField({
+          name: 'mobileMenuTitle',
+          title: 'Titre du menu mobile',
+          type: 'autoMultilingualString',
+          initialValue: {
+            fr: 'Menu',
+            en: 'Menu',
+            es: 'Menú',
+          },
+        }),
+        defineField({
+          name: 'footerMenuItems',
+          title: 'Éléments du menu footer',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              name: 'footerMenuItem',
+              title: 'Élément de menu footer',
+              fields: [
+                defineField({
+                  name: 'label',
+                  title: 'Libellé',
+                  type: 'autoMultilingualString',
+                  validation: (rule) => rule.required(),
+                }),
+                defineField({
+                  name: 'href',
+                  title: 'Lien',
+                  type: 'string',
+                  validation: (rule) => rule.required(),
+                }),
+                defineField({
+                  name: 'isExternal',
+                  title: 'Lien externe',
+                  type: 'boolean',
+                  initialValue: false,
+                }),
+                defineField({
+                  name: 'isActive',
+                  title: 'Élément actif',
+                  type: 'boolean',
+                  initialValue: true,
+                }),
+              ],
+              preview: {
+                select: {
+                  title: 'label.fr',
+                  subtitle: 'href',
+                  isActive: 'isActive',
+                },
+                prepare: ({ title, subtitle, isActive }) => ({
+                  title: title || 'Sans titre',
+                  subtitle: `${subtitle}${!isActive ? ' - Inactif' : ''}`,
+                  media: isActive ? CheckmarkIcon : CloseIcon,
+                }),
+              },
+            },
+          ],
+          options: {
+            sortable: true,
+          },
+        }),
+      ],
     }),
   ],
 });

@@ -25,43 +25,24 @@ export function useTranslation(options: UseTranslationOptions = {}) {
   const [settings, setSettings] = useState<TranslationSettings | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  // Charger les paramètres depuis Sanity
+  // Charger les paramètres depuis les variables d'environnement
   useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const settingsDoc = await client.fetch(`
-          *[_type == "settings"][0] {
-            isMultilingual,
-            supportedLanguages,
-            defaultLanguage,
-            translationSettings
-          }
-        `);
-
-        if (settingsDoc?.translationSettings) {
-          const translationSettings: TranslationSettings = {
-            autoTranslate: settingsDoc.translationSettings.autoTranslate || false,
-            translationModel: settingsDoc.translationSettings.translationModel || 'gpt-3.5-turbo',
-            translationDelay: settingsDoc.translationSettings.translationDelay || 2000,
-          };
-
-          setSettings(translationSettings);
-          translationService.updateSettings(translationSettings);
-        }
-      } catch (error) {
-        console.error('Failed to load translation settings:', error);
-      }
+    const translationSettings: TranslationSettings = {
+      autoTranslate: true, // Toujours activé si la clé API est configurée
+      translationModel: 'gpt-3.5-turbo', // Configuré dans .env côté serveur
+      translationDelay: 2000, // 2 secondes par défaut
     };
 
-    loadSettings();
-  }, [client]);
+    setSettings(translationSettings);
+    translationService.updateSettings(translationSettings);
+  }, []);
 
   const translateField = useCallback(async (
     text: string,
     sourceLanguage: string,
     targetLanguages: string[]
   ): Promise<Record<string, string>> => {
-    if (!settings?.autoTranslate || !text.trim()) {
+    if (!translationService.isConfigured() || !text.trim()) {
       return {};
     }
 

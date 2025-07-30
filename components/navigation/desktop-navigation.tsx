@@ -18,6 +18,14 @@ export function DesktopNavigation({ menuItems, showLanguageSelector = false, cla
   const pathname = usePathname();
   const { resolveMultilingualValue } = useLocale();
 
+  if (!menuItems || menuItems.length === 0) {
+    return (
+      <nav className={cn("flex items-center", className)}>
+        <span className="text-sm text-muted-foreground">Aucun menu configuré</span>
+      </nav>
+    );
+  }
+
   return (
     <nav className={cn("flex items-center space-x-8", className)}>
       {menuItems.filter(item => item.isActive).map((item, index) => {
@@ -35,7 +43,7 @@ export function DesktopNavigation({ menuItems, showLanguageSelector = false, cla
 
         return (
           <LinkComponent
-            key={item.slug?.current || index}
+            key={item._key || item.href || index}
             {...linkProps}
             className={cn(
               "relative text-sm font-medium transition-colors duration-200",
