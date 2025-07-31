@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLocale } from '@/components/providers/locale-provider';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 
 import { MenuItem } from '@/hooks/useNavigation';
 

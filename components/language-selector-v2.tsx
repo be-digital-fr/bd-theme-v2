@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Languages, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -152,6 +153,22 @@ export function LanguageSelector({
     
     return text[currentLocale] || text['fr'] || 'Choisir une langue';
   };
+
+  // Afficher skeleton pendant le chargement
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2">
+        {showFlag ? (
+          <Skeleton className="h-8 w-8 rounded-full" />
+        ) : (
+          <>
+            <Skeleton className="h-4 w-4" />
+            <Skeleton className="h-4 w-16" />
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
     <Popover>

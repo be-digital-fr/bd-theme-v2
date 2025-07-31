@@ -242,6 +242,7 @@ export default function Home() {
               </Button>
             </div>
 
+
             {/* SECTION TEST TECHNIQUE */}
             <div className="border border-gray-200 rounded-lg p-6">
               <h4 className="text-lg font-medium text-gray-800 mb-4">

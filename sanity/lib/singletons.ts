@@ -220,6 +220,29 @@ export async function initializeSingletons(): Promise<void> {
     content: 'Contenu supplémentaire par défaut',
   });
 
+  // Auth settings document
+  await ensureSingletonExists('authSettings', {
+    redirectType: 'page',
+    defaultAuthPage: 'signin',
+    enableGoogleAuth: false,
+    enableFacebookAuth: false,
+    enableTwitterAuth: false,
+    enableGitHubAuth: false,
+    modalTitle: {
+      fr: 'Connexion à votre compte',
+      en: 'Sign in to your account',
+    },
+    modalDescription: {
+      fr: 'Accédez à votre espace personnel',
+      en: 'Access your personal space',
+    },
+    authButtonText: {
+      fr: 'Se connecter',
+      en: 'Sign in',
+    },
+    showSocialProviders: false,
+  });
+
   console.log('[Singleton] Singleton initialization completed');
 }
 

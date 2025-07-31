@@ -76,7 +76,7 @@ export function useSettings() {
     queryKey: ['settings'],
     queryFn: async (): Promise<SettingsData | null> => {
       try {
-        const data = await client.fetch(getSettingsQuery, {}, { next: { revalidate: 3600 } });
+        const data = await client.fetch(getSettingsQuery);
         if (!data) {
           console.warn('No settings document found in Sanity. Please create one in Sanity Studio.');
         }

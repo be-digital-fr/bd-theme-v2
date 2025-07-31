@@ -28,6 +28,7 @@ export function middleware(request: NextRequest) {
   const isSpecialRoute = 
     pathname.startsWith('/api/') ||
     pathname.startsWith('/studio') ||
+    pathname.startsWith('/auth') ||
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/favicon.ico') ||
     pathname.startsWith('/public/') ||
@@ -119,11 +120,12 @@ export const config = {
     /*
      * Match all request paths except for the ones starting with:
      * - api (API routes)
-     * - _next/static (static files)
+     * - _next/static (static files)  
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - studio (Sanity Studio)
      * - public folder
+     * - __webpack_hmr (HMR WebSocket)
      */
     '/((?!api|_next|favicon.ico|studio|public|__webpack_hmr).*)',
   ],

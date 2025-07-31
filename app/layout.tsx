@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { QueryProvider } from "@/components/providers/query-provider";
-import { LocaleProvider } from "@/components/providers/locale-provider";
-import { NavigationWrapper } from "@/components/navigation";
+import { QueryProvider, LocaleProvider } from "@/components/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,32 +13,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "BD Theme - Système Multilingue",
-  description: "Application Next.js avec Sanity CMS et gestion multilingue",
-};
 
 interface RootLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-export default function RootLayout({
-  children,
-}: RootLayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
+    <QueryProvider>
+      <LocaleProvider>
     <html lang="fr">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <QueryProvider>
-          <LocaleProvider>
-            <NavigationWrapper />
-            <main className="pt-16 lg:pt-20">
-              {children}
-            </main>
-          </LocaleProvider>
-        </QueryProvider>
+        {children}
       </body>
     </html>
+    </LocaleProvider>
+    </QueryProvider>
   );
 }

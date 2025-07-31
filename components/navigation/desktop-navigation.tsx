@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLocale } from '@/components/providers/locale-provider';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 import { LanguageSelector } from '@/components/language-selector';
 
 import { MenuItem } from '@/hooks/useNavigation';
@@ -12,11 +13,23 @@ interface DesktopNavigationProps {
   menuItems: MenuItem[];
   showLanguageSelector?: boolean;
   className?: string;
+  isLoading?: boolean;
 }
 
-export function DesktopNavigation({ menuItems, showLanguageSelector = false, className }: DesktopNavigationProps) {
+export function DesktopNavigation({ menuItems, showLanguageSelector = false, className, isLoading = false }: DesktopNavigationProps) {
   const pathname = usePathname();
   const { resolveMultilingualValue } = useLocale();
+
+  if (isLoading) {
+    return (
+      <nav className={cn("flex items-center space-x-6", className)}>
+        <Skeleton className="h-6 w-16" />
+        <Skeleton className="h-6 w-20" />
+        <Skeleton className="h-6 w-18" />
+        <Skeleton className="h-6 w-14" />
+      </nav>
+    );
+  }
 
   if (!menuItems || menuItems.length === 0) {
     return (

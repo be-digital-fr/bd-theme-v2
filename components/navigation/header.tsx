@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Search, User, ShoppingCart, AlignRight } from 'lucide-react';
+import { Search, ShoppingCart, AlignRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DesktopNavigation } from './desktop-navigation';
 import { MobileNavigation } from './mobile-navigation';
-import { useLocale } from '@/components/providers/locale-provider';
 import { LanguageSelector } from '@/components/language-selector-v2';
+import { UserMenu } from '@/components/auth/user-menu';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Logo } from '@/components/ui/logo';
 import { cn } from '@/lib/utils';
 
 import { useHeaderData } from '@/hooks/useNavigation';
@@ -23,7 +23,6 @@ export function Header({ className }: HeaderProps) {
   const { data, isLoading } = useHeaderData();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { resolveMultilingualValue } = useLocale();
   
 
   // useEffect doit aussi être appelé avant tout retour conditionnel
@@ -47,22 +46,52 @@ export function Header({ className }: HeaderProps) {
 
   if (isLoading) {
     return (
-      <div className="h-16 bg-white shadow-sm animate-pulse">
-        <div className="container mx-auto px-4 h-full flex items-center justify-between">
-          <div className="h-8 w-32 bg-gray-200 rounded"></div>
-          <div className="h-8 w-24 bg-gray-200 rounded"></div>
+      <header 
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md shadow-sm border-b",
+          className
+        )}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16 lg:h-20">
+            {/* Logo Skeleton */}
+            <Skeleton className="h-8 w-32 lg:h-10 lg:w-40" />
+
+            {/* Desktop Navigation Skeleton */}
+            <div className="hidden lg:flex items-center space-x-6">
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-6 w-20" />
+              <Skeleton className="h-6 w-18" />
+              <Skeleton className="h-6 w-14" />
+            </div>
+
+            {/* Right Side Icons Skeleton */}
+            <div className="flex items-center space-x-2 lg:space-x-4">
+              {/* Icons Skeleton */}
+              <Skeleton className="h-9 w-9 rounded-md" />
+              <Skeleton className="h-9 w-9 rounded-md" />
+              <Skeleton className="h-9 w-9 rounded-md" />
+
+              {/* Language Selector Skeleton - Desktop */}
+              <div className="hidden lg:block border-l pl-4 ml-2">
+                <Skeleton className="h-8 w-8 rounded-full" />
+              </div>
+
+              {/* User Menu Skeleton - Desktop */}
+              <div className="hidden lg:block border-l pl-4 ml-2">
+                <Skeleton className="h-9 w-24 rounded-md" />
+              </div>
+
+              {/* Mobile Menu Toggle Skeleton */}
+              <Skeleton className="lg:hidden h-9 w-9 rounded-full" />
+            </div>
+          </div>
         </div>
-      </div>
+      </header>
     );
   }
 
 
-  const logoText = headerSettings.logoText || 'BD Theme';
-  const logoAlt = headerSettings.logoImage?.alt 
-    ? resolveMultilingualValue(headerSettings.logoImage.alt)
-    : 'Logo';
-
-  const logoImage = headerSettings.logoImage;
   
   return (
     <header 
@@ -77,28 +106,14 @@ export function Header({ className }: HeaderProps) {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 z-10">
-            {logoImage ? (
-              <Image
-                src={logoImage.asset.url}
-                alt={logoAlt}
-                width={40}
-                height={40}
-                className="h-8 w-auto lg:h-10"
-                priority
-              />
-            ) : (
-              <span className="text-xl lg:text-2xl font-bold text-primary">
-                {logoText}
-              </span>
-            )}
-          </Link>
+          <Logo size="lg" priority showSkeleton={false} />
 
           {/* Desktop Navigation */}
           <DesktopNavigation 
             menuItems={menuItems} 
             showLanguageSelector={false}
             className="hidden lg:flex"
+            isLoading={isLoading}
           />
 
           {/* Right Side Icons */}
@@ -115,17 +130,6 @@ export function Header({ className }: HeaderProps) {
               </Button>
             )}
 
-            {/* User Icon */}
-            {(headerSettings?.showUserIcon ?? true) && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 text-foreground hover:text-primary"
-                aria-label="User account"
-              >
-                <User className="h-5 w-5" />
-              </Button>
-            )}
 
             {/* Cart Icon */}
             {(headerSettings?.showCartIcon ?? true) && (
@@ -152,6 +156,11 @@ export function Header({ className }: HeaderProps) {
               </div>
             )}
 
+            {/* User Menu - Desktop only */}
+            <div className="hidden lg:block border-l pl-4 ml-2">
+              <UserMenu />
+            </div>
+
             {/* Mobile Menu Toggle */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -162,20 +171,7 @@ export function Header({ className }: HeaderProps) {
               <SheetContent side="left" className="w-full sm:w-80 flex flex-col">
                 {/* Logo/Header in mobile menu */}
                 <div className="flex items-center mb-6 pt-4">
-                  {logoImage ? (
-                    <Image
-                      src={logoImage.asset.url}
-                      alt={logoAlt}
-                      width={32}
-                      height={32}
-                      className="h-8 w-auto"
-                      priority
-                    />
-                  ) : (
-                    <span className="text-xl font-bold text-primary">
-                      {logoText}
-                    </span>
-                  )}
+                  <Logo size="md" href={null} showSkeleton={false} />
                 </div>
                 
                 <div className="flex-1">
@@ -200,17 +196,6 @@ export function Header({ className }: HeaderProps) {
                         <Search className="h-6 w-6" />
                       </Button>
                     )}
-                    {(headerSettings?.showUserIcon ?? true) && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-12 w-12 text-foreground hover:text-primary"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        aria-label="User account"
-                      >
-                        <User className="h-6 w-6" />
-                      </Button>
-                    )}
                     {(headerSettings?.showCartIcon ?? true) && (
                       <Button
                         variant="ghost"
@@ -232,6 +217,11 @@ export function Header({ className }: HeaderProps) {
                     {settings?.isMultilingual && (
                       <LanguageSelector showFlag={true} showNativeName={false} />
                     )}
+                  </div>
+
+                  {/* User Menu - Mobile version */}
+                  <div className="mt-4 flex justify-center">
+                    <UserMenu />
                   </div>
                 </div>
               </SheetContent>

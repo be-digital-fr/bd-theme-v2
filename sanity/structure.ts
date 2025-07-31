@@ -1,5 +1,5 @@
 import type { StructureResolver } from 'sanity/structure'
-import { CogIcon, HomeIcon } from '@sanity/icons'
+import { CogIcon, HomeIcon, UserIcon } from '@sanity/icons'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -16,6 +16,17 @@ export const structure: StructureResolver = (S) =>
             .schemaType('settings')
             .documentId('settings-site')
             .title('Paramètres du site')
+        ),
+
+      S.listItem()
+        .title('🔐 Paramètres d\'authentification')
+        .icon(UserIcon)
+        .child(
+          S.editor()
+            .id('auth-settings')
+            .schemaType('authSettings')
+            .documentId('auth-settings')
+            .title('Paramètres d\'authentification')
         ),
 
       S.listItem()
@@ -48,6 +59,6 @@ export const structure: StructureResolver = (S) =>
 
       // AUTRES DOCUMENTS
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() && !['settings', 'home', 'homeWithAutoTranslate'].includes(item.getId()!),
+        (item) => item.getId() && !['settings', 'authSettings', 'home', 'homeWithAutoTranslate'].includes(item.getId()!),
       ),
     ])
