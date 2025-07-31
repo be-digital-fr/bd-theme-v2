@@ -133,7 +133,7 @@ export function Header({ className }: HeaderProps) {
 
             {/* User/Auth Icon */}
             {(headerSettings?.showUserIcon ?? true) && (
-              <AuthButton />
+              <AuthButton isHeaderLoading={isLoading} />
             )}
 
             {/* Cart Icon */}
@@ -207,6 +207,7 @@ export function Header({ className }: HeaderProps) {
                           className="h-12 w-12 text-foreground hover:text-primary"
                           ariaLabel="User account"
                           iconSize="sm"
+                          isHeaderLoading={isLoading}
                         />
                       </div>
                     )}

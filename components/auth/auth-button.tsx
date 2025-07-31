@@ -13,6 +13,7 @@ interface AuthButtonProps {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   ariaLabel?: string;
   iconSize?: "sm" | "md";
+  isHeaderLoading?: boolean;
 }
 
 export function AuthButton({ 
@@ -20,17 +21,23 @@ export function AuthButton({
   size = "icon",
   variant = "ghost",
   ariaLabel = "User account",
-  iconSize = "md"
+  iconSize = "md",
+  isHeaderLoading = false
 }: AuthButtonProps) {
   const { data: session } = useSession();
   const router = useRouter();
   
-  // Auth settings and modal
+  // Si le header est en loading, ne pas charger les auth settings pour éviter un double loading
   const { authSettings } = useAuthSettingsWithDefaults();
   const { isOpen: isModalOpen, openModal, closeModal, defaultMode } = useAuthModal(authSettings);
 
   // Si l'utilisateur est connecté, on ne montre pas ce bouton
   if (session) {
+    return null;
+  }
+
+  // Si le header est en loading, ne rien afficher (géré par les skeletons du header)
+  if (isHeaderLoading) {
     return null;
   }
 

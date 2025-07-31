@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from 'react';
-import { X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -9,7 +8,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { SignInForm } from './sign-in-form';
 import { SignUpForm } from './sign-up-form';
 import { ForgotPasswordForm } from './forgot-password-form';
@@ -133,19 +131,9 @@ export function AuthModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-semibold text-left">
-              {getTitle()}
-            </DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 shrink-0"
-              onClick={handleClose}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <DialogTitle className="text-xl font-semibold text-left">
+            {getTitle()}
+          </DialogTitle>
           <DialogDescription className="text-left text-muted-foreground">
             {getDescription()}
           </DialogDescription>
