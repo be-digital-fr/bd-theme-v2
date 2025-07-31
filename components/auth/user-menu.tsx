@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { User, LogOut, Settings, ChevronDown } from "lucide-react";
+import { User, LogOut, Settings } from "lucide-react";
 
 import { useSession, authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -36,11 +36,7 @@ export function UserMenu() {
 
   if (isPending) {
     return (
-      <div className="flex items-center gap-2">
-        <Skeleton className="h-8 w-8 rounded-full" />
-        <Skeleton className="hidden md:block h-4 w-20" />
-        <Skeleton className="h-4 w-4" />
-      </div>
+      <Skeleton className="h-9 w-9 rounded-full" />
     );
   }
 
@@ -60,7 +56,11 @@ export function UserMenu() {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2 h-auto p-2">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className="h-9 w-9 rounded-full hover:bg-accent"
+        >
           {session.user.image ? (
             <Image
               src={session.user.image}
@@ -74,10 +74,6 @@ export function UserMenu() {
               {initials}
             </div>
           )}
-          <span className="hidden md:inline-block text-sm font-medium">
-            {displayName}
-          </span>
-          <ChevronDown className="h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-56" align="end">
