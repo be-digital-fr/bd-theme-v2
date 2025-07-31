@@ -10,6 +10,7 @@ import { signInSchema, type SignInForm } from "@/lib/auth-schemas";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Card,
   CardContent,
@@ -122,8 +123,7 @@ export function SignInForm({
               <FormItem>
                 <FormLabel>Mot de passe</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
+                  <PasswordInput
                     placeholder="••••••••"
                     {...field}
                     disabled={isLoading}

@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { resetPasswordSchema, type ResetPasswordForm } from "@/lib/auth-schemas";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Card,
   CardContent,
@@ -171,8 +171,7 @@ export function ResetPasswordForm() {
                   <FormItem>
                     <FormLabel>Nouveau mot de passe</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
+                      <PasswordInput
                         placeholder="••••••••"
                         {...field}
                         disabled={isLoading}
@@ -190,8 +189,7 @@ export function ResetPasswordForm() {
                   <FormItem>
                     <FormLabel>Confirmer le mot de passe</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
+                      <PasswordInput
                         placeholder="••••••••"
                         {...field}
                         disabled={isLoading}
