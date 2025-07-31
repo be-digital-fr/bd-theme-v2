@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { User, LogOut, Settings, ChevronDown } from "lucide-react";
 
 import { useSession, authClient } from "@/lib/auth-client";
@@ -14,19 +13,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAuthSettingsWithDefaults } from "@/hooks/useAuthSettings";
-import { AuthModal, useAuthModal } from "@/components/auth/auth-modal";
-import { useLocale } from "@/components/providers/locale-provider";
 
 export function UserMenu() {
   const { data: session, isPending } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-  const { resolveMultilingualValue } = useLocale();
-  
-  // Auth settings and modal
-  const { authSettings, isLoading: isLoadingSettings } = useAuthSettingsWithDefaults();
-  const { isOpen: isModalOpen, openModal, closeModal, defaultMode } = useAuthModal(authSettings);
 
   const handleSignOut = async () => {
     try {
@@ -54,37 +44,9 @@ export function UserMenu() {
     );
   }
 
-  const handleAuthClick = () => {
-    if (authSettings.redirectType === 'modal') {
-      openModal();
-    } else {
-      const authPage = authSettings.defaultAuthPage === 'signup' ? '/auth/signup' : '/auth/signin';
-      router.push(authPage);
-    }
-  };
-
+  // Si l'utilisateur n'est pas connecté, ne rien afficher
   if (!session) {
-    const authButtonText = resolveMultilingualValue(authSettings.authButtonText);
-    
-    return (
-      <>
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={handleAuthClick}
-          disabled={isLoadingSettings}
-        >
-          {authButtonText}
-        </Button>
-        
-        <AuthModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          authSettings={authSettings}
-          defaultMode={defaultMode}
-        />
-      </>
-    );
+    return null;
   }
 
   const displayName = session.user.name || session.user.email;

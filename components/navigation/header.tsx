@@ -8,6 +8,7 @@ import { DesktopNavigation } from './desktop-navigation';
 import { MobileNavigation } from './mobile-navigation';
 import { LanguageSelector } from '@/components/language-selector-v2';
 import { UserMenu } from '@/components/auth/user-menu';
+import { AuthButton } from '@/components/auth/auth-button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Logo } from '@/components/ui/logo';
 import { cn } from '@/lib/utils';
@@ -130,6 +131,10 @@ export function Header({ className }: HeaderProps) {
               </Button>
             )}
 
+            {/* User/Auth Icon */}
+            {(headerSettings?.showUserIcon ?? true) && (
+              <AuthButton />
+            )}
 
             {/* Cart Icon */}
             {(headerSettings?.showCartIcon ?? true) && (
@@ -195,6 +200,15 @@ export function Header({ className }: HeaderProps) {
                       >
                         <Search className="h-6 w-6" />
                       </Button>
+                    )}
+                    {(headerSettings?.showUserIcon ?? true) && (
+                      <div onClick={() => setIsMobileMenuOpen(false)}>
+                        <AuthButton 
+                          className="h-12 w-12 text-foreground hover:text-primary"
+                          ariaLabel="User account"
+                          iconSize="sm"
+                        />
+                      </div>
                     )}
                     {(headerSettings?.showCartIcon ?? true) && (
                       <Button
