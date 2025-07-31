@@ -139,14 +139,6 @@ export function Header({ className }: HeaderProps) {
               </Button>
             )}
 
-            {/* User/Auth Icon */}
-            {(headerSettings?.showUserIcon ?? true) && authSettings && (
-              <AuthButton 
-                authSettings={authSettings}
-                isHeaderLoading={isLoading} 
-              />
-            )}
-
             {/* Cart Icon */}
             {(headerSettings?.showCartIcon ?? true) && (
               <Button
@@ -165,17 +157,23 @@ export function Header({ className }: HeaderProps) {
               </Button>
             )}
 
+            {/* User/Auth Icon - Desktop */}
+            <div className="hidden lg:block">
+              {(headerSettings?.showUserIcon ?? true) && authSettings && (
+                <AuthButton 
+                  authSettings={authSettings}
+                  isHeaderLoading={isLoading} 
+                />
+              )}
+              <UserMenu />
+            </div>
+
             {/* Language Selector - Desktop only */}
             {settings?.isMultilingual && (
               <div className="hidden lg:block border-l pl-4 ml-2">
                 <LanguageSelector showFlag={true} showNativeName={false} />
               </div>
             )}
-
-            {/* User Menu - Desktop only */}
-            <div className="hidden lg:block border-l pl-4 ml-2">
-              <UserMenu />
-            </div>
 
             {/* Mobile Menu Toggle */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -218,17 +216,6 @@ export function Header({ className }: HeaderProps) {
                         <Search className="h-6 w-6" />
                       </Button>
                     )}
-                    {(headerSettings?.showUserIcon ?? true) && authSettings && (
-                      <div onClick={() => setIsMobileMenuOpen(false)}>
-                        <AuthButton 
-                          className="h-12 w-12 text-foreground hover:text-primary"
-                          ariaLabel="User account"
-                          iconSize="sm"
-                          authSettings={authSettings}
-                          isHeaderLoading={isLoading}
-                        />
-                      </div>
-                    )}
                     {(headerSettings?.showCartIcon ?? true) && (
                       <Button
                         variant="ghost"
@@ -246,15 +233,25 @@ export function Header({ className }: HeaderProps) {
                         )}
                       </Button>
                     )}
+                    
+                    {/* User/Auth Icon - Mobile */}
+                    <div onClick={() => setIsMobileMenuOpen(false)}>
+                      {(headerSettings?.showUserIcon ?? true) && authSettings && (
+                        <AuthButton 
+                          className="h-12 w-12 text-foreground hover:text-primary"
+                          ariaLabel="User account"
+                          iconSize="sm"
+                          authSettings={authSettings}
+                          isHeaderLoading={isLoading}
+                        />
+                      )}
+                      <UserMenu />
+                    </div>
+                    
                     {/* Language Selector - Flag only version */}
                     {settings?.isMultilingual && (
                       <LanguageSelector showFlag={true} showNativeName={false} />
                     )}
-                  </div>
-
-                  {/* User Menu - Mobile version */}
-                  <div className="mt-4 flex justify-center">
-                    <UserMenu />
                   </div>
                 </div>
               </SheetContent>
