@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useLocale } from '@/components/providers/locale-provider';
 import { cn } from '@/lib/utils';
 
-import { MenuItem } from '@/hooks/useNavigation';
+import { MenuItem } from '@/hooks/useHeaderData';
 
 interface MobileNavigationProps {
   menuItems: MenuItem[];

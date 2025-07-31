@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DesktopNavigation } from './desktop-navigation';
 import { MobileNavigation } from './mobile-navigation';
+import { MenuItem } from '@/hooks/useHeaderData';
 import { LanguageSelector } from '@/components/language-selector-v2';
 import { UserMenu } from '@/components/auth/user-menu';
 import { AuthButton } from '@/components/auth/auth-button';
@@ -13,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Logo } from '@/components/ui/logo';
 import { cn } from '@/lib/utils';
 
-import { useHeaderData } from '@/hooks/useNavigation';
+import { useHeaderData } from '@/hooks/useHeaderData';
 
 interface HeaderProps {
   className?: string;
@@ -40,9 +41,10 @@ export function Header({ className }: HeaderProps) {
 
   // Utiliser des valeurs par défaut si pas de données (même pendant le loading)
   const settings = data?.settings || null;
-  const navigation = settings?.navigation || { menuItems: [], footerMenuItems: [] };
+  const authSettings = data?.authSettings || null;
+  const navigation = data?.navigation || { menuItems: [], footerMenuItems: [] };
   const headerSettings = settings?.headerSettings || {};
-  const menuItems = navigation.menuItems || [];
+  const menuItems: MenuItem[] = navigation.menuItems || [];
 
 
   if (isLoading) {
@@ -107,7 +109,13 @@ export function Header({ className }: HeaderProps) {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Logo size="lg" priority showSkeleton={false} />
+          <Logo 
+            size="lg" 
+            priority 
+            showSkeleton={false}
+            headerSettings={headerSettings}
+            isHeaderLoading={isLoading}
+          />
 
           {/* Desktop Navigation */}
           <DesktopNavigation 
@@ -132,8 +140,11 @@ export function Header({ className }: HeaderProps) {
             )}
 
             {/* User/Auth Icon */}
-            {(headerSettings?.showUserIcon ?? true) && (
-              <AuthButton isHeaderLoading={isLoading} />
+            {(headerSettings?.showUserIcon ?? true) && authSettings && (
+              <AuthButton 
+                authSettings={authSettings}
+                isHeaderLoading={isLoading} 
+              />
             )}
 
             {/* Cart Icon */}
@@ -176,7 +187,13 @@ export function Header({ className }: HeaderProps) {
               <SheetContent side="left" className="w-full sm:w-80 flex flex-col">
                 {/* Logo/Header in mobile menu */}
                 <div className="flex items-center mb-6 pt-4">
-                  <Logo size="md" href={null} showSkeleton={false} />
+                  <Logo 
+                    size="md" 
+                    href={null} 
+                    showSkeleton={false}
+                    headerSettings={headerSettings}
+                    isHeaderLoading={isLoading}
+                  />
                 </div>
                 
                 <div className="flex-1">
@@ -201,12 +218,13 @@ export function Header({ className }: HeaderProps) {
                         <Search className="h-6 w-6" />
                       </Button>
                     )}
-                    {(headerSettings?.showUserIcon ?? true) && (
+                    {(headerSettings?.showUserIcon ?? true) && authSettings && (
                       <div onClick={() => setIsMobileMenuOpen(false)}>
                         <AuthButton 
                           className="h-12 w-12 text-foreground hover:text-primary"
                           ariaLabel="User account"
                           iconSize="sm"
+                          authSettings={authSettings}
                           isHeaderLoading={isLoading}
                         />
                       </div>

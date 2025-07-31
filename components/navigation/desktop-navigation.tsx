@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { LanguageSelector } from '@/components/language-selector';
 
-import { MenuItem } from '@/hooks/useNavigation';
+import { MenuItem } from '@/hooks/useHeaderData';
 
 interface DesktopNavigationProps {
   menuItems: MenuItem[];

@@ -4,7 +4,7 @@ import { User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useSession } from '@/lib/auth-client';
-import { useAuthSettingsWithDefaults } from '@/hooks/useAuthSettings';
+import { AuthSettings } from '@/hooks/useAuthSettings';
 import { AuthModal, useAuthModal } from '@/components/auth/auth-modal';
 
 interface AuthButtonProps {
@@ -14,6 +14,7 @@ interface AuthButtonProps {
   ariaLabel?: string;
   iconSize?: "sm" | "md";
   isHeaderLoading?: boolean;
+  authSettings: AuthSettings;
 }
 
 export function AuthButton({ 
@@ -22,13 +23,13 @@ export function AuthButton({
   variant = "ghost",
   ariaLabel = "User account",
   iconSize = "md",
-  isHeaderLoading = false
+  isHeaderLoading = false,
+  authSettings
 }: AuthButtonProps) {
   const { data: session } = useSession();
   const router = useRouter();
   
-  // Si le header est en loading, ne pas charger les auth settings pour éviter un double loading
-  const { authSettings } = useAuthSettingsWithDefaults();
+  // Utiliser les authSettings passés en props (pas de requête supplémentaire)
   const { isOpen: isModalOpen, openModal, closeModal, defaultMode } = useAuthModal(authSettings);
 
   // Si l'utilisateur est connecté, on ne montre pas ce bouton

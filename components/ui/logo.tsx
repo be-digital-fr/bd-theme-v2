@@ -4,8 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLocale } from '@/components/providers/locale-provider';
-import { useHeaderData } from '@/hooks/useNavigation';
 import { cn } from '@/lib/utils';
+import { HeaderSettings } from '@/hooks/useHeaderData';
 
 interface LogoProps {
   className?: string;
@@ -15,6 +15,8 @@ interface LogoProps {
   priority?: boolean;
   size?: 'sm' | 'md' | 'lg';
   showSkeleton?: boolean;
+  headerSettings?: HeaderSettings;
+  isHeaderLoading?: boolean;
 }
 
 const sizeClasses = {
@@ -42,23 +44,23 @@ export function Logo({
   href = "/", 
   priority = false, 
   size = 'md',
-  showSkeleton = true
+  showSkeleton = true,
+  headerSettings,
+  isHeaderLoading = false
 }: LogoProps) {
-  const { data, isLoading } = useHeaderData();
   const { resolveMultilingualValue } = useLocale();
 
-  // Utiliser des valeurs par défaut si pas de données
-  const settings = data?.settings || null;
-  const headerSettings = settings?.headerSettings || {};
+  // Utiliser les headerSettings passés en props ou valeurs par défaut
+  const logoSettings = headerSettings || {};
 
-  const logoText = headerSettings.logoText || 'BD Theme';
-  const logoAlt = headerSettings.logoImage?.alt 
-    ? resolveMultilingualValue(headerSettings.logoImage.alt)
+  const logoText = logoSettings.logoText || 'BD Theme';
+  const logoAlt = logoSettings.logoImage?.alt 
+    ? resolveMultilingualValue(logoSettings.logoImage.alt)
     : 'Logo';
-  const logoImage = headerSettings.logoImage;
+  const logoImage = logoSettings.logoImage;
 
-  // Afficher skeleton pendant le chargement
-  if (isLoading && showSkeleton) {
+  // Afficher skeleton pendant le chargement (utiliser isHeaderLoading si fourni)
+  if ((isHeaderLoading || false) && showSkeleton) {
     return (
       <div className={cn("flex items-center", className)}>
         <Skeleton className={sizeClasses[size].skeleton} />
