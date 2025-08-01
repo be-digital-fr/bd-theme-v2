@@ -1,64 +1,58 @@
 import type { StructureResolver } from 'sanity/structure'
-import { CogIcon, HomeIcon, UserIcon } from '@sanity/icons'
+import { structureWithTranslation, structureWithoutTranslation } from './lib/structure'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
-export const structure: StructureResolver = (S) =>
-  S.list()
-    .title('Content')
-    .items([
-      // DOCUMENTS SINGLETON (Un seul document de chaque type)
-      S.listItem()
-        .title('⚙️ Paramètres du site')
-        .icon(CogIcon)
-        .child(
-          S.editor()
-            .id('settings-site')
-            .schemaType('settings')
-            .documentId('settings-site')
-            .title('Paramètres du site')
-        ),
-
-      S.listItem()
-        .title('🔐 Paramètres d\'authentification')
-        .icon(UserIcon)
-        .child(
-          S.editor()
-            .id('auth-settings')
-            .schemaType('authSettings')
-            .documentId('auth-settings')
-            .title('Paramètres d\'authentification')
-        ),
-
-      S.listItem()
-        .title('🏠 Page d\'accueil')
-        .icon(HomeIcon)
-        .child(
-          S.editor()
-            .id('home')
-            .schemaType('home')
-            .documentId('home')
-            .title('Page d\'accueil')
-        ),
-
-      S.divider(),
-
-      // DOCUMENTS AVEC TRADUCTION AUTOMATIQUE
-      // S.listItem()
-      //   .title('🌐 Pages avec traduction auto')
-      //   .child(
-      //     S.list()
-      //       .title('Documents multilingues')
-      //       .items([
-      //         S.documentTypeListItem('homeWithAutoTranslate')
-      //           .title('🏠 Page d\'accueil avancée')
-      //           .icon(HomeIcon),
-      //       ])
-      //   ),
-
-      // S.divider(),
-
-      // AUTRES DOCUMENTS
-      ...S.documentTypeListItems().filter(
-        (item) => item.getId() && !['settings', 'authSettings', 'home', 'homeWithAutoTranslate'].includes(item.getId()!),
-      ),
-    ])
+export const structure: StructureResolver = async (S, context) => {
+  const client = context.getClient({ apiVersion: '2023-01-01' })
+  
+  try {
+    // Récupérer l'état actuel directement
+    const settings = await client.fetch(`*[_type == "settings" && _id == "settings-site"][0]{isMultilingual}`)
+    const isMultilingual = settings?.isMultilingual || false
+    
+    
+    // Écouter les changements en arrière-plan pour notifier l'utilisateur
+    client
+      .listen(`*[_type == "settings" && _id == "settings-site"]`)
+      .subscribe({
+        next: (update) => {
+          if (update.result) {
+            const newMultilingualState = update.result.isMultilingual || false
+            if (newMultilingualState !== isMultilingual) {
+              
+              // Afficher une notification à l'utilisateur
+              if (typeof window !== 'undefined' && (window as any).sanity) {
+                const sanity = (window as any).sanity
+                if (sanity.toast) {
+                  sanity.toast.push({
+                    status: 'info',
+                    title: 'Paramètres modifiés',
+                    description: 'Rafraîchissez la page pour voir la nouvelle structure de navigation.',
+                    duration: 10000
+                  })
+                }
+              }
+              
+              // Forcer un reload après un court délai
+              setTimeout(() => {
+                if (typeof window !== 'undefined') {
+                  window.location.reload()
+                }
+              }, 2000)
+            }
+          }
+        },
+        error: () => {
+          // Erreur silencieuse lors de l'observation
+        }
+      })
+    
+    return isMultilingual 
+      ? structureWithTranslation(S, context) 
+      : structureWithoutTranslation(S, context)
+      
+  } catch (error) {
+    // En cas d'erreur, utiliser la structure sans traductions par défaut
+    return structureWithoutTranslation(S, context)
+  }
+}   
