@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 
-import { forgotPasswordSchema, type ForgotPasswordForm } from "@/lib/auth-schemas";
+import { PasswordResetRequestSchema, type PasswordResetRequestType } from "@/features/auth/domain/schemas/UserSchemas";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,14 +41,14 @@ export function ForgotPasswordForm({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const form = useForm<ForgotPasswordForm>({
-    resolver: zodResolver(forgotPasswordSchema),
+  const form = useForm<PasswordResetRequestType>({
+    resolver: zodResolver(PasswordResetRequestSchema),
     defaultValues: {
       email: "",
     },
   });
 
-  const onSubmit = async (data: ForgotPasswordForm) => {
+  const onSubmit = async (data: PasswordResetRequestType) => {
     setIsLoading(true);
     setError(null);
     setSuccess(false);

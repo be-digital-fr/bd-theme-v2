@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 
-import { signUpSchema, type SignUpForm } from "@/lib/auth-schemas";
+import { SignUpFormSchema, type SignUpFormType } from "@/features/auth/domain/schemas/UserSchemas";
 import { useSignUp } from "@/features/auth/presentation/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,8 +49,8 @@ export function SignUpForm({
     onSuccess,
   });
 
-  const form = useForm<SignUpForm>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<SignUpFormType>({
+    resolver: zodResolver(SignUpFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -59,7 +59,7 @@ export function SignUpForm({
     },
   });
 
-  const onSubmit = async (data: SignUpForm) => {
+  const onSubmit = async (data: SignUpFormType) => {
     clearError();
     // Pass all form data - the hook will handle extracting confirmPassword
     await signUp(data);

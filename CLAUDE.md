@@ -5,19 +5,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 1. General Overview
 
 **Be Digital** is a Next.js theme designed for restaurants and food businesses to digitize their operations.  
-It is **SEO optimized**, follows a **clean code architecture** (Cursor compatible), and includes **complete e-commerce solutions** (click-and-collect, online payments, order management).
+It is **SEO optimized**, follows a **Clean Architecture** (Hexagonal Architecture), and includes **complete e-commerce solutions** (click-and-collect, online payments, order management).
 
 ### Main Technologies
 
-- **Next.js 15**
+- **Next.js 15** (App Router)
 - **Neon (PostgreSQL) via Prisma**
-- **Better Auth** for authentication
+- **Better Auth** for authentication with Clean Architecture implementation
 - **Sanity** for text & image content (multilingual)
 - **Stripe & SumUp** for payments
 - **Uber Eats & Deliveroo integrations** to centralize orders
-- **Code protection**: theme can only be used by the client after purchase
-- **Zod** for typescript
-- **Paywright** for testing
+- **Tailwind CSS v4** with shadcn/ui components
+- **Zod** for TypeScript validation
+- **Playwright** for testing
+- **TanStack React Query** for server state management
 
 ---
 
@@ -104,7 +105,8 @@ It is **SEO optimized**, follows a **clean code architecture** (Cursor compatibl
 
 ### Core Commands
 
-- `pnpm dev` - Start development server with Turbopack
+- `pnpm dev` - Start development server (standard mode)
+- `pnpm dev:turbo` - Start development server with Turbopack (faster)
 - `pnpm build` - Build for production
 - `pnpm start` - Start production server
 - `pnpm lint` - Run ESLint
@@ -114,10 +116,24 @@ It is **SEO optimized**, follows a **clean code architecture** (Cursor compatibl
 - `pnpm dlx prisma generate` - Generate Prisma client
 - `pnpm dlx prisma db push` - Apply database schema changes
 - `pnpm dlx prisma studio` - Open Prisma Studio for database management
+- `pnpm db:seed` - Seed database with initial data
+
+### Testing Commands
+
+- `pnpm test` - Run all Playwright tests
+- `pnpm test:ui` - Run tests with Playwright UI mode
+- `pnpm test:headed` - Run tests in headed mode (visible browser)
+- `pnpm test:auth` - Run authentication tests only
+- `pnpm test:auth:ui` - Run auth tests with UI mode
+- `pnpm test:validate` - Validate test structure
+
+### Development Utilities
+
+- `pnpm init-singletons` - Initialize Sanity singleton documents
 
 ## Project Architecture
 
-This is a multilingual Next.js 15 application built with the App Router, featuring a sophisticated internationalization system with Sanity CMS integration.
+This is a multilingual Next.js 15 application built with the App Router, featuring a sophisticated internationalization system with Sanity CMS integration and **Clean Architecture** (Hexagonal Architecture) implementation.
 
 ### Core Stack
 
@@ -128,6 +144,54 @@ This is a multilingual Next.js 15 application built with the App Router, featuri
 - **State Management**: TanStack React Query for server state
 - **Forms**: React Hook Form with Zod validation
 - **Validation**: Zod schemas for type-safe validation
+
+### Clean Architecture Implementation
+
+The project follows Clean Architecture principles with clear separation of concerns across multiple features:
+
+#### Directory Structure by Feature
+```
+features/
+├── auth/                    # Authentication feature
+├── admin/                   # Admin preferences
+├── home/                    # Home content
+└── locale/                  # Internationalization
+```
+
+#### Layer Organization (within each feature)
+```
+feature/
+├── domain/                  # Business logic (innermost layer)
+│   ├── entities/           # Business entities
+│   ├── schemas/            # Zod validation schemas
+│   ├── repositories/       # Repository interfaces
+│   └── services/          # Service interfaces
+├── application/            # Use cases (application layer)
+│   └── use-cases/         # Business use cases
+├── infrastructure/         # External dependencies (outermost layer)
+│   ├── repositories/      # Repository implementations
+│   ├── services/         # Service implementations
+│   └── di/               # Dependency injection containers
+└── presentation/          # UI layer
+    └── hooks/            # React hooks for UI components
+```
+
+#### Dependency Injection Containers
+
+Each feature uses a singleton container pattern for dependency injection:
+
+- **AuthContainer**: Manages authentication dependencies
+- **AdminContainer**: Manages admin preferences dependencies  
+- **HomeContainer**: Manages home content dependencies
+- **LocaleContainer**: Manages localization dependencies
+
+#### Key Clean Architecture Patterns
+
+1. **Domain Independence**: Domain layer has no dependencies on external frameworks
+2. **Interface Segregation**: Repository and service interfaces define contracts
+3. **Dependency Inversion**: High-level modules don't depend on low-level modules
+4. **Use Case Pattern**: Each business operation is encapsulated in a use case
+5. **Entity Design**: Business entities contain validation and business rules
 
 ### Internationalization System
 
@@ -149,10 +213,15 @@ The project implements a unique dual-approach multilingual system:
 
 - `app/` - Next.js App Router with internationalization
 - `components/` - React components including UI library
+  - `ui/` - shadcn/ui base components (Button, Card, Dialog, etc.)
+  - `auth/` - Authentication-specific components  
+  - `navigation/` - Header and navigation components
+- `features/` - Clean Architecture features (auth, admin, home, locale)
 - `sanity/` - Sanity CMS configuration and custom components
 - `lib/` - Utilities, Prisma client, schemas
 - `hooks/` - Custom React hooks for data fetching
 - `prisma/` - Database schema and migrations
+- `tests/` - Playwright tests organized by features
 
 ## Sanity CMS Integration
 
@@ -201,6 +270,8 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 - Follow shadcn/ui patterns for components
 - Prefer Server Components over Client Components
 - Use `forwardRef` for components that need ref passing
+- Component props interfaces always include optional `className?: string`
+- Use `cn()` utility from `@/lib/utils` for conditional styling
 
 ### API Routes
 
@@ -208,12 +279,38 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 - Use proper error handling with try/catch
 - Return appropriate HTTP status codes
 - Validate input with Zod schemas
+- Better Auth routes use CORS handling for cross-origin requests
 
 ### Data Fetching
 
 - Use Server Components for initial data loading
 - Use TanStack React Query for client-side data management
 - Custom hooks in `hooks/` directory for reusable data logic
+- Clean Architecture features use dependency injection containers
+- Presentation hooks call use cases through containers
+
+### Authentication Architecture
+
+The authentication system follows Clean Architecture with Better Auth integration:
+
+#### Domain Layer
+- **User Entity**: Contains user validation and business rules
+- **Schemas**: Separate UI schemas (with confirmPassword) from domain schemas
+- **Repository Interfaces**: Define contracts for auth operations
+
+#### Application Layer  
+- **Use Cases**: SignIn, SignUp, SignOut, GetCurrentUser, ResetPassword
+- **Either Pattern**: Use cases return `{ success: boolean; data?: T; error?: AuthError }`
+
+#### Infrastructure Layer
+- **BetterAuthRepository**: Implements auth operations using Better Auth
+- **ApiAuthRepository**: Alternative implementation for API-based auth
+- **ConsoleEmailService**: Development email service implementation
+
+#### Presentation Layer
+- **React Hooks**: useSignIn, useSignUp, useSignOut, useCurrentUser
+- **Components**: Form components handle UI concerns (validation, loading states)
+- **Error Handling**: UI-friendly error messages with loading states
 
 ## Code Style Guidelines
 
@@ -232,14 +329,42 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 - Constants: UPPER_SNAKE_CASE
 - Types: PascalCase with descriptive names
 
-## Testing and Quality
+## Testing Architecture
 
-### Before Committing
+### Playwright Testing
 
-- TypeScript compilation must pass
-- ESLint warnings must be addressed
-- Ensure responsive design works
+The project uses feature-based test organization:
+
+```
+tests/
+├── features/
+│   └── auth/              # Authentication tests
+│       ├── signin.spec.ts
+│       ├── signup.spec.ts
+│       └── password-reset.spec.ts
+├── shared/
+│   ├── helpers/          # Reusable test utilities
+│   ├── fixtures/         # Test data fixtures
+│   └── config/          # Test configuration
+└── validate-structure.js  # Test structure validation
+```
+
+### Test Patterns
+
+- **Feature-based Organization**: Tests grouped by business feature
+- **Shared Helpers**: Reusable functions for common test operations
+- **Dynamic Email Generation**: Prevents test conflicts with unique emails
+- **Page Object Pattern**: Test helpers encapsulate page interactions
+- **Responsive Testing**: Tests verify mobile and desktop layouts
+
+### Quality Checks
+
+Before committing, ensure:
+- `pnpm exec tsc --noEmit` - TypeScript compilation passes
+- `pnpm lint` - ESLint warnings addressed  
+- `pnpm test:validate` - Test structure is valid
 - Test both monolingual and multilingual modes
+- Responsive design works across breakpoints
 
 ## Special Features
 
@@ -261,12 +386,44 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 - Dynamic schema types based on configuration
 - Integration with Next.js API for preference fetching
 
-## Common Tasks
+## Common Development Tasks
+
+### Adding New Features with Clean Architecture
+
+1. **Create feature directory structure**:
+   ```bash
+   mkdir -p features/[feature-name]/{domain/{entities,schemas,repositories,services},application/use-cases,infrastructure/{repositories,services,di},presentation/hooks}
+   ```
+
+2. **Follow the layer dependencies**: Domain ← Application ← Infrastructure → Presentation
+
+3. **Use dependency injection**: Create a container in `infrastructure/di/` and register dependencies
+
+### Component Development
+
+1. **UI Components**: Add to `components/ui/` following shadcn/ui patterns
+2. **Feature Components**: Group by domain in `components/[feature-name]/`
+3. **Always include TypeScript interfaces** with optional `className?: string`
+4. **Use responsive design patterns**: Mobile-first with `lg:` prefixes for desktop
+
+### Database Operations
+
+1. **Schema changes**: Modify `prisma/schema.prisma` then run `pnpm dlx prisma generate`
+2. **Database sync**: Run `pnpm dlx prisma db push` to apply changes
+3. **Seeding**: Add seed data in `prisma/seed.ts` and run `pnpm db:seed`
+
+### Internationalization
 
 1. **Adding a new language**: Update `SUPPORTED_LOCALES` in relevant files
 2. **Creating adaptive content**: Use `adaptiveString` or `adaptiveText` types in Sanity schemas
 3. **Testing multilingual features**: Use admin preferences modal to switch between modes
-4. **Database changes**: Always run `pnpm dlx prisma generate` after schema updates
+
+### Testing New Features
+
+1. **Create feature tests**: Add to `tests/features/[feature-name]/`
+2. **Use shared helpers**: Leverage existing utilities in `tests/shared/helpers/`
+3. **Generate dynamic test data**: Use helper functions to avoid test conflicts
+4. **Validate test structure**: Run `pnpm test:validate` after organizing tests
 
 ## Important Notes
 
@@ -274,3 +431,26 @@ NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 - Sanity Studio interface changes require the Next.js app to be running on port 3000
 - Language preferences are cached and may require browser refresh after changes
 - Always test with different language configurations to ensure proper functionality
+- Clean Architecture features should maintain strict layer separation
+- Use dependency injection containers for feature dependencies
+- Authentication system uses Better Auth with Clean Architecture wrappers
+- Tests are organized by feature for better maintainability
+
+## Recent Architectural Improvements
+
+### Clean Architecture Implementation (2025)
+
+The codebase has been refactored to follow Clean Architecture principles:
+
+- **Authentication Feature**: Complete implementation with domain entities, use cases, repositories, and presentation hooks
+- **Dependency Injection**: Singleton containers manage feature dependencies
+- **Layer Separation**: Clear boundaries between domain, application, infrastructure, and presentation
+- **Better Auth Integration**: Clean Architecture wrapper around Better Auth library
+- **Error Handling**: Consistent error patterns across all features using Either-like patterns
+
+### Testing Architecture (2025)
+
+- **Feature-based Organization**: Tests grouped by business domain rather than technical concerns
+- **Shared Test Utilities**: Reusable helpers, fixtures, and configuration
+- **Dynamic Test Data**: Email generation and user creation to prevent test conflicts
+- **Validation Scripts**: Automated validation of test structure and organization

@@ -1,5 +1,5 @@
 import { defineField } from 'sanity'
-import { CogIcon, MenuIcon, CheckmarkIcon, CloseIcon } from '@sanity/icons'
+import { CogIcon, CheckmarkIcon, CloseIcon } from '@sanity/icons'
 import { createSingleton } from '../../lib/singletons'
 
 export const settings = createSingleton({

@@ -8,8 +8,16 @@ export interface AuthSettings {
   _type: 'authSettings';
   redirectType: 'page' | 'modal';
   defaultAuthPage: 'signin' | 'signup';
-  enableGoogleAuth: boolean;
-  enableFacebookAuth: boolean;
+  googleAuth: {
+    enabled: boolean;
+    clientId?: string;
+    clientSecret?: string;
+  };
+  facebookAuth: {
+    enabled: boolean;
+    appId?: string;
+    appSecret?: string;
+  };
   enableTwitterAuth: boolean;
   enableGitHubAuth: boolean;
   modalTitle: {
@@ -36,8 +44,16 @@ const AUTH_SETTINGS_QUERY = `
     _type,
     redirectType,
     defaultAuthPage,
-    enableGoogleAuth,
-    enableFacebookAuth,
+    googleAuth{
+      enabled,
+      clientId,
+      clientSecret
+    },
+    facebookAuth{
+      enabled,
+      appId,
+      appSecret
+    },
     enableTwitterAuth,
     enableGitHubAuth,
     modalTitle,
@@ -62,8 +78,12 @@ export function useAuthSettings() {
           _type: 'authSettings',
           redirectType: 'page',
           defaultAuthPage: 'signin',
-          enableGoogleAuth: false,
-          enableFacebookAuth: false,
+          googleAuth: {
+            enabled: false,
+          },
+          facebookAuth: {
+            enabled: false,
+          },
           enableTwitterAuth: false,
           enableGitHubAuth: false,
           modalTitle: {
@@ -97,8 +117,12 @@ export function useAuthSettingsWithDefaults() {
     _type: 'authSettings',
     redirectType: 'page',
     defaultAuthPage: 'signin',
-    enableGoogleAuth: false,
-    enableFacebookAuth: false,
+    googleAuth: {
+      enabled: false,
+    },
+    facebookAuth: {
+      enabled: false,
+    },
     enableTwitterAuth: false,
     enableGitHubAuth: false,
     modalTitle: {

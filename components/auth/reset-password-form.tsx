@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { resetPasswordSchema, type ResetPasswordForm } from "@/lib/auth-schemas";
+import { PasswordResetSchema, type PasswordResetType } from "@/features/auth/domain/schemas/UserSchemas";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -36,8 +36,8 @@ export function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
-  const form = useForm<ResetPasswordForm>({
-    resolver: zodResolver(resetPasswordSchema),
+  const form = useForm<PasswordResetType>({
+    resolver: zodResolver(PasswordResetSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -51,7 +51,7 @@ export function ResetPasswordForm() {
     }
   }, [token, form]);
 
-  const onSubmit = async (data: ResetPasswordForm) => {
+  const onSubmit = async (data: PasswordResetType) => {
     setIsLoading(true);
     setError(null);
     setSuccess(false);

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 
-import { signInSchema, type SignInForm } from "@/lib/auth-schemas";
+import { SignInCredentialsSchema, type SignInCredentialsType } from "@/features/auth/domain/schemas/UserSchemas";
 import { useSignIn } from "@/features/auth/presentation/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/form";
 
 import { AuthSettings } from "@/hooks/useAuthSettings";
+import { useSignInTranslations } from "@/hooks/useSignInTranslations";
+import { useAuthNotifications } from "@/hooks/useAuthNotifications";
 
 interface SignInFormProps {
   callbackUrl?: string;
@@ -45,20 +47,22 @@ export function SignInForm({
   authSettings,
   hideCard = false
 }: SignInFormProps) {
+  const { translations: t } = useSignInTranslations();
+  const { notifications } = useAuthNotifications();
   const { signIn, isLoading, error, clearError } = useSignIn({
     callbackUrl,
     onSuccess,
   });
 
-  const form = useForm<SignInForm>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<SignInCredentialsType>({
+    resolver: zodResolver(SignInCredentialsSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (data: SignInForm) => {
+  const onSubmit = async (data: SignInCredentialsType) => {
     clearError();
     await signIn({
       email: data.email,
@@ -74,11 +78,11 @@ export function SignInForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t.emailLabel}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="votre@email.com"
+                    placeholder={t.emailPlaceholder}
                     {...field}
                     disabled={isLoading}
                   />
@@ -93,10 +97,10 @@ export function SignInForm({
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mot de passe</FormLabel>
+                <FormLabel>{t.passwordLabel}</FormLabel>
                 <FormControl>
                   <PasswordInput
-                    placeholder="••••••••"
+                    placeholder={t.passwordPlaceholder}
                     {...field}
                     disabled={isLoading}
                   />
@@ -114,9 +118,12 @@ export function SignInForm({
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
-            <Spinner size="sm" className="text-primary-foreground" />
+            <>
+              <Spinner size="sm" className="text-primary-foreground mr-2" />
+              {notifications.loading.signingIn}
+            </>
           ) : (
-            "Se connecter"
+            t.submitButton
           )}
         </Button>
       </form>
@@ -143,29 +150,29 @@ export function SignInForm({
           onClick={() => onModeChange('forgot-password')}
           className="text-sm text-muted-foreground hover:text-primary underline"
         >
-          Mot de passe oublié ?
+          {t.forgotPasswordLink}
         </button>
       ) : (
         <Link
           href="/auth/forgot-password"
           className="text-sm text-muted-foreground hover:text-primary underline"
         >
-          Mot de passe oublié ?
+          {t.forgotPasswordLink}
         </Link>
       )}
       <div className="text-sm text-muted-foreground">
-        Pas encore de compte ?{" "}
+        {t.signUpLink}{" "}
         {onModeChange ? (
           <button
             type="button"
             onClick={() => onModeChange('signup')}
             className="text-primary hover:underline"
           >
-            S&apos;inscrire
+            {t.signUpLinkText}
           </button>
         ) : (
           <Link href="/auth/signup" className="text-primary hover:underline">
-            S&apos;inscrire
+            {t.signUpLinkText}
           </Link>
         )}
       </div>
@@ -185,9 +192,9 @@ export function SignInForm({
     <div className="w-full max-w-md mx-auto">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle>Connexion</CardTitle>
+          <CardTitle>{t.pageTitle}</CardTitle>
           <CardDescription>
-            Connectez-vous à votre compte
+            {t.pageDescription}
           </CardDescription>
         </CardHeader>
         

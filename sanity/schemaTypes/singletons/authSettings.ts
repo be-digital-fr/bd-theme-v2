@@ -57,44 +57,124 @@ export const authSettings = createSingleton({
       validation: (rule) => rule.required(),
     }),
 
-    // Fournisseurs d'authentification sociale
+    // Google OAuth Configuration
     defineField({
-      name: "oauthInfo",
-      title: "Configuration OAuth",
+      name: "googleAuth",
+      title: "Configuration Google OAuth",
       type: "object",
-      description: "Informations importantes sur la configuration OAuth",
+      description: "Configuration pour l'authentification Google",
       group: "providers",
       fields: [
         {
-          name: "info",
+          name: "enabled",
+          title: "Activer Google OAuth",
+          type: "boolean",
+          description: "Permettre la connexion avec Google",
+          initialValue: false,
+        },
+        {
+          name: "clientId",
+          title: "Google Client ID",
+          type: "string",
+          description: "ID client Google obtenu depuis Google Cloud Console",
+          hidden: ({ parent }) => !parent?.enabled,
+          validation: (rule) =>
+            rule.custom((value, context) => {
+              const parent = context.parent as { enabled?: boolean };
+              if (parent?.enabled && !value) {
+                return "Client ID requis quand Google OAuth est activé";
+              }
+              return true;
+            }),
+        },
+        {
+          name: "clientSecret",
+          title: "Google Client Secret",
+          type: "string",
+          description: "Secret client Google obtenu depuis Google Cloud Console",
+          hidden: ({ parent }) => !parent?.enabled,
+          validation: (rule) =>
+            rule.custom((value, context) => {
+              const parent = context.parent as { enabled?: boolean };
+              if (parent?.enabled && !value) {
+                return "Client Secret requis quand Google OAuth est activé";
+              }
+              return true;
+            }),
+        },
+        {
+          name: "instructions",
           type: "text",
-          title: "Informations",
+          title: "Instructions de configuration",
           readOnly: true,
-          initialValue: "⚠️ Pour activer les fournisseurs OAuth, vous devez configurer les variables d'environnement correspondantes :\n\n• Google: GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET\n• Facebook: FACEBOOK_CLIENT_ID et FACEBOOK_CLIENT_SECRET\n\nConsultez la documentation AUTH.md pour les instructions détaillées.",
-        }
+          hidden: ({ parent }) => !parent?.enabled,
+          initialValue: "1. Allez sur Google Cloud Console\n2. Créez un nouveau projet ou sélectionnez un existant\n3. Activez l'API Google+ ou People API\n4. Créez des identifiants OAuth 2.0\n5. Ajoutez vos domaines autorisés\n6. Copiez le Client ID et Client Secret ci-dessus",
+        },
       ],
       options: {
         collapsible: true,
-        collapsed: false
-      }
+        collapsed: true,
+      },
     }),
 
+    // Facebook OAuth Configuration
     defineField({
-      name: "enableGoogleAuth",
-      title: "Activer Google",
-      type: "boolean",
-      description: "Permettre la connexion avec Google (nécessite GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET)",
+      name: "facebookAuth",
+      title: "Configuration Facebook OAuth",
+      type: "object",
+      description: "Configuration pour l'authentification Facebook",
       group: "providers",
-      initialValue: false,
-    }),
-
-    defineField({
-      name: "enableFacebookAuth",
-      title: "Activer Facebook",
-      type: "boolean",
-      description: "Permettre la connexion avec Facebook (nécessite FACEBOOK_CLIENT_ID et FACEBOOK_CLIENT_SECRET)",
-      group: "providers",
-      initialValue: false,
+      fields: [
+        {
+          name: "enabled",
+          title: "Activer Facebook OAuth",
+          type: "boolean",
+          description: "Permettre la connexion avec Facebook",
+          initialValue: false,
+        },
+        {
+          name: "appId",
+          title: "Facebook App ID",
+          type: "string",
+          description: "ID d'application Facebook obtenu depuis Facebook Developers",
+          hidden: ({ parent }) => !parent?.enabled,
+          validation: (rule) =>
+            rule.custom((value, context) => {
+              const parent = context.parent as { enabled?: boolean };
+              if (parent?.enabled && !value) {
+                return "App ID requis quand Facebook OAuth est activé";
+              }
+              return true;
+            }),
+        },
+        {
+          name: "appSecret",
+          title: "Facebook App Secret",
+          type: "string",
+          description: "Secret d'application Facebook obtenu depuis Facebook Developers",
+          hidden: ({ parent }) => !parent?.enabled,
+          validation: (rule) =>
+            rule.custom((value, context) => {
+              const parent = context.parent as { enabled?: boolean };
+              if (parent?.enabled && !value) {
+                return "App Secret requis quand Facebook OAuth est activé";
+              }
+              return true;
+            }),
+        },
+        {
+          name: "instructions",
+          type: "text",
+          title: "Instructions de configuration",
+          readOnly: true,
+          hidden: ({ parent }) => !parent?.enabled,
+          initialValue: "1. Allez sur Facebook Developers (developers.facebook.com)\n2. Créez une nouvelle app ou sélectionnez une existante\n3. Ajoutez le produit 'Facebook Login'\n4. Configurez les domaines autorisés\n5. Copiez l'App ID et App Secret ci-dessus\n6. Activez l'app en production",
+        },
+      ],
+      options: {
+        collapsible: true,
+        collapsed: true,
+      },
     }),
 
     defineField({

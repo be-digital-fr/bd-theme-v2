@@ -45,7 +45,7 @@ export function SocialAuthButtons({
   };
 
   // Check if any social providers are enabled
-  const hasEnabledProviders = authSettings?.enableGoogleAuth || authSettings?.enableFacebookAuth;
+  const hasEnabledProviders = authSettings?.googleAuth?.enabled || authSettings?.facebookAuth?.enabled;
   
   if (!hasEnabledProviders) {
     return null;
@@ -65,7 +65,7 @@ export function SocialAuthButtons({
 
       {/* Social Providers */}
       <div className="grid gap-2">
-        {authSettings?.enableGoogleAuth && (
+        {authSettings?.googleAuth?.enabled && (
           <Button
             variant="outline"
             onClick={() => handleSocialSignIn('google')}
@@ -98,7 +98,7 @@ export function SocialAuthButtons({
           </Button>
         )}
 
-        {authSettings?.enableFacebookAuth && (
+        {authSettings?.facebookAuth?.enabled && (
           <Button
             variant="outline"
             onClick={() => handleSocialSignIn('facebook')}

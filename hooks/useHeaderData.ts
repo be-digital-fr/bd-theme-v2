@@ -136,8 +136,12 @@ export function useHeaderData() {
           _type: 'authSettings',
           redirectType: 'page',
           defaultAuthPage: 'signin',
-          enableGoogleAuth: false,
-          enableFacebookAuth: false,
+          googleAuth: {
+            enabled: false,
+          },
+          facebookAuth: {
+            enabled: false,
+          },
           enableTwitterAuth: false,
           enableGitHubAuth: false,
           modalTitle: {
@@ -187,8 +191,12 @@ export function useHeaderData() {
             _type: 'authSettings',
             redirectType: 'page',
             defaultAuthPage: 'signin',
-            enableGoogleAuth: false,
-            enableFacebookAuth: false,
+            googleAuth: {
+              enabled: false,
+            },
+            facebookAuth: {
+              enabled: false,
+            },
             enableTwitterAuth: false,
             enableGitHubAuth: false,
             modalTitle: {
