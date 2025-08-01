@@ -15,3 +15,18 @@ export const {
   resetPassword,
   sendVerificationEmail,
 } = authClient;
+
+// OAuth helper functions
+export const signInWithGoogle = () => {
+  return authClient.signIn.social({
+    provider: "google",
+    callbackURL: "/dashboard", // Redirect after successful login
+  });
+};
+
+export const signInWithFacebook = () => {
+  return authClient.signIn.social({
+    provider: "facebook",
+    callbackURL: "/dashboard", // Redirect after successful login
+  });
+};

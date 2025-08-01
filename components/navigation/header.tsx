@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Search, ShoppingCart, AlignRight } from 'lucide-react';
+import { Search, ShoppingCart, AlignRight, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DesktopNavigation } from './desktop-navigation';
@@ -9,7 +9,6 @@ import { MobileNavigation } from './mobile-navigation';
 import { MenuItem } from '@/hooks/useHeaderData';
 import { LanguageSelector } from '@/components/language-selector-v2';
 import { UserMenu } from '@/components/auth/user-menu';
-import { AuthButton } from '@/components/auth/auth-button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Logo } from '@/components/ui/logo';
 import { cn } from '@/lib/utils';
@@ -41,7 +40,6 @@ export function Header({ className }: HeaderProps) {
 
   // Utiliser des valeurs par défaut si pas de données (même pendant le loading)
   const settings = data?.settings || null;
-  const authSettings = data?.authSettings || null;
   const navigation = data?.navigation || { menuItems: [], footerMenuItems: [] };
   const headerSettings = settings?.headerSettings || {};
   const menuItems: MenuItem[] = navigation.menuItems || [];
@@ -61,32 +59,38 @@ export function Header({ className }: HeaderProps) {
             <Skeleton className="h-8 w-32 lg:h-10 lg:w-40" />
 
             {/* Desktop Navigation Skeleton */}
-            <div className="hidden lg:flex items-center space-x-6">
-              <Skeleton className="h-6 w-16" />
-              <Skeleton className="h-6 w-20" />
-              <Skeleton className="h-6 w-18" />
-              <Skeleton className="h-6 w-14" />
+            <div className="hidden lg:flex items-center space-x-8">
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-5 w-14" />
+              <Skeleton className="h-5 w-18" />
             </div>
 
-            {/* Right Side Icons Skeleton */}
+            {/* Right Side Icons Skeleton - Correspondant exactement à l'UI final */}
             <div className="flex items-center space-x-2 lg:space-x-4">
-              {/* Icons Skeleton */}
+              {/* Search Icon Skeleton */}
               <Skeleton className="h-9 w-9 rounded-md" />
+              
+              {/* Cart Icon Skeleton */}
               <Skeleton className="h-9 w-9 rounded-md" />
-              <Skeleton className="h-9 w-9 rounded-md" />
+              
+              {/* User/Auth Icon - Desktop (Loading state) */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden lg:block h-9 w-9 rounded-full hover:bg-accent"
+                disabled
+              >
+                <User className="h-5 w-5" />
+              </Button>
 
               {/* Language Selector Skeleton - Desktop */}
-              <div className="hidden lg:block border-l pl-4 ml-2">
-                <Skeleton className="h-8 w-8 rounded-full" />
-              </div>
-
-              {/* User Menu Skeleton - Desktop */}
-              <div className="hidden lg:block border-l pl-4 ml-2">
-                <Skeleton className="h-9 w-24 rounded-md" />
+              <div className="hidden lg:flex items-center border-l pl-4 ml-2">
+                <Skeleton className="h-9 w-9 rounded-md" />
               </div>
 
               {/* Mobile Menu Toggle Skeleton */}
-              <Skeleton className="lg:hidden h-9 w-9 rounded-full" />
+              <Skeleton className="lg:hidden h-10 w-10 rounded-full" />
             </div>
           </div>
         </div>
@@ -159,12 +163,12 @@ export function Header({ className }: HeaderProps) {
 
             {/* User/Auth Icon - Desktop */}
             <div className="hidden lg:block">
-              {(headerSettings?.showUserIcon ?? true) && authSettings && (
+              {/* {(headerSettings?.showUserIcon ?? true) && authSettings && (
                 <AuthButton 
                   authSettings={authSettings}
                   isHeaderLoading={isLoading} 
                 />
-              )}
+              )} */}
               <UserMenu />
             </div>
 
@@ -235,18 +239,7 @@ export function Header({ className }: HeaderProps) {
                     )}
                     
                     {/* User/Auth Icon - Mobile */}
-                    <div onClick={() => setIsMobileMenuOpen(false)}>
-                      {(headerSettings?.showUserIcon ?? true) && authSettings && (
-                        <AuthButton 
-                          className="h-12 w-12 text-foreground hover:text-primary"
-                          ariaLabel="User account"
-                          iconSize="sm"
-                          authSettings={authSettings}
-                          isHeaderLoading={isLoading}
-                        />
-                      )}
-                      <UserMenu />
-                    </div>
+                    <UserMenu />
                     
                     {/* Language Selector - Flag only version */}
                     {settings?.isMultilingual && (

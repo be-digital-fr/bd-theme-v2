@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { signInSchema, type SignInForm } from "@/lib/auth-schemas";
-import { authClient } from "@/lib/auth-client";
+import { useSignIn } from "@/features/auth/presentation/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Spinner } from "@/components/ui/spinner";
+import { SocialAuthButtons } from "./social-auth-buttons";
 import {
   Card,
   CardContent,
@@ -28,31 +28,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { AuthSettings } from "@/hooks/useAuthSettings";
+
 interface SignInFormProps {
   callbackUrl?: string;
   onSuccess?: () => void;
   onModeChange?: (mode: 'signin' | 'signup' | 'forgot-password') => void;
-  showSocialButtons?: boolean;
-  socialProviders?: {
-    google?: boolean;
-    facebook?: boolean;
-    twitter?: boolean;
-    github?: boolean;
-  };
+  authSettings?: AuthSettings;
   hideCard?: boolean;
 }
 
 export function SignInForm({ 
-  callbackUrl = "/dashboard",
+  callbackUrl = "/",
   onSuccess,
   onModeChange,
-  showSocialButtons = false,
-  socialProviders = {},
+  authSettings,
   hideCard = false
 }: SignInFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const { signIn, isLoading, error, clearError } = useSignIn({
+    callbackUrl,
+    onSuccess,
+  });
 
   const form = useForm<SignInForm>({
     resolver: zodResolver(signInSchema),
@@ -63,35 +59,11 @@ export function SignInForm({
   });
 
   const onSubmit = async (data: SignInForm) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const { data: result, error: signInError } = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-        callbackURL: callbackUrl,
-      });
-
-      if (signInError) {
-        setError(signInError.message || "Erreur lors de la connexion");
-        return;
-      }
-
-      if (result) {
-        if (onSuccess) {
-          onSuccess();
-        } else {
-          router.push(callbackUrl);
-          router.refresh();
-        }
-      }
-    } catch (err) {
-      setError("Une erreur inattendue s'est produite");
-      console.error("Sign in error:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    clearError();
+    await signIn({
+      email: data.email,
+      password: data.password,
+    });
   };
 
   const formContent = (
@@ -141,9 +113,25 @@ export function SignInForm({
           )}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Connexion..." : "Se connecter"}
+          {isLoading ? (
+            <Spinner size="sm" className="text-primary-foreground" />
+          ) : (
+            "Se connecter"
+          )}
         </Button>
       </form>
+
+      {/* Social Auth */}
+      {authSettings && (
+        <SocialAuthButtons 
+          authSettings={authSettings}
+          disabled={isLoading}
+          onError={(errorMessage) => {
+            // This is handled by social auth independently
+            console.error('Social auth error:', errorMessage);
+          }}
+        />
+      )}
     </Form>
   );
 

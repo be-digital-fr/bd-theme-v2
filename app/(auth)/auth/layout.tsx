@@ -5,9 +5,8 @@ interface AuthLayoutProps {
   children: ReactNode;
 }
 
-export function AuthLayout({ children }: AuthLayoutProps) {
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-
     <div className="min-h-screen flex flex-col items-center justify-center bg-background">
       <div className="mb-8">
         <Logo size="lg" href={"/"} showSkeleton={true} />
@@ -16,8 +15,5 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         {children}
       </main>
     </div>
-
   );
 }
-
-export default AuthLayout;

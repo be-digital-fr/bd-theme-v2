@@ -10,6 +10,7 @@ import { resetPasswordSchema, type ResetPasswordForm } from "@/lib/auth-schemas"
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Card,
   CardContent,
@@ -207,7 +208,11 @@ export function ResetPasswordForm() {
               )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Réinitialisation..." : "Réinitialiser"}
+                {isLoading ? (
+                  <Spinner size="sm" className="text-primary-foreground" />
+                ) : (
+                  "Réinitialiser"
+                )}
               </Button>
             </form>
           </Form>

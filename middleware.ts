@@ -38,46 +38,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Extraire la locale potentielle depuis l'URL
+  // Pour l'instant, désactiver les redirections de langues
+  // L'application utilise localStorage pour la gestion des langues
+  // et n'a pas de structure de routes avec préfixes de langues
+  
+  // Si quelqu'un essaie d'accéder à une route avec préfixe de langue
+  // rediriger vers la route sans préfixe
   const segments = pathname.split('/').filter(Boolean);
   const potentialLocale = segments[0];
   
-  // Vérifier si la locale est supportée
   if (potentialLocale && SUPPORTED_LOCALES.includes(potentialLocale)) {
-    // Locale supportée, continuer normalement
-    return NextResponse.next();
-  }
-  
-  // Gérer les cas de locale non supportée ou manquante
-  if (potentialLocale && !SUPPORTED_LOCALES.includes(potentialLocale)) {
-    // Langue non supportée, rediriger vers la langue par défaut
-    // Exemple : /de/about → /fr/about
-    const newPath = `/${DEFAULT_LOCALE}/${segments.join('/')}`;
+    // Supprimer le préfixe de langue et rediriger
+    const pathWithoutLocale = '/' + segments.slice(1).join('/');
+    const finalPath = pathWithoutLocale === '/' ? '/' : pathWithoutLocale;
     
-    
-    return NextResponse.redirect(new URL(newPath, request.url));
-  }
-  
-  // Aucune locale dans l'URL, rediriger vers la langue par défaut
-  // Exemple : /about → /fr/about
-  if (pathname !== '/' && !pathname.startsWith(`/${DEFAULT_LOCALE}`)) {
-    const newPath = `/${DEFAULT_LOCALE}${pathname}`;
-    
-    
-    return NextResponse.redirect(new URL(newPath, request.url));
-  }
-  
-  // Route racine, optionnellement rediriger vers la langue préférée
-  if (pathname === '/') {
-    const acceptLanguage = request.headers.get('accept-language');
-    const preferredLocale = getPreferredLocale(acceptLanguage);
-    
-    if (preferredLocale && preferredLocale !== DEFAULT_LOCALE) {
-      const newPath = `/${preferredLocale}`;
-      
-      
-      return NextResponse.redirect(new URL(newPath, request.url));
-    }
+    return NextResponse.redirect(new URL(finalPath, request.url));
   }
   
   return NextResponse.next();

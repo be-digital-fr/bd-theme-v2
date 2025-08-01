@@ -13,6 +13,19 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     maxPasswordLength: 128,
   },
+  // Social providers configuration
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      enabled: !!process.env.GOOGLE_CLIENT_ID && !!process.env.GOOGLE_CLIENT_SECRET,
+    },
+    facebook: {
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+      enabled: !!process.env.FACEBOOK_CLIENT_ID && !!process.env.FACEBOOK_CLIENT_SECRET,
+    },
+  },
   // Email verification would be configured here in production
   // emailVerification: {
   //   sendVerificationEmail: async ({ user, url }) => {
@@ -23,7 +36,9 @@ export const auth = betterAuth({
   trustedOrigins: [
     process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
     "http://localhost:3000",
-    "http://localhost:3001"
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001"
   ],
   plugins: [
     nextCookies(), // Essential for server actions - must be last plugin

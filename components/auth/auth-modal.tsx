@@ -51,13 +51,7 @@ export function AuthModal({
           <SignInForm 
             onSuccess={handleClose}
             onModeChange={handleModeChange}
-            showSocialButtons={authSettings.showSocialProviders}
-            socialProviders={{
-              google: authSettings.enableGoogleAuth,
-              facebook: authSettings.enableFacebookAuth,
-              twitter: authSettings.enableTwitterAuth,
-              github: authSettings.enableGitHubAuth,
-            }}
+            authSettings={authSettings}
             hideCard={true}
           />
         );
@@ -66,13 +60,7 @@ export function AuthModal({
           <SignUpForm 
             onSuccess={handleClose}
             onModeChange={handleModeChange}
-            showSocialButtons={authSettings.showSocialProviders}
-            socialProviders={{
-              google: authSettings.enableGoogleAuth,
-              facebook: authSettings.enableFacebookAuth,
-              twitter: authSettings.enableTwitterAuth,
-              github: authSettings.enableGitHubAuth,
-            }}
+            authSettings={authSettings}
             hideCard={true}
           />
         );

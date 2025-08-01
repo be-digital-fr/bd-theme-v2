@@ -5,47 +5,59 @@ import Link from "next/link";
 import Image from "next/image";
 import { User, LogOut, Settings } from "lucide-react";
 
-import { useSession, authClient } from "@/lib/auth-client";
+import { useCurrentUser, useSignOut } from "@/features/auth/presentation/hooks";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { clearAuthUserContext, trackSessionEvent } from "@/lib/sentry-auth";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { AuthButton } from "./auth-button";
+import { useHeaderData } from "@/hooks/useHeaderData";
 
 export function UserMenu() {
-  const { data: session, isPending } = useSession();
+  const { user, isLoading: userLoading } = useCurrentUser();
+  const { signOut } = useSignOut({
+    redirectTo: "/",
+    onSuccess: () => {
+      // Track session destruction
+      if (user?.id) {
+        trackSessionEvent('destroyed', user.id);
+      }
+      
+      // Clear user context from Sentry
+      clearAuthUserContext();
+    },
+  });
+  const { data, isLoading } = useHeaderData();
   const [isOpen, setIsOpen] = useState(false);
 
+  const authSettings = data?.authSettings || null;
+
   const handleSignOut = async () => {
-    try {
-      await authClient.signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            window.location.href = "/";
-          },
-        },
-      });
-    } catch (error) {
-      console.error("Error signing out:", error);
-      // Fallback: redirect manually
-      window.location.href = "/";
-    }
+    await signOut();
   };
 
-  if (isPending) {
+  if (userLoading || isLoading) {
     return (
-      <Skeleton className="h-9 w-9 rounded-full" />
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 rounded-full hover:bg-accent"
+        disabled
+      >
+        <User className="h-5 w-5" />
+      </Button>
     );
   }
 
   // Si l'utilisateur n'est pas connecté, ne rien afficher
-  if (!session) {
-    return null;
+  if (!user && authSettings) {
+    return <AuthButton authSettings={authSettings} isHeaderLoading={userLoading} />;
   }
 
-  const displayName = session.user.name || session.user.email;
+  const displayName = user?.name || user?.email || '';
   const initials = displayName
     .split(" ")
     .map((n) => n[0])
@@ -56,14 +68,14 @@ export function UserMenu() {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           size="icon"
           className="h-9 w-9 rounded-full hover:bg-accent"
         >
-          {session.user.image ? (
+          {user?.image ? (
             <Image
-              src={session.user.image}
+              src={user.image}
               alt={displayName}
               width={32}
               height={32}
@@ -79,11 +91,11 @@ export function UserMenu() {
       <PopoverContent className="w-56" align="end">
         <div className="space-y-1">
           <div className="px-2 py-1.5 text-sm text-muted-foreground">
-            {session.user.email}
+            {user?.email}
           </div>
-          
+
           <div className="h-px bg-border my-1" />
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -95,7 +107,7 @@ export function UserMenu() {
               Profil
             </Link>
           </Button>
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -107,9 +119,9 @@ export function UserMenu() {
               Paramètres
             </Link>
           </Button>
-          
+
           <div className="h-px bg-border my-1" />
-          
+
           <Button
             variant="ghost"
             size="sm"

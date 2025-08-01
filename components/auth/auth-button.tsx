@@ -3,6 +3,7 @@
 import { User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useSession } from '@/lib/auth-client';
 import { AuthSettings } from '@/hooks/useAuthSettings';
 import { AuthModal, useAuthModal } from '@/components/auth/auth-modal';
@@ -26,7 +27,7 @@ export function AuthButton({
   isHeaderLoading = false,
   authSettings
 }: AuthButtonProps) {
-  const { data: session } = useSession();
+  const { data: session, isPending } = useSession();
   const router = useRouter();
   
   // Utiliser les authSettings passés en props (pas de requête supplémentaire)
@@ -37,9 +38,16 @@ export function AuthButton({
     return null;
   }
 
-  // Si le header est en loading, ne rien afficher (géré par les skeletons du header)
+  // Si le header est en loading, ne rien afficher (géré par le skeleton du header)
   if (isHeaderLoading) {
     return null;
+  }
+
+  // Si la session est en cours de chargement, afficher le skeleton
+  if (isPending) {
+    return (
+      <Skeleton className="h-9 w-9 rounded-full" />
+    );
   }
 
   const handleAuthClick = () => {

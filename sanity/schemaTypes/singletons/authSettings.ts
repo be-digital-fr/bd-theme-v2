@@ -6,23 +6,19 @@ import { autoMultilingualString } from "../locale";
 export const authSettings = createSingleton({
   name: "authSettings",
   title: "Paramètres d'authentification",
-  type: "document",
   icon: UserIcon,
   groups: [
     {
       name: "behavior",
       title: "Comportement",
-      icon: CogIcon,
     },
     {
       name: "providers",
       title: "Fournisseurs sociaux",
-      icon: UserIcon,
     },
     {
       name: "ui",
       title: "Interface utilisateur",
-      icon: CogIcon,
     },
   ],
   fields: [
@@ -63,10 +59,31 @@ export const authSettings = createSingleton({
 
     // Fournisseurs d'authentification sociale
     defineField({
+      name: "oauthInfo",
+      title: "Configuration OAuth",
+      type: "object",
+      description: "Informations importantes sur la configuration OAuth",
+      group: "providers",
+      fields: [
+        {
+          name: "info",
+          type: "text",
+          title: "Informations",
+          readOnly: true,
+          initialValue: "⚠️ Pour activer les fournisseurs OAuth, vous devez configurer les variables d'environnement correspondantes :\n\n• Google: GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET\n• Facebook: FACEBOOK_CLIENT_ID et FACEBOOK_CLIENT_SECRET\n\nConsultez la documentation AUTH.md pour les instructions détaillées.",
+        }
+      ],
+      options: {
+        collapsible: true,
+        collapsed: false
+      }
+    }),
+
+    defineField({
       name: "enableGoogleAuth",
       title: "Activer Google",
       type: "boolean",
-      description: "Permettre la connexion avec Google",
+      description: "Permettre la connexion avec Google (nécessite GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET)",
       group: "providers",
       initialValue: false,
     }),
@@ -75,7 +92,7 @@ export const authSettings = createSingleton({
       name: "enableFacebookAuth",
       title: "Activer Facebook",
       type: "boolean",
-      description: "Permettre la connexion avec Facebook",
+      description: "Permettre la connexion avec Facebook (nécessite FACEBOOK_CLIENT_ID et FACEBOOK_CLIENT_SECRET)",
       group: "providers",
       initialValue: false,
     }),
@@ -144,12 +161,4 @@ export const authSettings = createSingleton({
       initialValue: false,
     }),
   ],
-  preview: {
-    prepare() {
-      return {
-        title: "Paramètres d'authentification",
-        subtitle: "Configuration de l'authentification et des fournisseurs sociaux",
-      };
-    },
-  },
 });

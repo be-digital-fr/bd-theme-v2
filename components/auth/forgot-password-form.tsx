@@ -9,6 +9,7 @@ import { forgotPasswordSchema, type ForgotPasswordForm } from "@/lib/auth-schema
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Card,
   CardContent,
@@ -34,9 +35,8 @@ interface ForgotPasswordFormProps {
 
 export function ForgotPasswordForm({
   onSuccess,
-  onModeChange,
-  hideCard = false
-}: ForgotPasswordFormProps = {}) {
+  onModeChange
+}: ForgotPasswordFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -165,7 +165,11 @@ export function ForgotPasswordForm({
               )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Envoi..." : "Envoyer le lien"}
+                {isLoading ? (
+                  <Spinner size="sm" className="text-primary-foreground" />
+                ) : (
+                  "Envoyer le lien"
+                )}
               </Button>
             </form>
           </Form>

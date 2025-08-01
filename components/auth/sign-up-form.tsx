@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { signUpSchema, type SignUpForm } from "@/lib/auth-schemas";
-import { authClient } from "@/lib/auth-client";
+import { useSignUp } from "@/features/auth/presentation/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Spinner } from "@/components/ui/spinner";
+import { SocialAuthButtons } from "./social-auth-buttons";
 import {
   Card,
   CardContent,
@@ -28,32 +28,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { AuthSettings } from "@/hooks/useAuthSettings";
+
 interface SignUpFormProps {
   callbackUrl?: string;
   onSuccess?: () => void;
   onModeChange?: (mode: 'signin' | 'signup' | 'forgot-password') => void;
-  showSocialButtons?: boolean;
-  socialProviders?: {
-    google?: boolean;
-    facebook?: boolean;
-    twitter?: boolean;
-    github?: boolean;
-  };
+  authSettings?: AuthSettings;
   hideCard?: boolean;
 }
 
 export function SignUpForm({ 
-  callbackUrl = "/dashboard",
+  callbackUrl = "/",
   onSuccess,
   onModeChange,
-  showSocialButtons = false,
-  socialProviders = {},
-  hideCard = false
+  authSettings
 }: SignUpFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const router = useRouter();
+  const { signUp, isLoading, error, success, clearError } = useSignUp({
+    callbackUrl,
+    onSuccess,
+  });
 
   const form = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
@@ -66,41 +60,9 @@ export function SignUpForm({
   });
 
   const onSubmit = async (data: SignUpForm) => {
-    setIsLoading(true);
-    setError(null);
-    setSuccess(false);
-
-    try {
-      const { data: result, error: signUpError } = await authClient.signUp.email({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        callbackURL: callbackUrl,
-      });
-
-      if (signUpError) {
-        setError(signUpError.message || "Erreur lors de l'inscription");
-        return;
-      }
-
-      if (result) {
-        setSuccess(true);
-        // Handle success
-        if (onSuccess) {
-          setTimeout(onSuccess, 2000);
-        } else {
-          setTimeout(() => {
-            router.push(callbackUrl);
-            router.refresh();
-          }, 2000);
-        }
-      }
-    } catch (err) {
-      setError("Une erreur inattendue s'est produite");
-      console.error("Sign up error:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    clearError();
+    // Pass all form data - the hook will handle extracting confirmPassword
+    await signUp(data);
   };
 
   if (success) {
@@ -228,9 +190,25 @@ export function SignUpForm({
           )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Inscription..." : "S'inscrire"}
+                {isLoading ? (
+                  <Spinner size="sm" className="text-primary-foreground" />
+                ) : (
+                  "S'inscrire"
+                )}
               </Button>
             </form>
+
+            {/* Social Auth */}
+            {authSettings && (
+              <SocialAuthButtons 
+                authSettings={authSettings}
+                disabled={isLoading}
+                onError={(errorMessage) => {
+                  // This is handled by social auth independently
+                  console.error('Social auth error:', errorMessage);
+                }}
+              />
+            )}
           </Form>
         </CardContent>
 
