@@ -69,6 +69,7 @@ export function useAuthSettings() {
     queryFn: async () => {
       try {
         const data = await client.fetch(AUTH_SETTINGS_QUERY);
+        console.log('Auth settings:', data);
         return data || null;
       } catch (error) {
         console.error('Error fetching auth settings:', error);

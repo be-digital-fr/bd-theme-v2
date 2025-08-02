@@ -29,6 +29,9 @@ import {
 } from "@/components/ui/form";
 
 import { AuthSettings } from "@/hooks/useAuthSettings";
+import { useSignUpTranslations } from "@/hooks/useSignUpTranslations";
+import { useAuthNotifications } from "@/hooks/useAuthNotifications";
+import { mapAuthError } from "@/lib/auth-error-mapper";
 
 interface SignUpFormProps {
   callbackUrl?: string;
@@ -42,8 +45,11 @@ export function SignUpForm({
   callbackUrl = "/",
   onSuccess,
   onModeChange,
-  authSettings
+  authSettings,
+  hideCard = false
 }: SignUpFormProps) {
+  const { translations: t } = useSignUpTranslations();
+  const { notifications } = useAuthNotifications();
   const { signUp, isLoading, error, success, clearError } = useSignUp({
     callbackUrl,
     onSuccess,
@@ -66,59 +72,59 @@ export function SignUpForm({
   };
 
   if (success) {
+    const successContent = (
+      <>
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg
+            className="w-8 h-8 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold text-green-600 text-center">
+          {t.successMessage}
+        </h3>
+        <p className="text-sm text-muted-foreground text-center mt-2">
+          {t.successDescription}
+        </p>
+      </>
+    );
+
+    if (hideCard) {
+      return <div className="space-y-4">{successContent}</div>;
+    }
+
     return (
       <div className="w-full max-w-md mx-auto">
         <Card>
           <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <CardTitle className="text-green-600">
-              Inscription réussie !
-            </CardTitle>
-            <CardDescription>
-              Votre compte a été créé avec succès. Redirection en cours...
-            </CardDescription>
+            {successContent}
           </CardHeader>
         </Card>
       </div>
     );
   }
 
-  return (
-    <div className="w-full max-w-md mx-auto">
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle>Inscription</CardTitle>
-          <CardDescription>
-            Créez votre compte
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <Form {...form}>
+  const formContent = (
+    <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nom complet</FormLabel>
+                <FormLabel>{t.nameLabel}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Jean Dupont"
+                    placeholder={t.namePlaceholder}
                     {...field}
                     disabled={isLoading}
                   />
@@ -133,11 +139,11 @@ export function SignUpForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t.emailLabel}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="votre@email.com"
+                    placeholder={t.emailPlaceholder}
                     {...field}
                     disabled={isLoading}
                   />
@@ -152,10 +158,10 @@ export function SignUpForm({
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mot de passe</FormLabel>
+                <FormLabel>{t.passwordLabel}</FormLabel>
                 <FormControl>
                   <PasswordInput
-                    placeholder="••••••••"
+                    placeholder={t.passwordPlaceholder}
                     {...field}
                     disabled={isLoading}
                   />
@@ -170,10 +176,10 @@ export function SignUpForm({
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirmer le mot de passe</FormLabel>
+                <FormLabel>{t.confirmPasswordLabel}</FormLabel>
                 <FormControl>
                   <PasswordInput
-                    placeholder="••••••••"
+                    placeholder={t.confirmPasswordPlaceholder}
                     {...field}
                     disabled={isLoading}
                   />
@@ -185,15 +191,18 @@ export function SignUpForm({
 
           {error && (
             <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-              {error}
+              {mapAuthError(error, notifications) || error}
             </div>
           )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
-                  <Spinner size="sm" className="text-primary-foreground" />
+                  <>
+                    <Spinner size="sm" className="text-primary-foreground mr-2" />
+                    {notifications.loading.signingUp}
+                  </>
                 ) : (
-                  "S'inscrire"
+                  t.submitButton
                 )}
               </Button>
             </form>
@@ -210,25 +219,52 @@ export function SignUpForm({
               />
             )}
           </Form>
+  );
+
+  const footerContent = (
+    <div className="text-sm text-muted-foreground text-center">
+      {t.signInLink}{" "}
+      {onModeChange ? (
+        <button
+          type="button"
+          onClick={() => onModeChange('signin')}
+          className="text-primary hover:underline"
+        >
+          {t.signInLinkText}
+        </button>
+      ) : (
+        <Link href="/auth/signin" className="text-primary hover:underline">
+          {t.signInLinkText}
+        </Link>
+      )}
+    </div>
+  );
+
+  if (hideCard) {
+    return (
+      <div className="space-y-6">
+        {formContent}
+        {footerContent}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-md mx-auto">
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle>{t.title}</CardTitle>
+          <CardDescription>
+            {t.subtitle}
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent>
+          {formContent}
         </CardContent>
 
         <CardFooter className="flex justify-center">
-          <div className="text-sm text-muted-foreground">
-            Déjà un compte ?{" "}
-            {onModeChange ? (
-              <button
-                type="button"
-                onClick={() => onModeChange('signin')}
-                className="text-primary hover:underline"
-              >
-                Se connecter
-              </button>
-            ) : (
-              <Link href="/auth/signin" className="text-primary hover:underline">
-                Se connecter
-              </Link>
-            )}
-          </div>
+          {footerContent}
         </CardFooter>
       </Card>
     </div>

@@ -1,10 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { client } from '@/sanity/lib/client';
 import { useLocale } from '@/features/locale/presentation/hooks/useLocale';
+import { resolveMultilingualValue } from '@/lib/resolveMultilingualValue';
 
 interface SignInTranslations {
   pageTitle: string;
   pageDescription?: string;
+  title: string;
+  subtitle?: string;
   formTitle: string;
   emailLabel: string;
   emailPlaceholder?: string;
@@ -22,6 +25,8 @@ const SIGN_IN_TRANSLATIONS_QUERY = `
   *[_type == "signInTranslations"][0] {
     pageTitle,
     pageDescription,
+    title,
+    subtitle,
     formTitle,
     emailLabel,
     emailPlaceholder,
@@ -46,31 +51,24 @@ export function useSignInTranslations() {
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
-  // Fonction pour résoudre une valeur multilingue
-  const resolveMultilingualValue = (value: any): string => {
-    if (!value) return '';
-    if (typeof value === 'string') return value;
-    if (typeof value === 'object') {
-      return value[currentLanguage] || value['fr'] || value['en'] || Object.values(value)[0] || '';
-    }
-    return '';
-  };
 
   // Traductions avec fallbacks
   const translations: SignInTranslations = {
-    pageTitle: resolveMultilingualValue(rawTranslations?.pageTitle) || 'Connexion',
-    pageDescription: resolveMultilingualValue(rawTranslations?.pageDescription) || 'Connectez-vous à votre compte',
-    formTitle: resolveMultilingualValue(rawTranslations?.formTitle) || 'Se connecter',
-    emailLabel: resolveMultilingualValue(rawTranslations?.emailLabel) || 'Adresse email',
-    emailPlaceholder: resolveMultilingualValue(rawTranslations?.emailPlaceholder) || 'votre@email.com',
-    passwordLabel: resolveMultilingualValue(rawTranslations?.passwordLabel) || 'Mot de passe',
-    passwordPlaceholder: resolveMultilingualValue(rawTranslations?.passwordPlaceholder) || '••••••••',
-    submitButton: resolveMultilingualValue(rawTranslations?.submitButton) || 'Se connecter',
-    forgotPasswordLink: resolveMultilingualValue(rawTranslations?.forgotPasswordLink) || 'Mot de passe oublié ?',
-    signUpLink: resolveMultilingualValue(rawTranslations?.signUpLink) || 'Pas encore de compte ?',
-    signUpLinkText: resolveMultilingualValue(rawTranslations?.signUpLinkText) || 'S\'inscrire',
-    socialAuthTitle: resolveMultilingualValue(rawTranslations?.socialAuthTitle) || 'Ou continuer avec',
-    orDividerText: resolveMultilingualValue(rawTranslations?.orDividerText) || 'ou',
+    pageTitle: resolveMultilingualValue({ value: rawTranslations?.pageTitle, currentLanguage }) || 'Connexion',
+    pageDescription: resolveMultilingualValue({ value: rawTranslations?.pageDescription, currentLanguage }) || 'Connectez-vous à votre compte',
+    title: resolveMultilingualValue({ value: rawTranslations?.title, currentLanguage }) || 'Bienvenue !',
+    subtitle: resolveMultilingualValue({ value: rawTranslations?.subtitle, currentLanguage }) || 'Connectez-vous pour continuer',
+    formTitle: resolveMultilingualValue({ value: rawTranslations?.formTitle, currentLanguage }) || 'Se connecter',
+    emailLabel: resolveMultilingualValue({ value: rawTranslations?.emailLabel, currentLanguage }) || 'Adresse email',
+    emailPlaceholder: resolveMultilingualValue({ value: rawTranslations?.emailPlaceholder, currentLanguage }) || 'votre@email.com',
+    passwordLabel: resolveMultilingualValue({ value: rawTranslations?.passwordLabel, currentLanguage }) || 'Mot de passe',
+    passwordPlaceholder: resolveMultilingualValue({ value: rawTranslations?.passwordPlaceholder, currentLanguage }) || '••••••••',
+    submitButton: resolveMultilingualValue({ value: rawTranslations?.submitButton, currentLanguage }) || 'Se connecter',
+    forgotPasswordLink: resolveMultilingualValue({ value: rawTranslations?.forgotPasswordLink, currentLanguage }) || 'Mot de passe oublié ?',
+    signUpLink: resolveMultilingualValue({ value: rawTranslations?.signUpLink, currentLanguage }) || 'Pas encore de compte ?',
+    signUpLinkText: resolveMultilingualValue({ value: rawTranslations?.signUpLinkText, currentLanguage }) || 'S\'inscrire',
+    socialAuthTitle: resolveMultilingualValue({ value: rawTranslations?.socialAuthTitle, currentLanguage }) || 'Ou continuer avec',
+    orDividerText: resolveMultilingualValue({ value: rawTranslations?.orDividerText, currentLanguage }) || 'ou',
   };
 
   return {

@@ -13,6 +13,9 @@ import { SignUpForm } from './sign-up-form';
 import { ForgotPasswordForm } from './forgot-password-form';
 import { useLocale } from '@/components/providers/locale-provider';
 import { AuthSettings } from '@/hooks/useAuthSettings';
+import { useSignInTranslations } from '@/hooks/useSignInTranslations';
+import { useSignUpTranslations } from '@/hooks/useSignUpTranslations';
+import { useForgotPasswordTranslations } from '@/hooks/useForgotPasswordTranslations';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -23,17 +26,15 @@ interface AuthModalProps {
 
 type AuthMode = 'signin' | 'signup' | 'forgot-password';
 
-export function AuthModal({ 
-  isOpen, 
-  onClose, 
+export function AuthModal({
+  isOpen,
+  onClose,
   authSettings,
-  defaultMode = 'signin' 
+  defaultMode = 'signin'
 }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>(defaultMode);
-  const { resolveMultilingualValue } = useLocale();
-
-  const modalTitle = resolveMultilingualValue(authSettings.modalTitle);
-  const modalDescription = resolveMultilingualValue(authSettings.modalDescription);
+  const { resolveMultilingualValue, locale: currentLanguage } = useLocale();
+  const { translations: signInT } = useSignInTranslations();
 
   const handleModeChange = (newMode: AuthMode) => {
     setMode(newMode);
@@ -48,7 +49,7 @@ export function AuthModal({
     switch (mode) {
       case 'signin':
         return (
-          <SignInForm 
+          <SignInForm
             onSuccess={handleClose}
             onModeChange={handleModeChange}
             authSettings={authSettings}
@@ -57,7 +58,7 @@ export function AuthModal({
         );
       case 'signup':
         return (
-          <SignUpForm 
+          <SignUpForm
             onSuccess={handleClose}
             onModeChange={handleModeChange}
             authSettings={authSettings}
@@ -66,7 +67,7 @@ export function AuthModal({
         );
       case 'forgot-password':
         return (
-          <ForgotPasswordForm 
+          <ForgotPasswordForm
             onSuccess={() => setMode('signin')}
             onModeChange={handleModeChange}
             hideCard={true}
@@ -76,48 +77,56 @@ export function AuthModal({
         return null;
     }
   };
-
+console.log("title",signInT.title);
   const getTitle = () => {
     switch (mode) {
       case 'signin':
-        return modalTitle;
+        return signInT.title;
       case 'signup':
         return resolveMultilingualValue({
           fr: 'Créer un compte',
           en: 'Create an account',
+          es: 'Crear una cuenta',
+          de: 'Konto erstellen'
         });
       case 'forgot-password':
         return resolveMultilingualValue({
           fr: 'Mot de passe oublié',
           en: 'Forgot password',
+          es: 'Contraseña olvidada',
+          de: 'Passwort vergessen'
         });
       default:
-        return modalTitle;
+        return signInT.title;
     }
   };
 
   const getDescription = () => {
     switch (mode) {
       case 'signin':
-        return modalDescription;
+        return signInT.subtitle;
       case 'signup':
         return resolveMultilingualValue({
           fr: 'Rejoignez-nous dès maintenant',
           en: 'Join us today',
+          es: 'Únete a nosotros hoy',
+          de: 'Treten Sie uns heute bei'
         });
       case 'forgot-password':
         return resolveMultilingualValue({
           fr: 'Nous vous enverrons un lien de réinitialisation',
           en: 'We\'ll send you a reset link',
+          es: 'Te enviaremos un enlace de restablecimiento',
+          de: 'Wir senden Ihnen einen Reset-Link'
         });
       default:
-        return modalDescription;
+        return signInT.subtitle;
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-xl font-semibold text-left">
             {getTitle()}
@@ -126,7 +135,7 @@ export function AuthModal({
             {getDescription()}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="mt-6">
           {renderForm()}
         </div>

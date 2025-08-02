@@ -31,6 +31,7 @@ import {
 import { AuthSettings } from "@/hooks/useAuthSettings";
 import { useSignInTranslations } from "@/hooks/useSignInTranslations";
 import { useAuthNotifications } from "@/hooks/useAuthNotifications";
+import { mapAuthError } from "@/lib/auth-error-mapper";
 
 interface SignInFormProps {
   callbackUrl?: string;
@@ -112,7 +113,7 @@ export function SignInForm({
 
           {error && (
             <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-              {error}
+              {mapAuthError(error, notifications) || error}
             </div>
           )}
 
@@ -192,9 +193,9 @@ export function SignInForm({
     <div className="w-full max-w-md mx-auto">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle>{t.pageTitle}</CardTitle>
+          <CardTitle>{t.title}</CardTitle>
           <CardDescription>
-            {t.pageDescription}
+            {t.subtitle}
           </CardDescription>
         </CardHeader>
         

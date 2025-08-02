@@ -26,6 +26,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useForgotPasswordTranslations } from "@/hooks/useForgotPasswordTranslations";
+import { useAuthNotifications } from "@/hooks/useAuthNotifications";
+import { mapAuthError } from "@/lib/auth-error-mapper";
 
 interface ForgotPasswordFormProps {
   onSuccess?: () => void;
@@ -35,8 +38,11 @@ interface ForgotPasswordFormProps {
 
 export function ForgotPasswordForm({
   onSuccess,
-  onModeChange
+  onModeChange,
+  hideCard = false
 }: ForgotPasswordFormProps) {
+  const { translations: t } = useForgotPasswordTranslations();
+  const { notifications } = useAuthNotifications();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -60,7 +66,7 @@ export function ForgotPasswordForm({
       });
 
       if (resetError) {
-        setError(resetError.message || "Erreur lors de l'envoi de l'email");
+        setError(resetError.message || notifications.error.generalError);
         return;
       }
 
@@ -69,7 +75,7 @@ export function ForgotPasswordForm({
         setTimeout(onSuccess, 2000);
       }
     } catch (err) {
-      setError("Une erreur inattendue s'est produite");
+      setError(notifications.error.generalError);
       console.error("Forgot password error:", err);
     } finally {
       setIsLoading(false);
@@ -77,78 +83,88 @@ export function ForgotPasswordForm({
   };
 
   if (success) {
+    const successContent = (
+      <>
+        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg
+            className="w-8 h-8 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold text-center">
+          {t.successMessage}
+        </h3>
+        <p className="text-sm text-muted-foreground text-center mt-2">
+          {t.successDescription}
+        </p>
+      </>
+    );
+
+    const backLink = onModeChange ? (
+      <button
+        type="button"
+        onClick={() => onModeChange('signin')}
+        className="text-sm text-primary hover:underline"
+      >
+        {t.backToSignInLink}
+      </button>
+    ) : (
+      <Link
+        href="/auth/signin"
+        className="text-sm text-primary hover:underline"
+      >
+        {t.backToSignInLink}
+      </Link>
+    );
+
+    if (hideCard) {
+      return (
+        <div className="space-y-4">
+          {successContent}
+          <div className="text-center">
+            {backLink}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="w-full max-w-md mx-auto">
         <Card>
           <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-            <CardTitle>Email envoyé !</CardTitle>
-            <CardDescription>
-              Nous avons envoyé un lien de réinitialisation à votre adresse email.
-              Vérifiez votre boîte de réception et suivez les instructions.
-            </CardDescription>
+            {successContent}
           </CardHeader>
           
           <CardFooter className="flex justify-center">
-            {onModeChange ? (
-              <button
-                type="button"
-                onClick={() => onModeChange('signin')}
-                className="text-sm text-primary hover:underline"
-              >
-                Retour à la connexion
-              </button>
-            ) : (
-              <Link
-                href="/auth/signin"
-                className="text-sm text-primary hover:underline"
-              >
-                Retour à la connexion
-              </Link>
-            )}
+            {backLink}
           </CardFooter>
         </Card>
       </div>
     );
   }
 
-  return (
-    <div className="w-full max-w-md mx-auto">
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle>Mot de passe oublié</CardTitle>
-          <CardDescription>
-            Entrez votre email pour recevoir un lien de réinitialisation
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <Form {...form}>
+  const formContent = (
+    <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t.emailLabel}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="votre@email.com"
+                        placeholder={t.emailPlaceholder}
                         {...field}
                         disabled={isLoading}
                       />
@@ -160,38 +176,70 @@ export function ForgotPasswordForm({
 
               {error && (
                 <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-                  {error}
+                  {mapAuthError(error, notifications) || error}
                 </div>
               )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
-                  <Spinner size="sm" className="text-primary-foreground" />
+                  <>
+                    <Spinner size="sm" className="text-primary-foreground mr-2" />
+                    {notifications.loading.sendingEmail}
+                  </>
                 ) : (
-                  "Envoyer le lien"
+                  t.submitButton
                 )}
               </Button>
             </form>
           </Form>
+  );
+
+  const footerContent = (
+    <div className="text-center">
+      {onModeChange ? (
+        <button
+          type="button"
+          onClick={() => onModeChange('signin')}
+          className="text-sm text-muted-foreground hover:text-primary underline"
+        >
+          {t.backToSignInLink}
+        </button>
+      ) : (
+        <Link
+          href="/auth/signin"
+          className="text-sm text-muted-foreground hover:text-primary underline"
+        >
+          {t.backToSignInLink}
+        </Link>
+      )}
+    </div>
+  );
+
+  if (hideCard) {
+    return (
+      <div className="space-y-6">
+        {formContent}
+        {footerContent}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-md mx-auto">
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle>{t.title}</CardTitle>
+          <CardDescription>
+            {t.subtitle}
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent>
+          {formContent}
         </CardContent>
 
         <CardFooter className="flex justify-center">
-          {onModeChange ? (
-            <button
-              type="button"
-              onClick={() => onModeChange('signin')}
-              className="text-sm text-muted-foreground hover:text-primary underline"
-            >
-              Retour à la connexion
-            </button>
-          ) : (
-            <Link
-              href="/auth/signin"
-              className="text-sm text-muted-foreground hover:text-primary underline"
-            >
-              Retour à la connexion
-            </Link>
-          )}
+          {footerContent}
         </CardFooter>
       </Card>
     </div>
