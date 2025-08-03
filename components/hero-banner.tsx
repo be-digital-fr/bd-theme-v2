@@ -125,7 +125,7 @@ export function HeroBanner(props: HeroBannerProps) {
   const mobileBgUrl = getBackgroundImageUrl(heroBanner.backgroundImages?.mobile) || '/images/banner/bg-mobile.png';
 
   return (
-    <section className="relative h-[80vh] lg:h-[65vh] overflow-hidden rounded-none lg:rounded-3xl" role="banner" aria-label="Hero banner">
+    <section className="relative h-[80vh] lg:h-[65vh] overflow-hidden rounded-none lg:rounded-3xl" role="banner" aria-label="Hero banner" aria-live="polite">
       {/* Responsive background images - Using Next.js Image for better performance */}
       <div className="absolute inset-0 z-0" aria-hidden="true">
         {/* Desktop background image */}
@@ -174,14 +174,14 @@ export function HeroBanner(props: HeroBannerProps) {
             </div>
 
             {/* Call-to-action buttons */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start" role="group" aria-label="Actions principales">
               <Button
                 size="lg"
                 asChild
-                className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 px-8 py-4 text-lg lg:text-xl font-semibold text-white shadow-2xl transition-all hover:shadow-3xl hover:scale-105 border-0"
+                className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 px-8 py-4 text-lg lg:text-xl font-semibold text-white shadow-2xl transition-all hover:shadow-3xl hover:scale-105 border-0 focus:ring-4 focus:ring-orange-300 focus:outline-none"
                 aria-label={primaryButtonText}
               >
-                <Link href={heroBanner.primaryButton?.url || ''}>
+                <Link href={heroBanner.primaryButton?.url || ''} tabIndex={0}>
                   {primaryButtonText}
                 </Link>
               </Button>
@@ -189,10 +189,10 @@ export function HeroBanner(props: HeroBannerProps) {
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-2 border-white/80 px-8 py-4 text-lg lg:text-xl font-semibold text-white transition-all hover:bg-white hover:text-green-600 bg-white/10 backdrop-blur-sm hover:scale-105"
+                className="border-2 border-white/80 px-8 py-4 text-lg lg:text-xl font-semibold text-white transition-all hover:bg-white hover:text-green-600 bg-white/10 backdrop-blur-sm hover:scale-105 focus:ring-4 focus:ring-white/50 focus:outline-none"
                 aria-label={secondaryButtonText}
               >
-                <Link href={heroBanner.secondaryButton?.url || ''}>
+                <Link href={heroBanner.secondaryButton?.url || ''} tabIndex={0}>
                   {secondaryButtonText}
                 </Link>
               </Button>

@@ -56,6 +56,22 @@ const nextConfig: NextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), payment=()'
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp'
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin'
           }
         ]
       }
@@ -76,6 +92,8 @@ const nextConfig: NextConfig = {
     ],
     optimizeCss: true,
     webpackBuildWorker: true,
+    inlineCss: true,
+    serverComponentsExternalPackages: ['@prisma/client'],
   },
   
   // Bundle optimization
@@ -111,6 +129,24 @@ const nextConfig: NextConfig = {
       '@sentry/replay': false,
       '@sentry/profiling-node': false,
     };
+
+    // Additional performance optimizations
+    if (!dev) {
+      config.optimization.splitChunks.cacheGroups.framework = {
+        chunks: 'all',
+        name: 'framework',
+        test: /(?:react|react-dom)$/,
+        priority: 40,
+        enforce: true,
+      };
+      
+      config.optimization.splitChunks.cacheGroups.commons = {
+        name: 'commons',
+        chunks: 'all',
+        minChunks: 2,
+        priority: 20,
+      };
+    }
     
     return config;
   },

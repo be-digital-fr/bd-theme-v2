@@ -1,0 +1,43 @@
+
+> bd-theme@0.1.0 test:lighthouse /Users/admin/Desktop/bd-theme
+> tsx scripts/lighthouse-test.ts https://bd-theme-nu.vercel.app desktop --throttle https://bd-theme-nu.vercel.app desktop --throttle
+
+🚀 Starting Lighthouse Performance Tests
+📱 URL: https://bd-theme-nu.vercel.app
+💻 Device: desktop
+⚡ Throttling: ON
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📡 Running Unlighthouse scan...
+npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm.
+npm warn Unknown env config "_jsr-registry". This will stop working in the next major version of npm.
+[Unlighthouse] ℹ Using downloaded chrome v138.0.7204.168 located at: /Users/admin/.unlighthouse/chrome/mac_arm-138.0.7204.168/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing
+[Unlighthouse] ✔ Successfully connected to https://bd-theme-nu.vercel.app. (Status: 200).
+[Unlighthouse] ℹ Creating Unlighthouse using config from /Users/admin/Desktop/bd-theme/unlighthouse.config.ts
+[get-port] Unable to find an available port (tried 5678 on host "localhost"). Using alternative port 3000.
+[Unlighthouse] ℹ Found /robots.txt, using entries. Sitemaps: 1, Groups: 1.
+[Unlighthouse] ℹ Sitemap appears to be missing, falling back to crawler mode.
+
+ ╭──────────────────────────────────────────────╮
+ │                                              │
+ │  ⛵‍  Unlighthouse cli @ v0.17.2              │
+ │                                              │
+ │  ▸ Scanning: https://bd-theme-nu.vercel.app  │
+ │  ▸ Route Discovery: Crawler                  │
+ │                                              │
+ │  Report: http://localhost:3000/              │
+ │                                              │
+ ╰──────────────────────────────────────────────╯
+
+[Unlighthouse] ℹ Restoring reports from cache. You can disable this behavior by passing --no-cache.
+
+[Unlighthouse]  WARN  No internal links discovered on home page. Switching crawler to execute javascript and disabling cache.
+
+[Unlighthouse] ℹ Skipping route based on include / exclude rules { path: '/blogs',
+  include: [ '/', '/menu', '/about', '/contact', '/blog', '/auth/signin', '/auth/signup' ],
+  exclude: [ '/api/*', '/admin/*', '/dashboard/*', '/_next/*', '/studio/*', '/cdn-cgi/*' ] }
+[Unlighthouse] ℹ Skipping route based on include / exclude rules { path: '/order',
+  include: [ '/', '/menu', '/about', '/contact', '/blog', '/auth/signin', '/auth/signup' ],
+  exclude: [ '/api/*', '/admin/*', '/dashboard/*', '/_next/*', '/studio/*', '/cdn-cgi/*' ] }
+[Unlighthouse] ℹ Skipping /about. Invalid status code: 404.
+[Unlighthouse] ℹ Skipping /contact. Invalid status code: 404.
+[Unlighthouse] ℹ Skipping /menu. Invalid status code: 404.

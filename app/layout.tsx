@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider, LocaleProvider } from "@/components/providers";
-import { generateWebsiteStructuredData, generateOrganizationStructuredData } from "@/lib/seo/structured-data";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,14 +86,7 @@ export const metadata: Metadata = {
     google: process.env.GOOGLE_SITE_VERIFICATION,
   },
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
-    languages: {
-      'fr': '/',
-      'en': '/en',
-      'es': '/es', 
-      'de': '/de',
-      'x-default': '/'
-    }
+    canonical: process.env.NEXT_PUBLIC_BASE_URL || "https://bd-theme-nu.vercel.app",
   },
   other: {
     'google-site-verification': process.env.GOOGLE_SITE_VERIFICATION || '',
@@ -117,10 +109,6 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  // Generate structured data for better SEO
-  const websiteStructuredData = generateWebsiteStructuredData();
-  const organizationStructuredData = generateOrganizationStructuredData();
-
   return (
     <QueryProvider>
       <LocaleProvider>
@@ -138,20 +126,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <link rel="modulepreload" href="/_next/static/chunks/framework.js" />
         <meta name="color-scheme" content="light dark" />
         <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="mobile-web-app-capable" content="yes" />
         
-        {/* Structured Data for SEO */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteStructuredData),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationStructuredData),
-          }}
-        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
