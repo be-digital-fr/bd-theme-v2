@@ -1,0 +1,106 @@
+{
+  "budget": [
+    {
+      "path": "/*",
+      "timings": [
+        {
+          "metric": "first-contentful-paint",
+          "budget": 1500
+        },
+        {
+          "metric": "largest-contentful-paint", 
+          "budget": 2500
+        },
+        {
+          "metric": "cumulative-layout-shift",
+          "budget": 0.1
+        },
+        {
+          "metric": "total-blocking-time",
+          "budget": 300
+        },
+        {
+          "metric": "speed-index",
+          "budget": 3000
+        }
+      ],
+      "resourceSizes": [
+        {
+          "resourceType": "script",
+          "budget": 400
+        },
+        {
+          "resourceType": "stylesheet",
+          "budget": 100
+        },
+        {
+          "resourceType": "image",
+          "budget": 500
+        },
+        {
+          "resourceType": "document",
+          "budget": 50
+        },
+        {
+          "resourceType": "font",
+          "budget": 100
+        },
+        {
+          "resourceType": "total",
+          "budget": 1000
+        }
+      ],
+      "resourceCounts": [
+        {
+          "resourceType": "script",
+          "budget": 10
+        },
+        {
+          "resourceType": "stylesheet", 
+          "budget": 5
+        },
+        {
+          "resourceType": "image",
+          "budget": 20
+        },
+        {
+          "resourceType": "font",
+          "budget": 4
+        }
+      ]
+    }
+  ],
+  "categories": {
+    "performance": 90,
+    "accessibility": 95,
+    "best-practices": 90,
+    "seo": 95,
+    "pwa": 80
+  },
+  "assertions": {
+    "first-contentful-paint": [
+      "error",
+      { "maxNumericValue": 1500 }
+    ],
+    "largest-contentful-paint": [
+      "error", 
+      { "maxNumericValue": 2500 }
+    ],
+    "cumulative-layout-shift": [
+      "error",
+      { "maxNumericValue": 0.1 }
+    ],
+    "total-blocking-time": [
+      "warn",
+      { "maxNumericValue": 300 }
+    ],
+    "speed-index": [
+      "warn",
+      { "maxNumericValue": 3000 }
+    ],
+    "interactive": [
+      "warn",
+      { "maxNumericValue": 3500 }
+    ]
+  }
+}

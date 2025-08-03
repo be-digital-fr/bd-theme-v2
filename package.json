@@ -20,7 +20,12 @@
     "test:headed": "playwright test --headed",
     "test:auth": "playwright test tests/features/auth",
     "test:auth:ui": "playwright test tests/features/auth --ui",
-    "test:validate": "node tests/validate-structure.js"
+    "test:validate": "node tests/validate-structure.js",
+    "test:lighthouse": "tsx scripts/lighthouse-test.ts https://bd-theme-nu.vercel.app desktop --throttle",
+    "test:lighthouse:mobile": "tsx scripts/lighthouse-test.ts https://bd-theme-nu.vercel.app mobile --throttle",
+    "test:lighthouse:local": "tsx scripts/lighthouse-test.ts http://localhost:3000 desktop",
+    "test:lighthouse:quick": "npx unlighthouse --site https://bd-theme-nu.vercel.app --samples 3",
+    "test:lighthouse:ci": "npx unlighthouse-ci --site https://bd-theme-nu.vercel.app --budget-path ./lighthouse-budget.json"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
