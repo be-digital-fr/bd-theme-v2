@@ -1,13 +1,15 @@
 import { createClient } from '@sanity/client';
 import { NextResponse } from 'next/server';
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  apiVersion: '2025-07-05',
-  token: process.env.NEXT_PUBLIC_SANITY_API_TOKEN,
-  useCdn: false,
-});
+function getSanityClient() {
+  return createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+    apiVersion: '2025-07-05',
+    token: process.env.NEXT_PUBLIC_SANITY_API_TOKEN,
+    useCdn: false,
+  });
+}
 
 const defaultSettingsData = {
   headerSettings: {
@@ -102,6 +104,8 @@ const defaultSettingsData = {
 
 export async function POST() {
   try {
+    const client = getSanityClient();
+    
     // Find existing settings document
     const existingSettings = await client.fetch('*[_type == "settings"][0]');
     
@@ -131,6 +135,8 @@ export async function POST() {
 
 export async function GET() {
   try {
+    const client = getSanityClient();
+    
     const settings = await client.fetch(`
       *[_type == "settings"][0] {
         _id,
