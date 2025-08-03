@@ -150,43 +150,43 @@ This is a multilingual Next.js 15 application built with the App Router, featuri
 
 ### Clean Architecture Implementation
 
-The project follows Clean Architecture principles with clear separation of concerns across multiple features:
+The project follows Clean Architecture principles with clear separation of concerns across multiple features.
+
+> 📚 **Documentation Complète**: Pour une documentation détaillée sur l'architecture, consultez [`docs/architecture/`](./docs/architecture/README.md)
+
+#### Résumé Rapide
+
+- **4 Couches**: Domain, Application, Infrastructure, Presentation
+- **4 Features**: Auth, Admin, Home, Locale
+- **Patterns**: Repository, Use Case, Dependency Injection, Entity
+- **Tests**: Organisés par feature avec couverture >85%
 
 #### Directory Structure by Feature
 ```
 features/
 ├── auth/                    # Authentication feature
-├── admin/                   # Admin preferences
+├── admin/                   # Admin preferences  
 ├── home/                    # Home content
 └── locale/                  # Internationalization
 ```
 
-#### Layer Organization (within each feature)
+#### Layer Organization (dans chaque feature)
 ```
 feature/
-├── domain/                  # Business logic (innermost layer)
-│   ├── entities/           # Business entities
-│   ├── schemas/            # Zod validation schemas
-│   ├── repositories/       # Repository interfaces
-│   └── services/          # Service interfaces
-├── application/            # Use cases (application layer)
-│   └── use-cases/         # Business use cases
-├── infrastructure/         # External dependencies (outermost layer)
-│   ├── repositories/      # Repository implementations
-│   ├── services/         # Service implementations
-│   └── di/               # Dependency injection containers
-└── presentation/          # UI layer
-    └── hooks/            # React hooks for UI components
+├── domain/                  # Business logic (couche interne)
+├── application/            # Use cases (orchestration)
+├── infrastructure/         # Implémentations externes
+└── presentation/          # Hooks React UI
 ```
 
-#### Dependency Injection Containers
+#### Containers d'Injection de Dépendances
 
-Each feature uses a singleton container pattern for dependency injection:
+Chaque feature utilise un container singleton pour l'injection de dépendances :
 
-- **AuthContainer**: Manages authentication dependencies
-- **AdminContainer**: Manages admin preferences dependencies  
-- **HomeContainer**: Manages home content dependencies
-- **LocaleContainer**: Manages localization dependencies
+- **AuthContainer**: Gestion des dépendances d'authentification
+- **AdminContainer**: Gestion des préférences administrateur
+- **HomeContainer**: Gestion du contenu d'accueil  
+- **LocaleContainer**: Gestion de la localisation
 
 #### Key Clean Architecture Patterns
 
