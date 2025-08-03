@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   
-  // Image optimization
+  // Image optimization - AVIF first for better compression
   images: {
     remotePatterns: [
       {
@@ -19,10 +19,12 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.sanity.io',
       },
     ],
-    formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 31536000, // 1 year caching
+    dangerouslyAllowSVG: false,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   
   // Security headers
@@ -68,8 +70,49 @@ const nextConfig: NextConfig = {
     optimizePackageImports: [
       '@radix-ui/react-icons',
       '@iconify/react',
-      'lucide-react'
+      'lucide-react',
+      'clsx',
+      'class-variance-authority'
     ],
+    optimizeCss: true,
+    webpackBuildWorker: true,
+  },
+  
+  // Bundle optimization
+  webpack: (config, { dev, isServer }) => {
+    // Optimize bundle size
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        usedExports: true,
+        sideEffects: false,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+            },
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              enforce: true,
+            },
+          },
+        },
+      };
+    }
+    
+    // Reduce bundle size by excluding unused modules
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@sentry/replay': false,
+      '@sentry/profiling-node': false,
+    };
+    
+    return config;
   },
   
   // External packages for server components

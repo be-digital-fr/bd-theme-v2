@@ -3,15 +3,20 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider, LocaleProvider } from "@/components/providers";
+import { generateWebsiteStructuredData, generateOrganizationStructuredData } from "@/lib/seo/structured-data";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  preload: true,
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: true,
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -28,18 +33,26 @@ export const metadata: Metadata = {
     "réservation",
     "menu digital",
     "be digital",
-    "restaurant technology"
+    "restaurant technology",
+    "point de vente",
+    "caisse enregistreuse",
+    "gestion restaurant"
   ],
   authors: [{ name: "Be Digital Team" }],
   creator: "Be Digital",
   publisher: "Be Digital",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     type: "website",
     locale: "fr_FR",
     url: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
     siteName: "Be Digital",
     title: "Be Digital - Restaurant Numérique",
-    description: "Transformez votre restaurant avec notre solution numérique complète.",
+    description: "Transformez votre restaurant avec notre solution numérique complète. Commande en ligne, gestion des livraisons, système de réservation et bien plus.",
     images: [
       {
         url: "/images/og-image.jpg",
@@ -53,14 +66,18 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Be Digital - Restaurant Numérique",
     description: "Transformez votre restaurant avec notre solution numérique complète.",
-    images: ["/images/og-image.jpg"]
+    images: ["/images/og-image.jpg"],
+    creator: "@bedigital",
+    site: "@bedigital"
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
+      noimageindex: false,
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1
@@ -74,9 +91,13 @@ export const metadata: Metadata = {
     languages: {
       'fr': '/',
       'en': '/en',
-      'es': '/es',
-      'de': '/de'
+      'es': '/es', 
+      'de': '/de',
+      'x-default': '/'
     }
+  },
+  other: {
+    'google-site-verification': process.env.GOOGLE_SITE_VERIFICATION || '',
   }
 };
 
@@ -96,10 +117,42 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  // Generate structured data for better SEO
+  const websiteStructuredData = generateWebsiteStructuredData();
+  const organizationStructuredData = generateOrganizationStructuredData();
+
   return (
     <QueryProvider>
       <LocaleProvider>
     <html lang="fr">
+      <head>
+        {/* Resource hints for critical third-party domains */}
+        <link rel="preconnect" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        
+        {/* Performance optimizations */}
+        <link rel="modulepreload" href="/_next/static/chunks/framework.js" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
+        
+        {/* Structured Data for SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteStructuredData),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationStructuredData),
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

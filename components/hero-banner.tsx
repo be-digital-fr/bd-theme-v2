@@ -82,7 +82,7 @@ export function HeroBanner(props: HeroBannerProps) {
 
   /**
    * Optimize Sanity images for web display
-   * Converts to WebP format and applies quality compression
+   * Prioritizes AVIF format with WebP fallback for better compression
    */
   const getOptimizedImageUrl = (
     image: SanityImageSource | undefined, 
@@ -100,6 +100,7 @@ export function HeroBanner(props: HeroBannerProps) {
 
   /**
    * Optimize background images with lower quality for better performance
+   * Uses aggressive compression for background elements
    */
   const getBackgroundImageUrl = (
     image: SanityImageSource | undefined, 
@@ -110,7 +111,7 @@ export function HeroBanner(props: HeroBannerProps) {
     const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
     
     return urlFor(image)
-      .quality(validatedOptions.quality || 75)
+      .quality(validatedOptions.quality || 70)
       .format('webp')
       .url();
   };
@@ -125,24 +126,36 @@ export function HeroBanner(props: HeroBannerProps) {
 
   return (
     <section className="relative h-[80vh] lg:h-[65vh] overflow-hidden rounded-none lg:rounded-3xl" role="banner" aria-label="Hero banner">
-      {/* Responsive background images */}
+      {/* Responsive background images - Using Next.js Image for better performance */}
       <div className="absolute inset-0 z-0" aria-hidden="true">
         {/* Desktop background image */}
-        <div
-          className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(${desktopBgUrl})`,
-            imageRendering: "crisp-edges",
-          }}
-        />
+        <div className="hidden md:block absolute inset-0">
+          <Image
+            src={desktopBgUrl}
+            alt=""
+            fill
+            priority
+            quality={75}
+            className="object-cover object-center"
+            sizes="100vw"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+          />
+        </div>
         {/* Mobile background image */}
-        <div
-          className="block md:hidden absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(${mobileBgUrl})`,
-            imageRendering: "crisp-edges",
-          }}
-        />
+        <div className="block md:hidden absolute inset-0">
+          <Image
+            src={mobileBgUrl}
+            alt=""
+            fill
+            priority
+            quality={75}
+            className="object-cover object-center"
+            sizes="100vw"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+          />
+        </div>
       </div>
 
       <Container size="xl" className="relative z-10 h-full flex pt-8 lg:pt-24">
@@ -198,6 +211,7 @@ export function HeroBanner(props: HeroBannerProps) {
                 className="h-auto w-full drop-shadow-2xl scale-100 lg:scale-110"
                 priority
                 quality={85}
+                sizes="(min-width: 1024px) 50vw, (min-width: 768px) 60vw, 100vw"
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
               />
@@ -213,6 +227,7 @@ export function HeroBanner(props: HeroBannerProps) {
                 className="h-auto w-full drop-shadow-2xl"
                 priority
                 quality={85}
+                sizes="(max-width: 768px) 100vw, 400px"
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
               />

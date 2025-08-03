@@ -37,8 +37,12 @@ Desktop.ini
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+.pnpm-debug.log*00
 lerna-debug.log*
+
+# unlighthouse
+.unlighthouse/
+lighthouse-reports/
 
 # env files (can opt-in for committing if needed)
 .env*
