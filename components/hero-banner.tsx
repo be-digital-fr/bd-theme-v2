@@ -89,9 +89,10 @@ export function HeroBanner(props: HeroBannerProps) {
   const desktopBgUrl = heroBanner ? getBackgroundImageUrl(heroBanner.backgroundImages?.desktop) || '/images/banner/bg-desktop.png' : '/images/banner/bg-desktop.png';
   const mobileBgUrl = heroBanner ? getBackgroundImageUrl(heroBanner.backgroundImages?.mobile) || '/images/banner/bg-mobile.png' : '/images/banner/bg-mobile.png';
 
-  // Preload critical images for faster display - moved before any returns
+  // Preload critical images for faster display - MUST be before any returns
   useEffect(() => {
-    if (desktopImageUrl && mobileBgUrl) {
+    // Only preload if we have valid URLs and component is not loading
+    if (!isLoading && desktopImageUrl && mobileBgUrl) {
       // Preload the most critical images
       const preloadImage = (url: string) => {
         const link = document.createElement('link');
@@ -111,7 +112,7 @@ export function HeroBanner(props: HeroBannerProps) {
         preloadImage(desktopBgUrl);
       }
     }
-  }, [desktopImageUrl, mobileImageUrl, desktopBgUrl, mobileBgUrl]);
+  }, [isLoading, desktopImageUrl, mobileImageUrl, desktopBgUrl, mobileBgUrl]);
 
   // Show skeleton while loading
   if (isLoading) {
