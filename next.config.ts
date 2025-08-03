@@ -92,7 +92,6 @@ const nextConfig: NextConfig = {
     ],
     optimizeCss: true,
     webpackBuildWorker: true,
-    inlineCss: true,
   },
   
   // Bundle optimization
