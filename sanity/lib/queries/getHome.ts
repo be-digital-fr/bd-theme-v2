@@ -1,3 +1,4 @@
+import { SanityImageType } from "@/features/home/domain/schemas/HomeContentSchema";
 import { client } from "../client";
 import { sanityFetch } from "../live";
 
@@ -63,6 +64,16 @@ export interface HomeDocument {
       alt?: Record<string, string> | string;
     };
   };
+  featuresSection?: {
+    isActive?: boolean;
+    sectionTitle?: Record<string, string> | string;
+    sectionDescription?: Record<string, string> | string;
+    featuresList?: Array<{
+      icon?: SanityImageType; // Sanity image object
+      title?: Record<string, string> | string;
+      description?: Record<string, string> | string;
+    }>;
+  };
 }
 
 // Interface pour les données home résolues selon la langue
@@ -90,6 +101,16 @@ export interface ResolvedHomeData {
       mobile?: string;
       alt?: string;
     };
+  };
+  featuresSection?: {
+    isActive?: boolean;
+    sectionTitle?: string;
+    sectionDescription?: string;
+    features?: Array<{
+      icon?: any; // Sanity image object
+      title?: string;
+      description?: string;
+    }>;
   };
   originalData: HomeDocument; // Données brutes pour référence et débogage
 }
@@ -130,6 +151,24 @@ export const getHome = async (): Promise<HomeDocument[]> => {
         desktop,
         mobile,
         alt
+      }
+    },
+    featuresSection {
+      isActive,
+      sectionTitle,
+      sectionDescription,
+      featuresList[] {
+        icon {
+          _type,
+          asset {
+            _ref,
+            _type
+          },
+          hotspot,
+          crop
+        },
+        title,
+        description
       }
     }
   }`);
@@ -197,6 +236,8 @@ export const getResolvedHome = async (
 ): Promise<ResolvedHomeData[]> => {
   // Récupérer les documents bruts
   const homeDocuments = await getHome();
+
+  console.log("homeDocuments", homeDocuments);
   
   // Résoudre chaque document selon la langue
   return homeDocuments.map(doc => ({
@@ -223,6 +264,14 @@ export const getResolvedHome = async (
         mobile: doc.heroBanner.heroImage.mobile,
         alt: resolveMultilingualValue(doc.heroBanner.heroImage.alt, preferredLanguage)
       } : undefined
+    } : undefined,
+    featuresSection: doc.featuresSection ? {
+      isActive: doc.featuresSection.isActive,
+      features: doc.featuresSection.featuresList ? doc.featuresSection.featuresList.map(feature => ({
+        icon: feature.icon,
+        title: resolveMultilingualValue(feature.title, preferredLanguage),
+        description: resolveMultilingualValue(feature.description, preferredLanguage)
+      })) : undefined
     } : undefined,
     originalData: doc, // Garder les données originales pour débogage
   }));

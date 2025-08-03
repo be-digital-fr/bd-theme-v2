@@ -51,6 +51,21 @@ export class GetLocalizedHomeContentUseCase {
       };
     }
 
+    // Localiser le featuresSection s'il existe
+    if (homeContent.featuresSection) {
+      localized.featuresSection = {
+        isActive: homeContent.featuresSection.isActive,
+        sectionTitle: this.resolveMultilingualValue(homeContent.featuresSection.sectionTitle, locale),
+        sectionDescription: this.resolveMultilingualValue(homeContent.featuresSection.sectionDescription, locale),
+        features: homeContent.featuresSection.features ? homeContent.featuresSection.features.map((feature: any) => ({
+          icon: feature.icon, // Keep icon as-is (it's an image object)
+          title: this.resolveMultilingualValue(feature.title, locale),
+          description: this.resolveMultilingualValue(feature.description, locale)
+        })) : []
+      };
+    }
+    console.log("homeContent", homeContent);
+    
     return localized;
   }
 

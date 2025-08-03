@@ -9,8 +9,12 @@ export const homeWithAutoTranslate = defineType({
   groups: [
     {
       name: 'hero',
-      title: 'Bannière Hero', 
+      title: 'Bannière Hero',
       default: true,
+    },
+    {
+      name: 'features',
+      title: 'Section Fonctionnalités',
     },
     {
       name: 'seo',
@@ -188,6 +192,71 @@ export const homeWithAutoTranslate = defineType({
       ],
       options: { collapsible: true, collapsed: false },
     }),
+
+    // Section Fonctionnalités
+    defineField({
+      name: 'featuresSection',
+      title: 'Liste des Services',
+      type: 'object',
+      description: 'Liste simple des services disponibles avec icônes',
+      group: 'features',
+      fields: [
+        defineField({
+          name: 'isActive',
+          type: 'boolean',
+          title: 'Section active',
+          description: 'Activer/désactiver l\'affichage de la liste des services',
+          initialValue: true,
+        }),
+        defineField({
+          name: 'featuresList',
+          type: 'array',
+          title: 'Services',
+          description: 'Liste des services disponibles (maximum 6 services)',
+          validation: (rule) => rule.min(1).max(6),
+          of: [
+            {
+              type: 'object',
+              title: 'Service',
+              fields: [
+                defineField({
+                  name: 'icon',
+                  type: 'image',
+                  title: 'Icône',
+                  description: 'Uploadez l\'icône représentative de ce service (recommandé: SVG ou PNG 64x64px)',
+                  validation: (rule) => rule.required(),
+                  options: {
+                    hotspot: true,
+                    accept: 'image/*'
+                  }
+                }),
+                defineField({
+                  name: 'title',
+                  type: 'autoMultilingualString',
+                  title: 'Titre du service',
+                  description: 'Nom court du service - traduit automatiquement',
+                  validation: (rule) => rule.required(),
+                }),
+              ],
+              preview: {
+                select: {
+                  title: 'title.fr',
+                  media: 'icon'
+                },
+                prepare({ title, media }) {
+                  return {
+                    title: title || 'Service',
+                    media: media
+                  };
+                }
+              }
+            }
+          ]
+        }),
+      ],
+      options: { collapsible: true, collapsed: false },
+    }),
+
     // SEO & Métadonnées
     defineField({
       name: 'metadata',

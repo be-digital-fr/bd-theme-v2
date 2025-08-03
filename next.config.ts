@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 31536000, // 1 year caching
-    dangerouslyAllowSVG: false,
+    dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   
@@ -31,7 +31,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        // Apply headers to all routes except API, static files, and Sanity Studio
+        source: '/((?!api|_next/static|_next/image|favicon.ico|studio).*)',
         headers: [
           {
             key: 'X-DNS-Prefetch-Control',
@@ -61,13 +62,28 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=()'
           },
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp'
-          },
+          // Commented out to allow Sanity CDN images
+          // {
+          //   key: 'Cross-Origin-Embedder-Policy',
+          //   value: 'require-corp'
+          // },
           {
             key: 'Cross-Origin-Opener-Policy',
             value: 'same-origin'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'cross-origin'
+          }
+        ]
+      },
+      // Specific headers for Sanity Studio to allow uploads
+      {
+        source: '/studio/:path*',
+        headers: [
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'unsafe-none'
           },
           {
             key: 'Cross-Origin-Resource-Policy',

@@ -59,6 +59,24 @@ export const HeroBannerSchema = z.object({
 
 export type HeroBannerType = z.infer<typeof HeroBannerSchema>;
 
+// Features Section schemas
+export const FeatureItemSchema = z.object({
+  icon: SanityImageSchema.optional(),
+  title: MultilingualValueSchema.optional(),
+  description: MultilingualValueSchema.optional(),
+});
+
+export type FeatureItemType = z.infer<typeof FeatureItemSchema>;
+
+export const FeaturesSectionSchema = z.object({
+  isActive: z.boolean().optional(),
+  sectionTitle: MultilingualValueSchema.optional(),
+  sectionDescription: MultilingualValueSchema.optional(),
+  features: z.array(FeatureItemSchema).optional(),
+});
+
+export type FeaturesSectionType = z.infer<typeof FeaturesSectionSchema>;
+
 export const HomeContentSchema = z.object({
   id: z.string().min(1, 'HomeContent ID is required'),
   title: z.string().optional(),
@@ -66,6 +84,7 @@ export const HomeContentSchema = z.object({
   subtitle: MultilingualValueSchema.optional(),
   description: MultilingualValueSchema.optional(),
   heroBanner: HeroBannerSchema.optional(),
+  featuresSection: FeaturesSectionSchema.optional(),
 });
 
 export type HomeContentType = z.infer<typeof HomeContentSchema>;
@@ -98,6 +117,16 @@ export const LocalizedHomeContentSchema = z.object({
       mobile: z.string().optional(),
     }).optional(),
   }).optional(),
+  featuresSection: z.object({
+    isActive: z.boolean().optional(),
+    sectionTitle: z.string().optional(),
+    sectionDescription: z.string().optional(),
+    features: z.array(z.object({
+      icon: z.string().optional(), // URL string for localized version
+      title: z.string().optional(),
+      description: z.string().optional(),
+    })).optional(),
+  }).optional(),
 });
 
 export type LocalizedHomeContentType = z.infer<typeof LocalizedHomeContentSchema>;
@@ -111,6 +140,7 @@ export const SanityHomeDocumentSchema = z.object({
   description: MultilingualValueSchema.optional(),
   callToAction: MultilingualValueSchema.optional(),
   heroBanner: HeroBannerSchema.optional(),
+  featuresSection: FeaturesSectionSchema.optional(),
 });
 
 export type SanityHomeDocumentType = z.infer<typeof SanityHomeDocumentSchema>;
