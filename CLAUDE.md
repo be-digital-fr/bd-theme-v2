@@ -130,6 +130,9 @@ It is **SEO optimized**, follows a **Clean Architecture** (Hexagonal Architectur
 ### Development Utilities
 
 - `pnpm init-singletons` - Initialize Sanity singleton documents
+- `pnpm init-translations` - Initialize translation documents
+- `pnpm init-hero-banner` - Initialize hero banner content
+- `pnpm check-home` - Check home document structure
 
 ## Project Architecture
 
@@ -213,15 +216,19 @@ The project implements a unique dual-approach multilingual system:
 
 - `app/` - Next.js App Router with internationalization
 - `components/` - React components including UI library
-  - `ui/` - shadcn/ui base components (Button, Card, Dialog, etc.)
+  - `ui/` - shadcn/ui base components (Button, Card, Dialog, Container, etc.)
   - `auth/` - Authentication-specific components  
   - `navigation/` - Header and navigation components
+  - `hero-banner.tsx` - Main hero banner component with Sanity integration
 - `features/` - Clean Architecture features (auth, admin, home, locale)
 - `sanity/` - Sanity CMS configuration and custom components
+  - `lib/image.ts` - Image optimization utilities with urlFor
+  - `schemaTypes/` - Content type definitions
 - `lib/` - Utilities, Prisma client, schemas
 - `hooks/` - Custom React hooks for data fetching
 - `prisma/` - Database schema and migrations
 - `tests/` - Playwright tests organized by features
+- `scripts/` - Utility scripts for initialization and maintenance
 
 ## Sanity CMS Integration
 
@@ -229,6 +236,17 @@ The project implements a unique dual-approach multilingual system:
 
 - `adaptiveString` & `adaptiveText` - Fields that adapt to language preferences but store single values
 - `multilingualString` & `multilingualText` - Fields that store all languages as objects
+- `autoMultilingualString` & `autoMultilingualText` - Fields with automatic translation capabilities
+
+### Image Optimization System
+
+The project implements a sophisticated image optimization system:
+
+- **Sanity Image Types**: All images use proper Sanity image objects instead of strings
+- **WebP Conversion**: Automatic conversion to WebP format for performance
+- **Quality Control**: Configurable quality settings (85% for content, 75% for backgrounds)
+- **Responsive Images**: Separate desktop and mobile image variants
+- **No Dimension Constraints**: Images maintain their natural proportions
 
 ### Dynamic Component System
 
@@ -240,6 +258,14 @@ The `DynamicWelcomingInput` component automatically adapts Sanity Studio interfa
 ### Content Structure
 
 Admin preferences are stored in PostgreSQL and determine how Sanity content is structured and displayed.
+
+### Hero Banner Implementation
+
+The hero banner system includes:
+- **Responsive Background Images**: Separate images for desktop and mobile
+- **Optimized Content Images**: Hero images with proper alt text and accessibility
+- **Call-to-Action Buttons**: Primary and secondary buttons with configurable URLs
+- **Multilingual Content**: Title, description, and button text with translation support
 
 ## Database Schema
 
@@ -405,6 +431,9 @@ Before committing, ensure:
 2. **Feature Components**: Group by domain in `components/[feature-name]/`
 3. **Always include TypeScript interfaces** with optional `className?: string`
 4. **Use responsive design patterns**: Mobile-first with `lg:` prefixes for desktop
+5. **Implement Zod validation**: Create schemas for props and validate at runtime
+6. **Add comprehensive JSDoc comments**: Document complex components and functions
+7. **Use forwardRef pattern**: For components that need ref passing to DOM elements
 
 ### Database Operations
 
@@ -415,8 +444,10 @@ Before committing, ensure:
 ### Internationalization
 
 1. **Adding a new language**: Update `SUPPORTED_LOCALES` in relevant files
-2. **Creating adaptive content**: Use `adaptiveString` or `adaptiveText` types in Sanity schemas
+2. **Creating adaptive content**: Use `adaptiveString`, `adaptiveText`, or `autoMultilingualString` types in Sanity schemas
 3. **Testing multilingual features**: Use admin preferences modal to switch between modes
+4. **Image optimization**: Use Sanity image types with proper fallbacks for all visual content
+5. **Content validation**: Implement Zod schemas for multilingual content structures
 
 ### Testing New Features
 
@@ -454,3 +485,61 @@ The codebase has been refactored to follow Clean Architecture principles:
 - **Shared Test Utilities**: Reusable helpers, fixtures, and configuration
 - **Dynamic Test Data**: Email generation and user creation to prevent test conflicts
 - **Validation Scripts**: Automated validation of test structure and organization
+
+### Hero Banner System (2025)
+
+The hero banner represents a complete implementation of modern component architecture:
+
+- **Clean Architecture Integration**: Full separation of concerns with domain schemas, use cases, and presentation hooks
+- **Sanity CMS Integration**: Advanced image optimization without dimension constraints
+- **Zod Validation**: Runtime prop validation with TypeScript type inference
+- **Responsive Design**: Mobile-first approach with desktop enhancements
+- **Accessibility Features**: Comprehensive ARIA labels, roles, and semantic markup
+- **Performance Optimization**: WebP conversion, quality control, and image preloading
+
+## Development Standards
+
+### Code Quality Requirements
+
+1. **TypeScript**: Use strict mode with comprehensive type safety
+2. **Validation**: Implement Zod schemas for all data structures and props
+3. **Comments**: Use English for all comments and documentation
+4. **Architecture**: Follow Clean Architecture with proper layer separation
+5. **Performance**: Optimize images, implement loading states, use proper caching
+6. **Accessibility**: Include ARIA labels, alt text, and semantic HTML
+7. **Testing**: Write tests for complex logic and user interactions
+
+### Commit Message Standards
+
+Follow this format for commit messages:
+```
+feat: brief description of changes
+
+- Bullet point for major change 1
+- Bullet point for major change 2
+- Include performance improvements
+- Note accessibility enhancements
+- Mention architectural improvements
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Image Handling Best Practices
+
+1. **Always use Sanity image types** instead of string URLs
+2. **Implement image optimization** with `urlFor` from `@sanity/lib/image`
+3. **Convert to WebP format** for performance benefits
+4. **Never hard-code dimensions** - let images maintain natural proportions
+5. **Provide fallback images** for development and error states
+6. **Include proper alt text** for accessibility compliance
+7. **Use blur placeholders** for better loading experience
+
+### Container and Layout Patterns
+
+- Use the `Container` component for consistent max-width layouts
+- Implement responsive design with mobile-first approach
+- Use CSS Grid and Flexbox for complex layouts
+- Ensure touch-friendly interfaces on mobile devices
+- Test across different screen sizes and orientations

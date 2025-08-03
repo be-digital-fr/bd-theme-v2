@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useHomeContent } from '@/features/home/presentation/hooks/useHomeContent';
 import { useCurrentLocale } from '@/lib/locale';
 import { resolveMultilingualValue } from '@/lib/resolveMultilingualValue';
@@ -41,8 +42,13 @@ export function HeroBanner(props: HeroBannerProps) {
   const currentLocale = useCurrentLocale();
   const { data: homeContent, isLoading } = useHomeContent(currentLocale);
 
-  // Early return if loading or banner not active
-  if (isLoading || !homeContent?.heroBanner?.isActive) {
+  // Show skeleton while loading
+  if (isLoading) {
+    return <HeroBannerSkeleton />;
+  }
+
+  // Early return if banner not active
+  if (!homeContent?.heroBanner?.isActive) {
     return null;
   }
 
@@ -220,6 +226,66 @@ export function HeroBanner(props: HeroBannerProps) {
 
       {/* Subtle overlay for improved text readability */}
       <div className="absolute inset-0 bg-gradient-to-br from-green-900/10 via-transparent to-green-800/20 z-[1]" aria-hidden="true"></div>
+    </section>
+  );
+}
+
+/**
+ * Hero Banner Skeleton Component
+ * 
+ * Displays a loading skeleton while hero banner data is being fetched
+ * Maintains the same layout structure as the actual component
+ */
+function HeroBannerSkeleton() {
+  return (
+    <section className="relative h-[80vh] lg:h-[65vh] overflow-hidden rounded-none lg:rounded-3xl bg-muted/20" role="banner" aria-label="Loading hero banner">
+      {/* Background skeleton */}
+      <div className="absolute inset-0 z-0">
+        <Skeleton className="w-full h-full rounded-none lg:rounded-3xl" />
+      </div>
+
+      <Container size="xl" className="relative z-10 h-full flex pt-8 lg:pt-24">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12 w-full">
+          {/* Content section skeleton */}
+          <div className="space-y-8 text-center lg:text-left">
+            <div className="space-y-6">
+              {/* Title skeleton */}
+              <div className="space-y-3">
+                <Skeleton className="h-12 sm:h-16 lg:h-20 xl:h-24 w-full max-w-2xl mx-auto lg:mx-0" />
+                <Skeleton className="h-12 sm:h-16 lg:h-20 xl:h-24 w-4/5 max-w-xl mx-auto lg:mx-0" />
+              </div>
+              {/* Description skeleton */}
+              <div className="space-y-3">
+                <Skeleton className="h-6 sm:h-7 lg:h-8 w-full max-w-3xl mx-auto lg:mx-0" />
+                <Skeleton className="h-6 sm:h-7 lg:h-8 w-5/6 max-w-2xl mx-auto lg:mx-0" />
+                <Skeleton className="h-6 sm:h-7 lg:h-8 w-3/4 max-w-xl mx-auto lg:mx-0" />
+              </div>
+            </div>
+
+            {/* Buttons skeleton */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
+              <Skeleton className="h-12 lg:h-14 w-48 rounded-lg" />
+              <Skeleton className="h-12 lg:h-14 w-40 rounded-lg" />
+            </div>
+          </div>
+
+          {/* Image section skeleton */}
+          <div className="relative flex justify-center lg:justify-end">
+            {/* Desktop image skeleton */}
+            <div className="hidden md:block relative w-full max-w-none">
+              <Skeleton className="aspect-[4/3] w-full max-w-lg lg:max-w-xl rounded-2xl" />
+            </div>
+
+            {/* Mobile image skeleton */}
+            <div className="block md:hidden relative max-w-md w-full">
+              <Skeleton className="aspect-[4/5] w-full rounded-2xl" />
+            </div>
+          </div>
+        </div>
+      </Container>
+
+      {/* Shimmer overlay for enhanced loading effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse z-[1]" aria-hidden="true"></div>
     </section>
   );
 }
