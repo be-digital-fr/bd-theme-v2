@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from 'next/link';
+import Head from 'next/head';
 import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -11,6 +12,7 @@ import { useCurrentLocale } from '@/lib/locale';
 import { resolveMultilingualValue } from '@/lib/resolveMultilingualValue';
 import { urlFor } from '@/sanity/lib/image';
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
+import { useEffect } from 'react';
 
 // Zod schema for image optimization options
 const ImageOptimizationOptionsSchema = z.object({
@@ -82,7 +84,7 @@ export function HeroBanner(props: HeroBannerProps) {
 
   /**
    * Optimize Sanity images for web display
-   * Prioritizes AVIF format with WebP fallback for better compression
+   * Uses aggressive compression and AVIF format for lightweight images
    */
   const getOptimizedImageUrl = (
     image: SanityImageSource | undefined, 
@@ -93,8 +95,9 @@ export function HeroBanner(props: HeroBannerProps) {
     const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
     
     return urlFor(image)
-      .quality(validatedOptions.quality || 85)
+      .quality(validatedOptions.quality || 75) // Reduced quality for faster loading
       .format('webp')
+      .auto('format') // Let Sanity choose best format (AVIF when supported)
       .url();
   };
 
@@ -111,8 +114,9 @@ export function HeroBanner(props: HeroBannerProps) {
     const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
     
     return urlFor(image)
-      .quality(validatedOptions.quality || 70)
+      .quality(validatedOptions.quality || 60) // More aggressive compression for backgrounds
       .format('webp')
+      .auto('format')
       .url();
   };
 
@@ -123,6 +127,30 @@ export function HeroBanner(props: HeroBannerProps) {
   // Generate optimized background image URLs with fallbacks
   const desktopBgUrl = getBackgroundImageUrl(heroBanner.backgroundImages?.desktop) || '/images/banner/bg-desktop.png';
   const mobileBgUrl = getBackgroundImageUrl(heroBanner.backgroundImages?.mobile) || '/images/banner/bg-mobile.png';
+
+  // Preload critical images for faster display
+  useEffect(() => {
+    if (desktopImageUrl && mobileBgUrl) {
+      // Preload the most critical images
+      const preloadImage = (url: string) => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = url;
+        document.head.appendChild(link);
+      };
+
+      // Preload mobile image (shown first on mobile-first design)
+      preloadImage(mobileImageUrl);
+      preloadImage(mobileBgUrl);
+      
+      // Preload desktop images for larger screens
+      if (window.innerWidth >= 768) {
+        preloadImage(desktopImageUrl);
+        preloadImage(desktopBgUrl);
+      }
+    }
+  }, [desktopImageUrl, mobileImageUrl, desktopBgUrl, mobileBgUrl]);
 
   return (
     <section className="relative h-[80vh] lg:h-[65vh] overflow-hidden rounded-none lg:rounded-3xl" role="banner" aria-label="Hero banner" aria-live="polite">
@@ -135,7 +163,7 @@ export function HeroBanner(props: HeroBannerProps) {
             alt=""
             fill
             priority
-            quality={75}
+            quality={60}
             className="object-cover object-center"
             sizes="100vw"
             placeholder="blur"
@@ -149,7 +177,7 @@ export function HeroBanner(props: HeroBannerProps) {
             alt=""
             fill
             priority
-            quality={75}
+            quality={60}
             className="object-cover object-center"
             sizes="100vw"
             placeholder="blur"
@@ -210,7 +238,7 @@ export function HeroBanner(props: HeroBannerProps) {
                 height={1200}
                 className="h-auto w-full drop-shadow-2xl scale-100 lg:scale-110"
                 priority
-                quality={85}
+                quality={75}
                 sizes="(min-width: 1024px) 50vw, (min-width: 768px) 60vw, 100vw"
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
@@ -226,7 +254,7 @@ export function HeroBanner(props: HeroBannerProps) {
                   fill
                   className="object-contain drop-shadow-2xl"
                   priority
-                  quality={85}
+                  quality={75}
                   sizes="(max-width: 768px) 100vw, 400px"
                   placeholder="blur"
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
@@ -254,10 +282,10 @@ export function HeroBanner(props: HeroBannerProps) {
  */
 function HeroBannerSkeleton() {
   return (
-    <section className="relative h-[80vh] lg:h-[65vh] overflow-hidden rounded-none lg:rounded-3xl bg-muted/20" role="banner" aria-label="Loading hero banner">
-      {/* Background skeleton */}
-      <div className="absolute inset-0 z-0">
-        <Skeleton className="w-full h-full rounded-none lg:rounded-3xl" />
+    <section className="relative h-[80vh] lg:h-[65vh] overflow-hidden rounded-none lg:rounded-3xl bg-gradient-to-br from-orange-100 to-yellow-50" role="banner" aria-label="Loading hero banner">
+      {/* Background skeleton with light gradient */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-orange-50/50 to-yellow-100/50">
+        <div className="w-full h-full animate-pulse bg-gradient-to-r from-orange-100/30 via-yellow-50/50 to-orange-100/30" />
       </div>
 
       <Container size="xl" className="relative z-10 h-full flex pt-8 lg:pt-24">
@@ -267,21 +295,21 @@ function HeroBannerSkeleton() {
             <div className="space-y-6">
               {/* Title skeleton */}
               <div className="space-y-3">
-                <Skeleton className="h-12 sm:h-16 lg:h-20 xl:h-24 w-full max-w-2xl mx-auto lg:mx-0" />
-                <Skeleton className="h-12 sm:h-16 lg:h-20 xl:h-24 w-4/5 max-w-xl mx-auto lg:mx-0" />
+                <div className="h-12 sm:h-16 lg:h-20 xl:h-24 w-full max-w-2xl mx-auto lg:mx-0 bg-white/40 rounded-lg animate-pulse" />
+                <div className="h-12 sm:h-16 lg:h-20 xl:h-24 w-4/5 max-w-xl mx-auto lg:mx-0 bg-white/30 rounded-lg animate-pulse" />
               </div>
               {/* Description skeleton */}
               <div className="space-y-3">
-                <Skeleton className="h-6 sm:h-7 lg:h-8 w-full max-w-3xl mx-auto lg:mx-0" />
-                <Skeleton className="h-6 sm:h-7 lg:h-8 w-5/6 max-w-2xl mx-auto lg:mx-0" />
-                <Skeleton className="h-6 sm:h-7 lg:h-8 w-3/4 max-w-xl mx-auto lg:mx-0" />
+                <div className="h-6 sm:h-7 lg:h-8 w-full max-w-3xl mx-auto lg:mx-0 bg-white/40 rounded animate-pulse" />
+                <div className="h-6 sm:h-7 lg:h-8 w-5/6 max-w-2xl mx-auto lg:mx-0 bg-white/30 rounded animate-pulse" />
+                <div className="h-6 sm:h-7 lg:h-8 w-3/4 max-w-xl mx-auto lg:mx-0 bg-white/20 rounded animate-pulse" />
               </div>
             </div>
 
             {/* Buttons skeleton */}
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
-              <Skeleton className="h-12 lg:h-14 w-48 rounded-lg" />
-              <Skeleton className="h-12 lg:h-14 w-40 rounded-lg" />
+              <div className="h-12 lg:h-14 w-48 bg-gradient-to-r from-orange-200/60 to-yellow-200/60 rounded-lg animate-pulse" />
+              <div className="h-12 lg:h-14 w-40 bg-white/40 rounded-lg animate-pulse" />
             </div>
           </div>
 
@@ -289,12 +317,12 @@ function HeroBannerSkeleton() {
           <div className="relative flex justify-center lg:justify-end">
             {/* Desktop image skeleton */}
             <div className="hidden md:block relative w-full max-w-none">
-              <Skeleton className="aspect-[4/3] w-full max-w-lg lg:max-w-xl rounded-2xl" />
+              <div className="aspect-[4/3] w-full max-w-lg lg:max-w-xl bg-white/30 rounded-2xl animate-pulse" />
             </div>
 
             {/* Mobile image skeleton */}
             <div className="block md:hidden relative max-w-md w-full">
-              <Skeleton className="aspect-[4/5] w-full rounded-2xl" />
+              <div className="aspect-[4/5] w-full bg-white/30 rounded-2xl animate-pulse" />
             </div>
           </div>
         </div>
