@@ -93,60 +93,16 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
     webpackBuildWorker: true,
     inlineCss: true,
-    serverComponentsExternalPackages: ['@prisma/client'],
   },
   
   // Bundle optimization
-  webpack: (config, { dev, isServer }) => {
-    // Optimize bundle size
-    if (!dev && !isServer) {
-      config.optimization = {
-        ...config.optimization,
-        usedExports: true,
-        sideEffects: false,
-        splitChunks: {
-          chunks: 'all',
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all',
-            },
-            common: {
-              name: 'common',
-              minChunks: 2,
-              chunks: 'all',
-              enforce: true,
-            },
-          },
-        },
-      };
-    }
-    
+  webpack: (config) => {
     // Reduce bundle size by excluding unused modules
     config.resolve.alias = {
       ...config.resolve.alias,
       '@sentry/replay': false,
       '@sentry/profiling-node': false,
     };
-
-    // Additional performance optimizations
-    if (!dev) {
-      config.optimization.splitChunks.cacheGroups.framework = {
-        chunks: 'all',
-        name: 'framework',
-        test: /(?:react|react-dom)$/,
-        priority: 40,
-        enforce: true,
-      };
-      
-      config.optimization.splitChunks.cacheGroups.commons = {
-        name: 'commons',
-        chunks: 'all',
-        minChunks: 2,
-        priority: 20,
-      };
-    }
     
     return config;
   },
