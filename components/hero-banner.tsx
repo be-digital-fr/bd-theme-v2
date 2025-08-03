@@ -2,11 +2,9 @@
 
 import Image from "next/image";
 import Link from 'next/link';
-import Head from 'next/head';
 import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useHomeContent } from '@/features/home/presentation/hooks/useHomeContent';
 import { useCurrentLocale } from '@/lib/locale';
 import { resolveMultilingualValue } from '@/lib/resolveMultilingualValue';
@@ -37,6 +35,44 @@ type HeroBannerProps = z.infer<typeof HeroBannerPropsSchema>;
  * @param props - Component props
  * @returns JSX element or null if not active
  */
+/**
+ * Optimize Sanity images for web display
+ * Uses aggressive compression and AVIF format for lightweight images
+ */
+const getOptimizedImageUrl = (
+  image: SanityImageSource | undefined, 
+  options: ImageOptimizationOptions = {}
+): string | null => {
+  if (!image) return null;
+  
+  const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
+  
+  return urlFor(image)
+    .quality(validatedOptions.quality || 75) // Reduced quality for faster loading
+    .format('webp')
+    .auto('format') // Let Sanity choose best format (AVIF when supported)
+    .url();
+};
+
+/**
+ * Optimize background images with lower quality for better performance
+ * Uses aggressive compression for background elements
+ */
+const getBackgroundImageUrl = (
+  image: SanityImageSource | undefined, 
+  options: ImageOptimizationOptions = {}
+): string | null => {
+  if (!image) return null;
+  
+  const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
+  
+  return urlFor(image)
+    .quality(validatedOptions.quality || 60) // More aggressive compression for backgrounds
+    .format('webp')
+    .auto('format')
+    .url();
+};
+
 export function HeroBanner(props: HeroBannerProps) {
   // Validate props at runtime
   HeroBannerPropsSchema.parse(props);
@@ -44,91 +80,16 @@ export function HeroBanner(props: HeroBannerProps) {
   const currentLocale = useCurrentLocale();
   const { data: homeContent, isLoading } = useHomeContent(currentLocale);
 
-  // Show skeleton while loading
-  if (isLoading) {
-    return <HeroBannerSkeleton />;
-  }
+  // Get heroBanner data for optimization
+  const heroBanner = homeContent?.heroBanner;
 
-  // Early return if banner not active
-  if (!homeContent?.heroBanner?.isActive) {
-    return null;
-  }
+  // Generate optimized image URLs early for preloading
+  const desktopImageUrl = heroBanner ? getOptimizedImageUrl(heroBanner.heroImage?.desktop) || '/images/banner/burger-desktop.png' : '/images/banner/burger-desktop.png';
+  const mobileImageUrl = heroBanner ? getOptimizedImageUrl(heroBanner.heroImage?.mobile) || '/images/banner/burger-mobile.png' : '/images/banner/burger-mobile.png';
+  const desktopBgUrl = heroBanner ? getBackgroundImageUrl(heroBanner.backgroundImages?.desktop) || '/images/banner/bg-desktop.png' : '/images/banner/bg-desktop.png';
+  const mobileBgUrl = heroBanner ? getBackgroundImageUrl(heroBanner.backgroundImages?.mobile) || '/images/banner/bg-mobile.png' : '/images/banner/bg-mobile.png';
 
-  const { heroBanner } = homeContent;
-
-  // Resolve multilingual content with fallbacks
-  const title = resolveMultilingualValue({
-    value: heroBanner.heroTitle,
-    currentLanguage: currentLocale
-  }) || 'Taste our unique burgers';
-
-  const description = resolveMultilingualValue({
-    value: heroBanner.heroDescription,
-    currentLanguage: currentLocale
-  }) || 'Fresh, delicious recipes prepared with quality ingredients';
-
-  const primaryButtonText = resolveMultilingualValue({
-    value: heroBanner.primaryButton?.text,
-    currentLanguage: currentLocale
-  }) || 'Order now';
-
-  const secondaryButtonText = resolveMultilingualValue({
-    value: heroBanner.secondaryButton?.text,
-    currentLanguage: currentLocale
-  }) || 'View menu';
-
-  const imageAlt = resolveMultilingualValue({
-    value: heroBanner.heroImage?.alt,
-    currentLanguage: currentLocale
-  }) || 'Delicious burger with fresh ingredients';
-
-  /**
-   * Optimize Sanity images for web display
-   * Uses aggressive compression and AVIF format for lightweight images
-   */
-  const getOptimizedImageUrl = (
-    image: SanityImageSource | undefined, 
-    options: ImageOptimizationOptions = {}
-  ): string | null => {
-    if (!image) return null;
-    
-    const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
-    
-    return urlFor(image)
-      .quality(validatedOptions.quality || 75) // Reduced quality for faster loading
-      .format('webp')
-      .auto('format') // Let Sanity choose best format (AVIF when supported)
-      .url();
-  };
-
-  /**
-   * Optimize background images with lower quality for better performance
-   * Uses aggressive compression for background elements
-   */
-  const getBackgroundImageUrl = (
-    image: SanityImageSource | undefined, 
-    options: ImageOptimizationOptions = {}
-  ): string | null => {
-    if (!image) return null;
-    
-    const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
-    
-    return urlFor(image)
-      .quality(validatedOptions.quality || 60) // More aggressive compression for backgrounds
-      .format('webp')
-      .auto('format')
-      .url();
-  };
-
-  // Generate optimized image URLs with fallbacks
-  const desktopImageUrl = getOptimizedImageUrl(heroBanner.heroImage?.desktop) || '/images/banner/burger-desktop.png';
-  const mobileImageUrl = getOptimizedImageUrl(heroBanner.heroImage?.mobile) || '/images/banner/burger-mobile.png';
-
-  // Generate optimized background image URLs with fallbacks
-  const desktopBgUrl = getBackgroundImageUrl(heroBanner.backgroundImages?.desktop) || '/images/banner/bg-desktop.png';
-  const mobileBgUrl = getBackgroundImageUrl(heroBanner.backgroundImages?.mobile) || '/images/banner/bg-mobile.png';
-
-  // Preload critical images for faster display
+  // Preload critical images for faster display - moved before any returns
   useEffect(() => {
     if (desktopImageUrl && mobileBgUrl) {
       // Preload the most critical images
@@ -145,12 +106,49 @@ export function HeroBanner(props: HeroBannerProps) {
       preloadImage(mobileBgUrl);
       
       // Preload desktop images for larger screens
-      if (window.innerWidth >= 768) {
+      if (typeof window !== 'undefined' && window.innerWidth >= 768) {
         preloadImage(desktopImageUrl);
         preloadImage(desktopBgUrl);
       }
     }
   }, [desktopImageUrl, mobileImageUrl, desktopBgUrl, mobileBgUrl]);
+
+  // Show skeleton while loading
+  if (isLoading) {
+    return <HeroBannerSkeleton />;
+  }
+
+  // Early return if banner not active
+  if (!homeContent?.heroBanner?.isActive) {
+    return null;
+  }
+
+  // Resolve multilingual content with fallbacks
+  const title = resolveMultilingualValue({
+    value: heroBanner?.heroTitle,
+    currentLanguage: currentLocale
+  }) || 'Taste our unique burgers';
+
+  const description = resolveMultilingualValue({
+    value: heroBanner?.heroDescription,
+    currentLanguage: currentLocale
+  }) || 'Fresh, delicious recipes prepared with quality ingredients';
+
+  const primaryButtonText = resolveMultilingualValue({
+    value: heroBanner?.primaryButton?.text,
+    currentLanguage: currentLocale
+  }) || 'Order now';
+
+  const secondaryButtonText = resolveMultilingualValue({
+    value: heroBanner?.secondaryButton?.text,
+    currentLanguage: currentLocale
+  }) || 'View menu';
+
+  const imageAlt = resolveMultilingualValue({
+    value: heroBanner?.heroImage?.alt,
+    currentLanguage: currentLocale
+  }) || 'Delicious burger with fresh ingredients';
+
 
   return (
     <section className="relative h-[80vh] lg:h-[65vh] overflow-hidden rounded-none lg:rounded-3xl" role="banner" aria-label="Hero banner" aria-live="polite">
@@ -209,7 +207,7 @@ export function HeroBanner(props: HeroBannerProps) {
                 className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 px-8 py-4 text-lg lg:text-xl font-semibold text-white shadow-2xl transition-all hover:shadow-3xl hover:scale-105 border-0 focus:ring-4 focus:ring-orange-300 focus:outline-none"
                 aria-label={primaryButtonText}
               >
-                <Link href={heroBanner.primaryButton?.url || ''} tabIndex={0}>
+                <Link href={heroBanner?.primaryButton?.url || ''} tabIndex={0}>
                   {primaryButtonText}
                 </Link>
               </Button>
@@ -220,7 +218,7 @@ export function HeroBanner(props: HeroBannerProps) {
                 className="border-2 border-white/80 px-8 py-4 text-lg lg:text-xl font-semibold text-white transition-all hover:bg-white hover:text-green-600 bg-white/10 backdrop-blur-sm hover:scale-105 focus:ring-4 focus:ring-white/50 focus:outline-none"
                 aria-label={secondaryButtonText}
               >
-                <Link href={heroBanner.secondaryButton?.url || ''} tabIndex={0}>
+                <Link href={heroBanner?.secondaryButton?.url || ''} tabIndex={0}>
                   {secondaryButtonText}
                 </Link>
               </Button>
