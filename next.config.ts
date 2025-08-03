@@ -90,7 +90,6 @@ const nextConfig: NextConfig = {
       'clsx',
       'class-variance-authority'
     ],
-    optimizeCss: true,
     webpackBuildWorker: true,
   },
   
