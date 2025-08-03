@@ -48,7 +48,9 @@ const getOptimizedImageUrl = (
   const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
   
   return urlFor(image)
-    .quality(validatedOptions.quality || 75) // Reduced quality for faster loading
+    .width(800) // Limit width to reduce file size
+    .height(600) // Limit height to maintain aspect ratio
+    .quality(validatedOptions.quality || 70) // Further reduced quality
     .format('webp')
     .auto('format') // Let Sanity choose best format (AVIF when supported)
     .url();
@@ -67,7 +69,9 @@ const getBackgroundImageUrl = (
   const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
   
   return urlFor(image)
-    .quality(validatedOptions.quality || 60) // More aggressive compression for backgrounds
+    .width(1920) // Reasonable width for backgrounds
+    .height(1080) // Standard aspect ratio
+    .quality(validatedOptions.quality || 55) // More aggressive compression for backgrounds
     .format('webp')
     .auto('format')
     .url();
@@ -162,7 +166,7 @@ export function HeroBanner(props: HeroBannerProps) {
             alt=""
             fill
             priority
-            quality={60}
+            quality={55}
             className="object-cover object-center"
             sizes="100vw"
             placeholder="blur"
@@ -176,7 +180,7 @@ export function HeroBanner(props: HeroBannerProps) {
             alt=""
             fill
             priority
-            quality={60}
+            quality={55}
             className="object-cover object-center"
             sizes="100vw"
             placeholder="blur"
@@ -229,23 +233,23 @@ export function HeroBanner(props: HeroBannerProps) {
           {/* Hero image section - Responsive burger image */}
           <div className="relative flex justify-center lg:justify-end" role="img" aria-label={imageAlt}>
             {/* Desktop hero image */}
-            <div className="hidden md:block relative w-full max-w-none lg:max-w-none xl:max-w-none 2xl:max-w-none">
+            <div className="hidden md:block relative w-full max-w-lg lg:max-w-xl xl:max-w-2xl">
               <Image
                 src={desktopImageUrl}
                 alt={imageAlt}
-                width={1600}
-                height={1200}
+                width={800}
+                height={600}
                 className="h-auto w-full drop-shadow-2xl scale-100 lg:scale-110"
                 priority
-                quality={75}
-                sizes="(min-width: 1024px) 50vw, (min-width: 768px) 60vw, 100vw"
+                quality={70}
+                sizes="(min-width: 1280px) 640px, (min-width: 1024px) 512px, (min-width: 768px) 448px, 100vw"
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
               />
             </div>
 
             {/* Mobile hero image */}
-            <div className="block md:hidden relative max-w-md w-full">
+            <div className="block md:hidden relative max-w-sm w-full">
               <div className="relative aspect-[4/5]">
                 <Image
                   src={mobileImageUrl}
@@ -253,10 +257,10 @@ export function HeroBanner(props: HeroBannerProps) {
                   fill
                   className="object-contain drop-shadow-2xl"
                   priority
-                  quality={75}
-                  sizes="(max-width: 768px) 100vw, 400px"
+                  quality={70}
+                  sizes="(max-width: 640px) 90vw, (max-width: 768px) 384px, 400px"
                   placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLc0NM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                 />
               </div>
             </div>
