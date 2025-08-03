@@ -24,32 +24,40 @@ export function MultilingualTextInput(props: MultilingualTextInputProps) {
   const targetLanguages = languages.supported.filter(lang => lang !== sourceLanguage);
 
   const handleSourceChange = useCallback((inputValue: string) => {
-    // Mettre à jour la valeur source immédiatement
-    onChange(PatchEvent.from([inputValue ? set(inputValue, [sourceLanguage]) : unset([sourceLanguage])]));
+    try {
+      // Mettre à jour la valeur source immédiatement
+      onChange(PatchEvent.from([inputValue ? set(inputValue, [sourceLanguage]) : unset([sourceLanguage])]));
 
-    // Si le multilingue est activé et la traduction auto configurée
-    if (languages.isMultilingual && isConfigured && inputValue?.trim() && targetLanguages.length > 0) {
-      setHasBeenTranslated(false);
-      
-      translateWithDelay(
-        inputValue,
-        sourceLanguage,
-        targetLanguages,
-        (newTranslations) => {
-          const patches: any[] = [];
-          Object.entries(newTranslations).forEach(([lang, translatedText]) => {
-            if (lang !== sourceLanguage && translatedText) {
-              patches.push(set(translatedText as string, [lang]));
+      // Si le multilingue est activé et la traduction auto configurée
+      if (languages.isMultilingual && isConfigured && inputValue?.trim() && targetLanguages.length > 0) {
+        setHasBeenTranslated(false);
+        
+        translateWithDelay(
+          inputValue,
+          sourceLanguage,
+          targetLanguages,
+          (newTranslations) => {
+            try {
+              const patches: any[] = [];
+              Object.entries(newTranslations).forEach(([lang, translatedText]) => {
+                if (lang !== sourceLanguage && translatedText) {
+                  patches.push(set(translatedText as string, [lang]));
+                }
+              });
+
+              if (patches.length > 0) {
+                onChange(PatchEvent.from(patches));
+                setTranslations(newTranslations);
+                setHasBeenTranslated(true);
+              }
+            } catch {
+              // Erreur silencieuse pour éviter les logs en production
             }
-          });
-
-          if (patches.length > 0) {
-            onChange(PatchEvent.from(patches));
-            setTranslations(newTranslations);
-            setHasBeenTranslated(true);
           }
-        }
-      );
+        );
+      }
+    } catch {
+      // Erreur silencieuse pour éviter les logs en production
     }
   }, [onChange, translateWithDelay, languages.isMultilingual, isConfigured, targetLanguages, sourceLanguage]);
 

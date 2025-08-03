@@ -1,6 +1,6 @@
 import { useAuthNotificationsTranslations } from './useAuthNotificationsTranslations';
 
-interface AuthNotifications {
+export interface AuthNotifications {
   success: {
     signInSuccess: string;
     signUpSuccess: string;

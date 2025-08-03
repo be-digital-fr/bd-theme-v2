@@ -9,7 +9,7 @@ import {
   signInTranslations,
   signUpTranslations
 } from './singletons';
-//import homeWithAutoTranslate from './singletons/homeWithAutoTranslate';
+import homeWithAutoTranslate from './singletons/homeWithAutoTranslate';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -24,7 +24,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     signInTranslations,
     signUpTranslations,
     
-   // homeWithAutoTranslate,
+    // Page d'accueil
+    homeWithAutoTranslate,
     // Types avec traduction automatique
     autoMultilingualString,
     autoMultilingualText,

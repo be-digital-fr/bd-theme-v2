@@ -67,7 +67,6 @@ export function LanguageSelector({
             languageSelectorTexts
           }
         `);
-        console.log('settingsData', settingsData);
         
         if (settingsData) {
           setSettings(settingsData);

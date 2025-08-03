@@ -17,7 +17,7 @@ export class SanityHomeRepository implements IHomeRepository {
       welcoming: (data as any).welcoming,
       subtitle: (data as any).subtitle,
       description: (data as any).description,
-      content: (data as any).content,
+      heroBanner: (data as any).heroBanner,
     };
   }
 

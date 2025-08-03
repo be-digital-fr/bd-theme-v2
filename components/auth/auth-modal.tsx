@@ -14,8 +14,6 @@ import { ForgotPasswordForm } from './forgot-password-form';
 import { useLocale } from '@/components/providers/locale-provider';
 import { AuthSettings } from '@/hooks/useAuthSettings';
 import { useSignInTranslations } from '@/hooks/useSignInTranslations';
-import { useSignUpTranslations } from '@/hooks/useSignUpTranslations';
-import { useForgotPasswordTranslations } from '@/hooks/useForgotPasswordTranslations';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -33,7 +31,7 @@ export function AuthModal({
   defaultMode = 'signin'
 }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>(defaultMode);
-  const { resolveMultilingualValue, locale: currentLanguage } = useLocale();
+  const { resolveMultilingualValue } = useLocale();
   const { translations: signInT } = useSignInTranslations();
 
   const handleModeChange = (newMode: AuthMode) => {
@@ -77,7 +75,6 @@ export function AuthModal({
         return null;
     }
   };
-console.log("title",signInT.title);
   const getTitle = () => {
     switch (mode) {
       case 'signin':

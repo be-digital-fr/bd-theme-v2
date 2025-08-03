@@ -89,7 +89,6 @@ async function main() {
       description: {
         fr: 'Notre plateforme offre des solutions innovantes pour répondre à tous vos besoins. Explorez nos fonctionnalités et découvrez comment nous pouvons vous aider à atteindre vos objectifs.',
       },
-      content: 'Contenu supplémentaire par défaut',
     });
 
     console.log('\n✅ Initialisation terminée avec succès !');

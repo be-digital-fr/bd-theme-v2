@@ -40,11 +40,29 @@ import { sanityFetch } from "../live";
 export interface HomeDocument {
   _id: string;
   _type: "home";
-  title?: string;
+  title?: Record<string, string> | string;
   welcoming?: Record<string, string> | string; // Object si multilingualString, string si adaptiveString
   subtitle?: Record<string, string> | string;
   description?: Record<string, string> | string;
-  content?: string; // Champ standard, pas de résolution nécessaire
+  callToAction?: Record<string, string> | string;
+  heroBanner?: {
+    isActive?: boolean;
+    heroTitle?: Record<string, string> | string;
+    heroDescription?: Record<string, string> | string;
+    primaryButton?: {
+      text?: Record<string, string> | string;
+      url?: string;
+    };
+    secondaryButton?: {
+      text?: Record<string, string> | string;
+      url?: string;
+    };
+    heroImage?: {
+      desktop?: string;
+      mobile?: string;
+      alt?: Record<string, string> | string;
+    };
+  };
 }
 
 // Interface pour les données home résolues selon la langue
@@ -54,7 +72,25 @@ export interface ResolvedHomeData {
   welcoming?: string;      // Toujours string après résolution
   subtitle?: string;
   description?: string;
-  content?: string;
+  callToAction?: string;
+  heroBanner?: {
+    isActive?: boolean;
+    heroTitle?: string;
+    heroDescription?: string;
+    primaryButton?: {
+      text?: string;
+      url?: string;
+    };
+    secondaryButton?: {
+      text?: string;
+      url?: string;
+    };
+    heroImage?: {
+      desktop?: string;
+      mobile?: string;
+      alt?: string;
+    };
+  };
   originalData: HomeDocument; // Données brutes pour référence et débogage
 }
 
@@ -77,15 +113,26 @@ export const getHome = async (): Promise<HomeDocument[]> => {
     welcoming,
     subtitle,
     description,
-    content
+    callToAction,
+    heroBanner {
+      isActive,
+      heroTitle,
+      heroDescription,
+      primaryButton {
+        text,
+        url
+      },
+      secondaryButton {
+        text,
+        url
+      },
+      heroImage {
+        desktop,
+        mobile,
+        alt
+      }
+    }
   }`);
-  
-  // Log pour débogage - visible dans les logs serveur
-  console.log('====================================');
-  console.log('getHome() result:', result);
-  console.log('Number of documents found:', result?.length || 0);
-  console.log('====================================');
-  
   return result || [];
 };
 
@@ -158,7 +205,25 @@ export const getResolvedHome = async (
     welcoming: resolveMultilingualValue(doc.welcoming, preferredLanguage),
     subtitle: resolveMultilingualValue(doc.subtitle, preferredLanguage),
     description: resolveMultilingualValue(doc.description, preferredLanguage),
-    content: doc.content, // Champ standard, pas de résolution nécessaire
+    callToAction: resolveMultilingualValue(doc.callToAction, preferredLanguage),
+    heroBanner: doc.heroBanner ? {
+      isActive: doc.heroBanner.isActive,
+      heroTitle: resolveMultilingualValue(doc.heroBanner.heroTitle, preferredLanguage),
+      heroDescription: resolveMultilingualValue(doc.heroBanner.heroDescription, preferredLanguage),
+      primaryButton: doc.heroBanner.primaryButton ? {
+        text: resolveMultilingualValue(doc.heroBanner.primaryButton.text, preferredLanguage),
+        url: doc.heroBanner.primaryButton.url
+      } : undefined,
+      secondaryButton: doc.heroBanner.secondaryButton ? {
+        text: resolveMultilingualValue(doc.heroBanner.secondaryButton.text, preferredLanguage),
+        url: doc.heroBanner.secondaryButton.url
+      } : undefined,
+      heroImage: doc.heroBanner.heroImage ? {
+        desktop: doc.heroBanner.heroImage.desktop,
+        mobile: doc.heroBanner.heroImage.mobile,
+        alt: resolveMultilingualValue(doc.heroBanner.heroImage.alt, preferredLanguage)
+      } : undefined
+    } : undefined,
     originalData: doc, // Garder les données originales pour débogage
   }));
 };
@@ -181,12 +246,5 @@ export const getFirstResolvedHome = async (
   preferredLanguage: string = 'fr'
 ): Promise<ResolvedHomeData | null> => {
   const resolvedHomes = await getResolvedHome(preferredLanguage);
-  
-  // Log pour débogage
-  console.log(`getFirstResolvedHome(${preferredLanguage}):`, {
-    found: resolvedHomes.length,
-    firstDoc: resolvedHomes[0] || null
-  });
-  
   return resolvedHomes.length > 0 ? resolvedHomes[0] : null;
 };

@@ -8,6 +8,32 @@ export const structureWithTranslation = (
   S.list()
     .title('Content')
     .items([
+      // SECTION PAGES
+      S.listItem()
+        .title('📄 Pages')
+        .icon(HomeIcon)
+        .child(
+          S.list()
+            .title('Pages du site')
+            .items([
+              S.listItem()
+                .title('🏠 Page d\'accueil')
+                .icon(HomeIcon)
+                .child(
+                  S.editor()
+                    .id('home')
+                    .schemaType('home')
+                    .documentId('home')
+                    .title('Page d\'accueil')
+                ),
+              // Futures pages peuvent être ajoutées ici
+              // S.listItem().title('À propos')...
+              // S.listItem().title('Contact')...
+            ])
+        ),
+
+      S.divider(),
+
       // DOCUMENTS SINGLETON (Un seul document de chaque type)
       S.listItem()
         .title('⚙️ Paramètres du site')
@@ -29,17 +55,6 @@ export const structureWithTranslation = (
             .schemaType('authSettings')
             .documentId('auth-settings')
             .title('Paramètres d\'authentification')
-        ),
-
-      S.listItem()
-        .title('🏠 Page d\'accueil')
-        .icon(HomeIcon)
-        .child(
-          S.editor()
-            .id('home')
-            .schemaType('home')
-            .documentId('home')
-            .title('Page d\'accueil')
         ),
 
       S.divider(),
@@ -110,7 +125,6 @@ export const structureWithTranslation = (
             'settings',
             'authSettings',
             'home',
-            'homeWithAutoTranslate',
             'authNotificationsTranslations',
             'forgotPasswordTranslations',
             'resetPasswordTranslations',

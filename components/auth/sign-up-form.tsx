@@ -214,7 +214,7 @@ export function SignUpForm({
                 disabled={isLoading}
                 onError={(errorMessage) => {
                   // This is handled by social auth independently
-                  console.error('Social auth error:', errorMessage);
+                  // Error already handled by social auth component
                 }}
               />
             )}

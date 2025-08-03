@@ -217,7 +217,6 @@ export async function initializeSingletons(): Promise<void> {
     description: {
       fr: 'Notre plateforme offre des solutions innovantes pour répondre à tous vos besoins. Explorez nos fonctionnalités et découvrez comment nous pouvons vous aider à atteindre vos objectifs.',
     },
-    content: 'Contenu supplémentaire par défaut',
   });
 
   // Auth settings document

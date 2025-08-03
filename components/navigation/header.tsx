@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Search, ShoppingCart, AlignRight, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Container } from '@/components/ui/container';
 import { DesktopNavigation } from './desktop-navigation';
 import { MobileNavigation } from './mobile-navigation';
 import { MenuItem } from '@/hooks/useHeaderData';
@@ -53,7 +54,7 @@ export function Header({ className }: HeaderProps) {
           className
         )}
       >
-        <div className="container mx-auto px-4">
+        <Container size="xl">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo Skeleton */}
             <Skeleton className="h-8 w-32 lg:h-10 lg:w-40" />
@@ -93,7 +94,7 @@ export function Header({ className }: HeaderProps) {
               <Skeleton className="lg:hidden h-10 w-10 rounded-full" />
             </div>
           </div>
-        </div>
+        </Container>
       </header>
     );
   }
@@ -110,7 +111,7 @@ export function Header({ className }: HeaderProps) {
         className
       )}
     >
-      <div className="container mx-auto px-4">
+      <Container size="xl">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Logo 
@@ -251,7 +252,7 @@ export function Header({ className }: HeaderProps) {
             </Sheet>
           </div>
         </div>
-      </div>
+      </Container>
     </header>
   );
 }

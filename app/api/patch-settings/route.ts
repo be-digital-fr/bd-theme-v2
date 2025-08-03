@@ -11,7 +11,6 @@ const client = createClient({
 
 export async function POST() {
   try {
-    console.log('🔍 Fetching existing settings document...');
 
     // Récupérer le document settings existant
     const existing = await client.fetch('*[_type == "settings"][0]');
@@ -23,15 +22,12 @@ export async function POST() {
       );
     }
 
-    console.log('📄 Document found:', existing._id);
-    console.log('📊 Existing fields:', Object.keys(existing));
 
     // Données à ajouter
     const patchData: Record<string, unknown> = {};
 
     // Ajouter headerSettings s'il n'existe pas
     if (!existing.headerSettings) {
-      console.log('➕ Adding headerSettings...');
       patchData.headerSettings = {
         logoType: 'text',
         logoText: 'BD Theme',
@@ -46,7 +42,6 @@ export async function POST() {
 
     // Ajouter navigationSettings s'il n'existe pas
     if (!existing.navigationSettings) {
-      console.log('➕ Adding navigationSettings...');
       patchData.navigationSettings = {
         menuItems: [
           {
@@ -145,7 +140,6 @@ export async function POST() {
 
     // Si des champs doivent être ajoutés
     if (Object.keys(patchData).length > 0) {
-      console.log('🔧 Applying patch...');
 
       // Utiliser patch pour mettre à jour le document
       await client
@@ -153,7 +147,6 @@ export async function POST() {
         .setIfMissing(patchData)
         .commit();
 
-      console.log('✅ Document patched successfully!');
 
       // Vérifier le résultat
       const updated = await client.fetch(`
