@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
+import { MediaSkeleton } from '@/components/ui/media-skeleton';
+import { TextSkeleton } from '@/components/ui/text-skeleton';
 import { useLocale } from '@/components/providers/locale-provider';
 import { cn } from '@/lib/utils';
 import { HeaderSettings } from '@/hooks/useHeaderData';
@@ -62,8 +64,29 @@ export function Logo({
   // Afficher skeleton pendant le chargement (utiliser isHeaderLoading si fourni)
   if ((isHeaderLoading || false) && showSkeleton) {
     return (
-      <div className={cn("flex items-center", className)}>
-        <Skeleton className={sizeClasses[size].skeleton} />
+      <div className={cn("flex items-center space-x-2", className)} role="status" aria-label="Chargement du logo">
+        {/* Show different skeleton based on whether we expect an image or text logo */}
+        {logoImage ? (
+          <MediaSkeleton
+            aspectRatio="square"
+            width="auto"
+            height={size === 'sm' ? '32' : size === 'lg' ? '48' : '32'}
+            variant="gradient"
+            showIcon={false}
+            icon="none"
+            rounded="md"
+          />
+        ) : (
+          <TextSkeleton
+            lines={[{ 
+              height: size === 'sm' ? 'lg' : size === 'lg' ? 'xl' : 'lg', 
+              width: size === 'sm' ? '1/4' : size === 'lg' ? '1/3' : '1/4' 
+            }]}
+            variant="gradient"
+            spacing="normal"
+          />
+        )}
+        <span className="sr-only">Chargement du logo en cours...</span>
       </div>
     );
   }

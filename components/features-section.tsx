@@ -213,12 +213,14 @@ function FeaturesSectionSkeleton({ className }: FeaturesSectionSkeletonProps) {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {Array.from({ length: 5 }).map((_, index) => (
             <div key={index} className="flex flex-col items-center text-center p-4">
-              {/* Icon Skeleton */}
-              <div className="mb-3">
-                <div className="w-16 h-16 rounded-xl bg-muted animate-pulse" />
+              {/* Icon Skeleton with gradient */}
+              <div className="mb-3 relative">
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 animate-pulse shadow-md">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse rounded-xl" />
+                </div>
               </div>
-              {/* Title Skeleton */}
-              <div className="h-4 w-20 bg-muted rounded animate-pulse" />
+              {/* Title Skeleton with gradient */}
+              <div className="h-4 w-20 bg-gradient-to-r from-muted via-muted/80 to-muted/60 rounded animate-pulse" />
             </div>
           ))}
         </div>

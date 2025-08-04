@@ -4,6 +4,9 @@ import * as React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MediaSkeleton } from "@/components/ui/media-skeleton";
+import { TextSkeleton } from "@/components/ui/text-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface FoodBannerProps {
@@ -17,6 +20,7 @@ interface FoodBannerProps {
   imageAlt?: string;
   className?: string;
   showDecorations?: boolean;
+  isLoading?: boolean;
 }
 
 // Decorative SVG components
@@ -77,8 +81,13 @@ export function FoodBanner({
   imageAlt = "Burger appétissant",
   className,
   showDecorations = true,
+  isLoading = false,
   ...props
 }: FoodBannerProps) {
+  // Show skeleton while loading
+  if (isLoading) {
+    return <FoodBannerSkeleton className={className} showDecorations={showDecorations} />;
+  }
   return (
     <Card
       className={cn(
@@ -168,6 +177,127 @@ export function FoodBanner({
           <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-yellow-400 rounded-full blur-2xl"></div>
         </div>
       </div>
+    </Card>
+  );
+}
+
+/**
+ * FoodBanner Skeleton Component
+ * 
+ * Loading skeleton that matches the FoodBanner layout structure.
+ * Uses the new skeleton system with MediaSkeleton and TextSkeleton.
+ */
+interface FoodBannerSkeletonProps {
+  className?: string;
+  showDecorations?: boolean;
+}
+
+function FoodBannerSkeleton({ className, showDecorations = true }: FoodBannerSkeletonProps) {
+  return (
+    <Card
+      className={cn(
+        "relative overflow-hidden border-0 bg-gradient-to-br from-orange-50/50 via-red-50/50 to-yellow-50/50 dark:from-orange-950/10 dark:via-red-950/10 dark:to-yellow-950/10",
+        "rounded-3xl p-6 lg:p-12",
+        className
+      )}
+      role="status"
+      aria-label="Chargement de la bannière alimentaire"
+    >
+      {/* Decorative skeleton elements */}
+      {showDecorations && (
+        <>
+          <Skeleton variant="gradient" className="absolute top-8 left-12 w-8 h-8 rounded-full opacity-40" />
+          <Skeleton variant="gradient" className="absolute top-6 right-16 w-10 h-10 rounded-full opacity-30" />
+          <Skeleton variant="gradient" className="absolute bottom-12 left-8 w-6 h-8 rounded opacity-35" />
+          <Skeleton variant="shimmer" className="absolute top-20 left-1/4 w-3 h-3 rounded-full opacity-50" />
+          <Skeleton variant="shimmer" className="absolute top-24 right-1/3 w-3 h-3 rounded-full opacity-50" />
+          <Skeleton variant="shimmer" className="absolute bottom-20 right-12 w-3 h-3 rounded-full opacity-50" />
+        </>
+      )}
+
+      <div className="relative z-10 grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
+        {/* Content Section Skeleton */}
+        <div className="space-y-6 lg:space-y-8 order-2 lg:order-1">
+          <div className="space-y-4">
+            {/* Title skeleton */}
+            <TextSkeleton
+              lines={[
+                { height: "xl", width: "full" },
+                { height: "xl", width: "3/4" }
+              ]}
+              variant="gradient"
+              spacing="tight"
+            />
+            
+            {/* Description skeleton */}
+            <TextSkeleton
+              lines={[
+                { height: "lg", width: "full" },
+                { height: "lg", width: "full" },
+                { height: "lg", width: "2/3" }
+              ]}
+              variant="default"
+              spacing="normal"
+              className="max-w-lg"
+            />
+          </div>
+
+          {/* Buttons skeleton */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            <Skeleton
+              variant="gradient"
+              className="h-12 w-48 rounded-lg shadow-lg"
+            />
+            <Skeleton
+              variant="shimmer"
+              className="h-12 w-40 rounded-lg border-2"
+            />
+          </div>
+        </div>
+
+        {/* Image Section Skeleton */}
+        <div className="relative order-1 lg:order-2">
+          <div className="relative w-full h-64 lg:h-96">
+            <MediaSkeleton
+              aspectRatio="photo"
+              variant="gradient"
+              showIcon={true}
+              icon="image"
+              rounded="xl"
+              width="full"
+              height="auto"
+              className="shadow-2xl"
+            />
+            
+            {/* Image decorations skeleton */}
+            {showDecorations && (
+              <div className="absolute inset-0 pointer-events-none">
+                <Skeleton variant="shimmer" className="absolute top-4 right-4 w-6 h-6 rounded-full opacity-60" />
+                <Skeleton variant="gradient" className="absolute bottom-8 left-4 w-8 h-10 rounded opacity-50" />
+              </div>
+            )}
+          </div>
+
+          {/* Floating decoration skeleton */}
+          {showDecorations && (
+            <Skeleton 
+              variant="shimmer" 
+              className="absolute -top-4 -right-4 w-20 h-20 rounded-full opacity-20"
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Background pattern skeleton */}
+      <div className="absolute inset-0 opacity-3">
+        <div className="absolute top-0 left-0 w-full h-full">
+          <Skeleton variant="gradient" className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full blur-3xl opacity-20" />
+          <Skeleton variant="gradient" className="absolute bottom-1/4 right-1/4 w-40 h-40 rounded-full blur-3xl opacity-15" />
+          <Skeleton variant="gradient" className="absolute top-1/2 left-1/2 w-24 h-24 rounded-full blur-2xl opacity-25" />
+        </div>
+      </div>
+
+      <span className="sr-only">Chargement de la bannière alimentaire en cours...</span>
     </Card>
   );
 }
