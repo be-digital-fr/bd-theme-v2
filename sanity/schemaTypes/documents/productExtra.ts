@@ -96,11 +96,103 @@ export default defineType({
       description: 'Default additional price for this extra',
     }),
     defineField({
-      name: 'maxQuantity',
-      title: 'Maximum Quantity',
+      name: 'priceInModifierContext',
+      title: 'Price as Modifier',
       type: 'number',
-      validation: (Rule) => Rule.min(1).integer(),
-      description: 'Maximum quantity that can be added per product (leave empty for unlimited)',
+      validation: (Rule) => Rule.min(0).precision(2),
+      description: 'Price when used as modifier/add-on (can differ from base price)',
+    }),
+    defineField({
+      name: 'priceOverrides',
+      title: 'Price Overrides',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'context',
+              title: 'Context',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Pickup', value: 'pickup' },
+                  { title: 'Delivery', value: 'delivery' },
+                  { title: 'Dine In', value: 'dine-in' },
+                  { title: 'As Side Item', value: 'side' },
+                  { title: 'In Bundle', value: 'bundle' },
+                ],
+              },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'price',
+              title: 'Override Price',
+              type: 'number',
+              validation: (Rule) => Rule.required().min(0).precision(2),
+            }),
+          ],
+          preview: {
+            select: {
+              context: 'context',
+              price: 'price',
+            },
+            prepare(selection) {
+              const { context, price } = selection
+              const contextLabels: { [key: string]: string } = {
+                'pickup': '🚶 Pickup',
+                'delivery': '🚚 Delivery',
+                'dine-in': '🍽️ Dine In',
+                'side': '🍟 Side',
+                'bundle': '📦 Bundle',
+              }
+              
+              return {
+                title: `${contextLabels[context] || context}: €${price?.toFixed(2) || '0.00'}`,
+              }
+            },
+          },
+        },
+      ],
+      description: 'Different prices for different contexts',
+      options: {
+        collapsible: true,
+        collapsed: true,
+      },
+    }),
+    defineField({
+      name: 'quantityConstraints',
+      title: 'Quantity Constraints',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'minQuantity',
+          title: 'Minimum Quantity',
+          type: 'number',
+          initialValue: 0,
+          validation: (Rule) => Rule.min(0).integer(),
+          description: 'Minimum quantity required when selected',
+        }),
+        defineField({
+          name: 'maxQuantity',
+          title: 'Maximum Quantity',
+          type: 'number',
+          validation: (Rule) => Rule.min(1).integer(),
+          description: 'Maximum quantity allowed per selection',
+        }),
+        defineField({
+          name: 'defaultQuantity',
+          title: 'Default Quantity',
+          type: 'number',
+          initialValue: 1,
+          validation: (Rule) => Rule.min(1).integer(),
+          description: 'Default quantity when first selected',
+        }),
+      ],
+      options: {
+        collapsible: true,
+        collapsed: true,
+      },
     }),
     defineField({
       name: 'isAvailable',

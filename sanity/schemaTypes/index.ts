@@ -16,6 +16,8 @@ import product from './documents/product';
 import category from './documents/category';
 import ingredient from './documents/ingredient';
 import productExtra from './documents/productExtra';
+import modifierGroup from './documents/modifierGroup';
+import bundle from './documents/bundle';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -38,6 +40,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     category,
     ingredient,
     productExtra,
+    modifierGroup,
+    bundle,
     
     // Types avec traduction automatique
     autoMultilingualString,
