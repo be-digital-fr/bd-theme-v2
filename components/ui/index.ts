@@ -36,7 +36,10 @@ export {
 
 // Existing UI Components
 export { Button, buttonVariants } from './button';
+export { Badge, badgeVariants } from './badge';
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card';
+export { ProductCard, type ProductCardProps } from './product-card';
+export { FavoritesSection, type FavoritesSectionProps } from './favorites-section';
 export { Container } from './container';
 export { Separator } from './separator';
 export { Logo } from './logo';
