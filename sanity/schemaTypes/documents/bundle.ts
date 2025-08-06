@@ -6,11 +6,43 @@ export default defineType({
   title: 'Bundle/Combo',
   type: 'document',
   icon: Package,
+  groups: [
+    {
+      name: 'basic',
+      title: '🏷️ Basic Information',
+      default: true,
+    },
+    {
+      name: 'items',
+      title: '🛒 Bundle Items',
+    },
+    {
+      name: 'pricing',
+      title: '💰 Pricing & Savings',
+    },
+    {
+      name: 'availability',
+      title: '⏰ Availability',
+    },
+    {
+      name: 'promotion',
+      title: '⭐ Promotions',
+    },
+    {
+      name: 'integration',
+      title: '🔄 External Platforms',
+    },
+    {
+      name: 'metadata',
+      title: '📅 Metadata',
+    },
+  ],
   fields: [
     defineField({
       name: 'name',
       title: 'Bundle Name',
       type: 'autoMultilingualString',
+      group: 'basic',
       validation: (Rule) => Rule.required(),
       description: 'Name of the bundle/combo (e.g., "Big Mac Menu", "Pizza + Drink Combo")',
     }),
@@ -18,6 +50,7 @@ export default defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
+      group: 'basic',
       options: {
         source: 'name',
         maxLength: 96,
@@ -50,14 +83,16 @@ export default defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: '📝 Description',
       type: 'autoMultilingualText',
+      group: 'basic',
       description: 'Description of what the bundle includes and any special offers',
     }),
     defineField({
       name: 'image',
-      title: 'Bundle Image',
+      title: '🖼️ Bundle Image',
       type: 'image',
+      group: 'basic',
       options: {
         hotspot: true,
       },
@@ -71,8 +106,9 @@ export default defineType({
     }),
     defineField({
       name: 'bundledItems',
-      title: 'Bundled Items',
+      title: '📦 Bundled Items',
       type: 'array',
+      group: 'items',
       of: [
         {
           type: 'object',
@@ -152,8 +188,9 @@ export default defineType({
     }),
     defineField({
       name: 'pricing',
-      title: 'Bundle Pricing',
+      title: '💵 Bundle Pricing',
       type: 'object',
+      group: 'pricing',
       fields: [
         defineField({
           name: 'bundlePrice',
@@ -203,15 +240,17 @@ export default defineType({
     }),
     defineField({
       name: 'category',
-      title: 'Category',
+      title: '📋 Category',
       type: 'reference',
+      group: 'basic',
       to: [{ type: 'category' }],
       description: 'Category this bundle belongs to',
     }),
     defineField({
       name: 'availability',
-      title: 'Availability',
+      title: '🕒 Availability Settings',
       type: 'object',
+      group: 'availability',
       fields: [
         defineField({
           name: 'isAvailable',
@@ -294,8 +333,9 @@ export default defineType({
     }),
     defineField({
       name: 'promotions',
-      title: 'Promotions',
+      title: '🏅 Promotions & Marketing',
       type: 'object',
+      group: 'promotion',
       fields: [
         defineField({
           name: 'isFeatured',
@@ -351,8 +391,9 @@ export default defineType({
     // Integration fields for external platforms
     defineField({
       name: 'externalIds',
-      title: 'External Platform IDs',
+      title: '🆔 External Platform IDs',
       type: 'object',
+      group: 'integration',
       fields: [
         defineField({
           name: 'uberEatsId',
@@ -372,15 +413,18 @@ export default defineType({
     }),
     defineField({
       name: 'displayOrder',
-      title: 'Display Order',
+      title: '🔢 Display Order',
       type: 'number',
+      group: 'basic',
       initialValue: 0,
       validation: (Rule) => Rule.integer(),
+      description: 'Order in which this bundle appears (lower numbers appear first)',
     }),
     defineField({
       name: 'createdAt',
       title: 'Created At',
       type: 'datetime',
+      group: 'metadata',
       initialValue: () => new Date().toISOString(),
       readOnly: true,
     }),
@@ -388,6 +432,7 @@ export default defineType({
       name: 'updatedAt',
       title: 'Updated At',
       type: 'datetime',
+      group: 'metadata',
       initialValue: () => new Date().toISOString(),
       readOnly: true,
     }),

@@ -9,27 +9,40 @@ export default defineType({
   groups: [
     {
       name: 'basic',
-      title: 'Basic Information',
+      title: '🏷️ Basic Information',
+      default: true,
     },
     {
-      name: 'details',
-      title: 'Details',
+      name: 'content',
+      title: '📝 Content & Description',
+    },
+    {
+      name: 'customization',
+      title: '🔧 Customization & Options',
     },
     {
       name: 'pricing',
-      title: 'Pricing & Availability',
+      title: '💰 Pricing & Stock',
+    },
+    {
+      name: 'availability',
+      title: '⏰ Availability & Schedule',
     },
     {
       name: 'promotion',
-      title: 'Promotion & Popularity',
+      title: '⭐ Promotion & Marketing',
+    },
+    {
+      name: 'identification',
+      title: '🔢 Codes & Identifiers',
     },
     {
       name: 'integrations',
-      title: 'External Integrations',
+      title: '🔄 External Platforms',
     },
     {
       name: 'seo',
-      title: 'SEO',
+      title: '🌐 SEO & Metadata',
     },
   ],
   fields: [
@@ -112,33 +125,35 @@ export default defineType({
       name: 'shortDescription',
       title: 'Short Description',
       type: 'autoMultilingualText',
-      group: 'details',
+      group: 'content',
       validation: (Rule) => Rule.required().max(200),
+      description: 'Brief description visible in product cards (max 200 characters)',
     }),
     defineField({
       name: 'longDescription',
       title: 'Long Description',
       type: 'autoMultilingualText',
-      group: 'details',
+      group: 'content',
+      description: 'Detailed product description for the product page',
     }),
     defineField({
       name: 'ingredients',
-      title: 'Ingredients',
+      title: '🥗 Ingredients',
       type: 'array',
-      group: 'details',
+      group: 'customization',
       of: [
         {
           type: 'reference',
           to: [{ type: 'ingredient' }],
         },
       ],
-      description: 'List of ingredients that can be customized by the customer',
+      description: 'List of ingredients that customers can customize or remove',
     }),
     defineField({
       name: 'modifierGroups',
-      title: 'Modifier Groups',
+      title: '➕ Modifier Groups',
       type: 'array',
-      group: 'details',
+      group: 'customization',
       of: [
         {
           type: 'object',
@@ -209,18 +224,18 @@ export default defineType({
     }),
     defineField({
       name: 'preparationTime',
-      title: 'Preparation Time (minutes)',
+      title: '⏱️ Preparation Time',
       type: 'number',
-      group: 'details',
+      group: 'availability',
       validation: (Rule) => Rule.required().min(1).integer(),
       description: 'Estimated preparation time in minutes',
     }),
     // Product identification codes for POS and external platforms
     defineField({
       name: 'plu',
-      title: 'PLU (Product Lookup Unit)',
+      title: 'PLU Code',
       type: 'string',
-      group: 'details',
+      group: 'identification',
       description: 'Internal product lookup code for POS systems',
     }),
     defineField({
@@ -228,17 +243,17 @@ export default defineType({
       title: 'Barcodes',
       type: 'array',
       of: [{ type: 'string' }],
-      group: 'details',
+      group: 'identification',
       validation: (Rule) => Rule.max(10),
-      description: 'Product barcodes (max 10)',
+      description: 'Product barcodes (EAN, UPC, etc.) - max 10',
     }),
     defineField({
       name: 'containsAlcohol',
-      title: 'Contains Alcohol',
+      title: '🍺 Contains Alcohol',
       type: 'boolean',
-      group: 'details',
+      group: 'content',
       initialValue: false,
-      description: 'Whether this product contains alcohol',
+      description: 'Mark if this product contains alcohol (affects delivery options)',
     }),
 
     // Pricing & Availability
@@ -329,24 +344,25 @@ export default defineType({
     }),
     defineField({
       name: 'isAvailable',
-      title: 'Available',
+      title: '✅ Available',
       type: 'boolean',
-      group: 'pricing',
+      group: 'availability',
       initialValue: true,
+      description: 'Toggle product availability on/off',
     }),
     defineField({
       name: 'stockQuantity',
-      title: 'Stock Quantity',
+      title: '📦 Stock Quantity',
       type: 'number',
       group: 'pricing',
-      description: 'Leave empty for unlimited stock',
+      description: 'Current stock level (leave empty for unlimited)',
       validation: (Rule) => Rule.min(0).integer(),
     }),
     defineField({
       name: 'suspensionInfo',
-      title: 'Suspension Information',
+      title: '🚫 Temporary Suspension',
       type: 'object',
-      group: 'pricing',
+      group: 'availability',
       fields: [
         defineField({
           name: 'isSuspended',
@@ -385,9 +401,9 @@ export default defineType({
     }),
     defineField({
       name: 'availabilitySchedule',
-      title: 'Availability Schedule',
+      title: '📅 Availability Schedule',
       type: 'array',
-      group: 'pricing',
+      group: 'availability',
       of: [
         {
           type: 'object',
@@ -468,10 +484,6 @@ export default defineType({
         },
       ],
       description: 'Specific hours when this product is available for ordering',
-      options: {
-        collapsible: true,
-        collapsed: true,
-      },
     }),
 
     // Promotion & Popularity

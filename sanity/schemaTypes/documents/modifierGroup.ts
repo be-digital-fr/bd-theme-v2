@@ -6,11 +6,35 @@ export default defineType({
   title: 'Modifier Group',
   type: 'document',
   icon: Settings,
+  groups: [
+    {
+      name: 'basic',
+      title: '🏷️ Basic Information',
+      default: true,
+    },
+    {
+      name: 'rules',
+      title: '📋 Selection Rules',
+    },
+    {
+      name: 'items',
+      title: '🔧 Modifier Items',
+    },
+    {
+      name: 'integration',
+      title: '🔄 External Integration',
+    },
+    {
+      name: 'metadata',
+      title: '📅 Metadata',
+    },
+  ],
   fields: [
     defineField({
       name: 'name',
-      title: 'Name',
+      title: 'Group Name',
       type: 'autoMultilingualString',
+      group: 'basic',
       validation: (Rule) => Rule.required(),
       description: 'Name of the modifier group (e.g., "Size", "Add Ingredients", "Cooking Instructions")',
     }),
@@ -18,6 +42,7 @@ export default defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
+      group: 'basic',
       options: {
         source: 'name',
         maxLength: 96,
@@ -52,6 +77,7 @@ export default defineType({
       name: 'type',
       title: 'Modifier Type',
       type: 'string',
+      group: 'basic',
       options: {
         list: [
           { title: 'Add Ingredient', value: 'add-ingredient' },
@@ -68,16 +94,18 @@ export default defineType({
     }),
     defineField({
       name: 'displayOrder',
-      title: 'Display Order',
+      title: '🔢 Display Order',
       type: 'number',
+      group: 'basic',
       initialValue: 0,
       validation: (Rule) => Rule.integer(),
-      description: 'Order in which this group appears in the product customization',
+      description: 'Order in which this group appears in the product customization (lower numbers appear first)',
     }),
     defineField({
       name: 'selectionRules',
-      title: 'Selection Rules',
+      title: '📋 Selection Rules',
       type: 'object',
+      group: 'rules',
       fields: [
         defineField({
           name: 'minSelection',
@@ -105,8 +133,9 @@ export default defineType({
     }),
     defineField({
       name: 'modifierItems',
-      title: 'Modifier Options',
+      title: '🍴 Modifier Options',
       type: 'array',
+      group: 'items',
       of: [
         {
           type: 'object',
@@ -159,22 +188,25 @@ export default defineType({
     }),
     defineField({
       name: 'isActive',
-      title: 'Active',
+      title: '✅ Active',
       type: 'boolean',
+      group: 'basic',
       initialValue: true,
       description: 'Whether this modifier group is available for selection',
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: '📝 Description',
       type: 'autoMultilingualText',
+      group: 'basic',
       description: 'Optional description to help customers understand this modifier group',
     }),
     // Integration fields for external platforms
     defineField({
       name: 'externalIds',
-      title: 'External Platform IDs',
+      title: '🆔 External Platform IDs',
       type: 'object',
+      group: 'integration',
       fields: [
         defineField({
           name: 'uberEatsId',
@@ -196,6 +228,7 @@ export default defineType({
       name: 'createdAt',
       title: 'Created At',
       type: 'datetime',
+      group: 'metadata',
       initialValue: () => new Date().toISOString(),
       readOnly: true,
     }),
@@ -203,6 +236,7 @@ export default defineType({
       name: 'updatedAt',
       title: 'Updated At',
       type: 'datetime',
+      group: 'metadata',
       initialValue: () => new Date().toISOString(),
       readOnly: true,
     }),

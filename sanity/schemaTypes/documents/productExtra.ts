@@ -155,10 +155,6 @@ export default defineType({
         },
       ],
       description: 'Different prices for different contexts',
-      options: {
-        collapsible: true,
-        collapsed: true,
-      },
     }),
     defineField({
       name: 'quantityConstraints',
