@@ -203,12 +203,12 @@ export function Header({ className }: HeaderProps) {
                   <MobileNavigation 
                     menuItems={menuItems}
                     onItemClick={() => setIsMobileMenuOpen(false)}
+                    showLanguageSelector={settings?.isMultilingual ?? false}
                   />
                 </div>
                 
-                {/* Bottom Section with Icons and Language Selector */}
+                {/* Bottom Section with Icons */}
                 <div className="border-t border-border pt-4 mt-auto">
-                  {/* Header Icons and Language Selector - Only icons */}
                   <div className="flex justify-center items-center gap-4">
                     {(headerSettings?.showSearchIcon ?? true) && (
                       <Button
@@ -241,11 +241,6 @@ export function Header({ className }: HeaderProps) {
                     
                     {/* User/Auth Icon - Mobile */}
                     <UserMenu />
-                    
-                    {/* Language Selector - Flag only version */}
-                    {settings?.isMultilingual && (
-                      <LanguageSelector showFlag={true} showNativeName={false} />
-                    )}
                   </div>
                 </div>
               </SheetContent>

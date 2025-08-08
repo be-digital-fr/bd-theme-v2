@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLocale } from '@/components/providers/locale-provider';
 import { cn } from '@/lib/utils';
+import { Languages } from 'lucide-react';
+import { LanguageSelector } from '@/components/language-selector';
 
 import { MenuItem } from '@/hooks/useHeaderData';
 
@@ -11,12 +13,14 @@ interface MobileNavigationProps {
   menuItems: MenuItem[];
   onItemClick?: () => void;
   className?: string;
+  showLanguageSelector?: boolean;
 }
 
 export function MobileNavigation({ 
   menuItems, 
   onItemClick, 
-  className
+  className,
+  showLanguageSelector = true
 }: MobileNavigationProps) {
   const pathname = usePathname();
   const { resolveMultilingualValue } = useLocale();
@@ -54,6 +58,26 @@ export function MobileNavigation({
           </LinkComponent>
         );
       })}
+
+      {/* Language Selector as a menu item */}
+      {showLanguageSelector && (
+        <div className="px-4 py-3">
+          <div className="flex items-center gap-3 mb-3">
+            <Languages className="h-5 w-5 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">
+              Langue / Language
+            </span>
+          </div>
+          <div className="pl-8">
+            <LanguageSelector 
+              variant="select" 
+              className="w-full" 
+              showFlag={true}
+              showNativeName={true}
+            />
+          </div>
+        </div>
+      )}
 
     </nav>
   );
