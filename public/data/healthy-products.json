@@ -1,0 +1,994 @@
+{
+  "categories": [
+    {
+      "_id": "cat-1",
+      "_type": "category",
+      "name": {
+        "fr": "Salades & Bowls",
+        "en": "Salads & Bowls"
+      },
+      "slug": "salades-bowls",
+      "description": {
+        "fr": "Salades fraîches et bowls nutritifs",
+        "en": "Fresh salads and nutritious bowls"
+      },
+      "displayOrder": 1,
+      "isActive": true
+    },
+    {
+      "_id": "cat-2",
+      "_type": "category",
+      "name": {
+        "fr": "Smoothies & Jus",
+        "en": "Smoothies & Juices"
+      },
+      "slug": "smoothies-jus",
+      "description": {
+        "fr": "Boissons fraîches pressées à froid",
+        "en": "Fresh cold-pressed beverages"
+      },
+      "displayOrder": 2,
+      "isActive": true
+    },
+    {
+      "_id": "cat-3",
+      "_type": "category",
+      "name": {
+        "fr": "Wraps & Sandwichs",
+        "en": "Wraps & Sandwiches"
+      },
+      "slug": "wraps-sandwichs",
+      "description": {
+        "fr": "Wraps et sandwichs équilibrés",
+        "en": "Balanced wraps and sandwiches"
+      },
+      "displayOrder": 3,
+      "isActive": true
+    },
+    {
+      "_id": "cat-4",
+      "_type": "category",
+      "name": {
+        "fr": "Desserts Sains",
+        "en": "Healthy Desserts"
+      },
+      "slug": "desserts-sains",
+      "description": {
+        "fr": "Douceurs sans culpabilité",
+        "en": "Guilt-free treats"
+      },
+      "displayOrder": 4,
+      "isActive": true
+    },
+    {
+      "_id": "cat-5",
+      "_type": "category",
+      "name": {
+        "fr": "Petits-déjeuners",
+        "en": "Breakfast"
+      },
+      "slug": "petits-dejeuners",
+      "description": {
+        "fr": "Options énergisantes pour bien commencer la journée",
+        "en": "Energizing options to start your day"
+      },
+      "displayOrder": 5,
+      "isActive": true
+    }
+  ],
+  "ingredients": [
+    {
+      "_id": "ing-1",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Quinoa",
+        "en": "Quinoa"
+      },
+      "slug": "quinoa",
+      "category": "grain",
+      "isAllergen": false,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-2",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Avocat",
+        "en": "Avocado"
+      },
+      "slug": "avocat",
+      "category": "vegetable",
+      "isAllergen": false,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-3",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Épinards",
+        "en": "Spinach"
+      },
+      "slug": "epinards",
+      "category": "vegetable",
+      "isAllergen": false,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-4",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Poulet grillé",
+        "en": "Grilled Chicken"
+      },
+      "slug": "poulet-grille",
+      "category": "protein",
+      "isAllergen": false,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-5",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Saumon",
+        "en": "Salmon"
+      },
+      "slug": "saumon",
+      "category": "protein",
+      "isAllergen": true,
+      "allergenType": "fish",
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-6",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Tofu",
+        "en": "Tofu"
+      },
+      "slug": "tofu",
+      "category": "protein",
+      "isAllergen": true,
+      "allergenType": "soy",
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-7",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Mangue",
+        "en": "Mango"
+      },
+      "slug": "mangue",
+      "category": "fruit",
+      "isAllergen": false,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-8",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Myrtilles",
+        "en": "Blueberries"
+      },
+      "slug": "myrtilles",
+      "category": "fruit",
+      "isAllergen": false,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-9",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Amandes",
+        "en": "Almonds"
+      },
+      "slug": "amandes",
+      "category": "nuts",
+      "isAllergen": true,
+      "allergenType": "nuts",
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "_id": "ing-10",
+      "_type": "ingredient",
+      "name": {
+        "fr": "Graines de chia",
+        "en": "Chia Seeds"
+      },
+      "slug": "graines-chia",
+      "category": "seed",
+      "isAllergen": false,
+      "isVegan": true,
+      "isGlutenFree": true
+    }
+  ],
+  "modifierGroups": [
+    {
+      "_id": "mod-1",
+      "_type": "modifierGroup",
+      "name": {
+        "fr": "Taille",
+        "en": "Size"
+      },
+      "slug": "taille",
+      "type": "size",
+      "displayOrder": 1,
+      "selectionRules": {
+        "minSelection": 1,
+        "maxSelection": 1,
+        "isRepeatable": false
+      },
+      "isActive": true
+    },
+    {
+      "_id": "mod-2",
+      "_type": "modifierGroup",
+      "name": {
+        "fr": "Protéines supplémentaires",
+        "en": "Extra Proteins"
+      },
+      "slug": "proteines-supplementaires",
+      "type": "add-ingredient",
+      "displayOrder": 2,
+      "selectionRules": {
+        "minSelection": 0,
+        "maxSelection": 3,
+        "isRepeatable": false
+      },
+      "isActive": true
+    },
+    {
+      "_id": "mod-3",
+      "_type": "modifierGroup",
+      "name": {
+        "fr": "Retirer des ingrédients",
+        "en": "Remove Ingredients"
+      },
+      "slug": "retirer-ingredients",
+      "type": "remove-ingredient",
+      "displayOrder": 3,
+      "selectionRules": {
+        "minSelection": 0,
+        "maxSelection": 5,
+        "isRepeatable": false
+      },
+      "isActive": true
+    },
+    {
+      "_id": "mod-4",
+      "_type": "modifierGroup",
+      "name": {
+        "fr": "Vinaigrette",
+        "en": "Dressing"
+      },
+      "slug": "vinaigrette",
+      "type": "choice-required",
+      "displayOrder": 4,
+      "selectionRules": {
+        "minSelection": 1,
+        "maxSelection": 1,
+        "isRepeatable": false
+      },
+      "isActive": true
+    }
+  ],
+  "products": [
+    {
+      "_id": "prod-1",
+      "_type": "product",
+      "title": {
+        "fr": "Buddha Bowl Quinoa",
+        "en": "Quinoa Buddha Bowl"
+      },
+      "slug": "buddha-bowl-quinoa",
+      "category": {
+        "_ref": "cat-1",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Bowl nutritif avec quinoa, légumes grillés et sauce tahini",
+        "en": "Nutritious bowl with quinoa, grilled vegetables and tahini sauce"
+      },
+      "longDescription": {
+        "fr": "Notre Buddha Bowl signature combine du quinoa bio, des légumes de saison grillés, de l'avocat frais, des pois chiches rôtis et une délicieuse sauce tahini maison. Un repas complet et équilibré.",
+        "en": "Our signature Buddha Bowl combines organic quinoa, seasonal grilled vegetables, fresh avocado, roasted chickpeas and delicious homemade tahini sauce. A complete and balanced meal."
+      },
+      "ingredients": [
+        { "_ref": "ing-1", "_type": "reference" },
+        { "_ref": "ing-2", "_type": "reference" },
+        { "_ref": "ing-3", "_type": "reference" }
+      ],
+      "modifierGroups": [
+        {
+          "group": { "_ref": "mod-1", "_type": "reference" },
+          "displayOrder": 1,
+          "isRequired": true,
+          "isVisible": true
+        },
+        {
+          "group": { "_ref": "mod-2", "_type": "reference" },
+          "displayOrder": 2,
+          "isRequired": false,
+          "isVisible": true
+        }
+      ],
+      "preparationTime": 15,
+      "price": 12.90,
+      "priceOverrides": [
+        {
+          "context": "delivery",
+          "price": 13.90,
+          "isActive": true
+        }
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "isPopular": true,
+      "popularityScore": 95,
+      "displayOrder": 1,
+      "plu": "PLU001",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-2",
+      "_type": "product",
+      "title": {
+        "fr": "Salade César Healthy",
+        "en": "Healthy Caesar Salad"
+      },
+      "slug": "salade-cesar-healthy",
+      "category": {
+        "_ref": "cat-1",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Version allégée de la classique avec poulet grillé et parmesan",
+        "en": "Light version of the classic with grilled chicken and parmesan"
+      },
+      "longDescription": {
+        "fr": "Notre interprétation santé de la salade César avec du poulet grillé bio, de la romaine croquante, des croûtons sans gluten et notre sauce César allégée au yaourt grec.",
+        "en": "Our healthy take on Caesar salad with organic grilled chicken, crispy romaine, gluten-free croutons and our light Caesar dressing with Greek yogurt."
+      },
+      "ingredients": [
+        { "_ref": "ing-3", "_type": "reference" },
+        { "_ref": "ing-4", "_type": "reference" }
+      ],
+      "modifierGroups": [
+        {
+          "group": { "_ref": "mod-1", "_type": "reference" },
+          "displayOrder": 1,
+          "isRequired": true,
+          "isVisible": true
+        },
+        {
+          "group": { "_ref": "mod-3", "_type": "reference" },
+          "displayOrder": 2,
+          "isRequired": false,
+          "isVisible": true
+        }
+      ],
+      "preparationTime": 10,
+      "price": 11.50,
+      "isAvailable": true,
+      "isPopular": true,
+      "popularityScore": 88,
+      "displayOrder": 2,
+      "plu": "PLU002",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-3",
+      "_type": "product",
+      "title": {
+        "fr": "Green Detox Smoothie",
+        "en": "Green Detox Smoothie"
+      },
+      "slug": "green-detox-smoothie",
+      "category": {
+        "_ref": "cat-2",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Smoothie détox aux épinards, pomme verte et gingembre",
+        "en": "Detox smoothie with spinach, green apple and ginger"
+      },
+      "longDescription": {
+        "fr": "Un mélange revitalisant d'épinards frais, pomme verte, concombre, citron, gingembre et eau de coco. Parfait pour un boost d'énergie naturel.",
+        "en": "A revitalizing blend of fresh spinach, green apple, cucumber, lemon, ginger and coconut water. Perfect for a natural energy boost."
+      },
+      "ingredients": [
+        { "_ref": "ing-3", "_type": "reference" }
+      ],
+      "modifierGroups": [
+        {
+          "group": { "_ref": "mod-1", "_type": "reference" },
+          "displayOrder": 1,
+          "isRequired": true,
+          "isVisible": true
+        }
+      ],
+      "preparationTime": 5,
+      "price": 6.90,
+      "priceOverrides": [
+        {
+          "context": "happy-hour",
+          "price": 5.50,
+          "isActive": true,
+          "validFrom": "2025-01-01T15:00:00Z",
+          "validUntil": "2025-12-31T17:00:00Z"
+        }
+      ],
+      "isAvailable": true,
+      "isFeatured": true,
+      "displayOrder": 3,
+      "plu": "PLU003",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-4",
+      "_type": "product",
+      "title": {
+        "fr": "Wrap Végétarien Arc-en-ciel",
+        "en": "Rainbow Veggie Wrap"
+      },
+      "slug": "wrap-vegetarien-arc-en-ciel",
+      "category": {
+        "_ref": "cat-3",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Tortilla de blé complet garnie de légumes colorés et houmous",
+        "en": "Whole wheat tortilla filled with colorful veggies and hummus"
+      },
+      "longDescription": {
+        "fr": "Un wrap coloré et savoureux avec carotte, betterave, chou rouge, avocat, épinards et notre houmous maison dans une tortilla de blé complet.",
+        "en": "A colorful and tasty wrap with carrot, beet, red cabbage, avocado, spinach and our homemade hummus in a whole wheat tortilla."
+      },
+      "ingredients": [
+        { "_ref": "ing-2", "_type": "reference" },
+        { "_ref": "ing-3", "_type": "reference" }
+      ],
+      "modifierGroups": [
+        {
+          "group": { "_ref": "mod-2", "_type": "reference" },
+          "displayOrder": 1,
+          "isRequired": false,
+          "isVisible": true
+        }
+      ],
+      "preparationTime": 12,
+      "price": 8.90,
+      "isAvailable": true,
+      "displayOrder": 4,
+      "plu": "PLU004",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-5",
+      "_type": "product",
+      "title": {
+        "fr": "Açaï Bowl Tropical",
+        "en": "Tropical Açaï Bowl"
+      },
+      "slug": "acai-bowl-tropical",
+      "category": {
+        "_ref": "cat-5",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Bowl d'açaï avec fruits tropicaux, granola et coco râpée",
+        "en": "Açaï bowl with tropical fruits, granola and shredded coconut"
+      },
+      "longDescription": {
+        "fr": "Base d'açaï bio mixée avec banane, garnie de mangue fraîche, ananas, myrtilles, granola maison sans sucre ajouté et coco râpée.",
+        "en": "Organic açaï base blended with banana, topped with fresh mango, pineapple, blueberries, homemade sugar-free granola and shredded coconut."
+      },
+      "ingredients": [
+        { "_ref": "ing-7", "_type": "reference" },
+        { "_ref": "ing-8", "_type": "reference" }
+      ],
+      "preparationTime": 8,
+      "price": 9.90,
+      "isAvailable": true,
+      "isTrending": true,
+      "displayOrder": 5,
+      "plu": "PLU005",
+      "containsAlcohol": false,
+      "availabilitySchedule": [
+        {
+          "dayOfWeek": "all",
+          "startTime": "07:00",
+          "endTime": "14:00",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "_id": "prod-6",
+      "_type": "product",
+      "title": {
+        "fr": "Poke Bowl Saumon",
+        "en": "Salmon Poke Bowl"
+      },
+      "slug": "poke-bowl-saumon",
+      "category": {
+        "_ref": "cat-1",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Bowl hawaïen avec saumon mariné, riz et légumes croquants",
+        "en": "Hawaiian bowl with marinated salmon, rice and crunchy vegetables"
+      },
+      "longDescription": {
+        "fr": "Saumon frais mariné dans notre sauce soja-sésame, servi sur un lit de riz complet avec edamame, concombre, avocat et algues nori.",
+        "en": "Fresh salmon marinated in our soy-sesame sauce, served on brown rice with edamame, cucumber, avocado and nori seaweed."
+      },
+      "ingredients": [
+        { "_ref": "ing-5", "_type": "reference" },
+        { "_ref": "ing-2", "_type": "reference" }
+      ],
+      "modifierGroups": [
+        {
+          "group": { "_ref": "mod-1", "_type": "reference" },
+          "displayOrder": 1,
+          "isRequired": true,
+          "isVisible": true
+        },
+        {
+          "group": { "_ref": "mod-4", "_type": "reference" },
+          "displayOrder": 2,
+          "isRequired": true,
+          "isVisible": true
+        }
+      ],
+      "preparationTime": 15,
+      "price": 14.90,
+      "isAvailable": true,
+      "isPopular": true,
+      "popularityScore": 92,
+      "displayOrder": 6,
+      "plu": "PLU006",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-7",
+      "_type": "product",
+      "title": {
+        "fr": "Smoothie Bowl Mangue-Passion",
+        "en": "Mango-Passion Smoothie Bowl"
+      },
+      "slug": "smoothie-bowl-mangue-passion",
+      "category": {
+        "_ref": "cat-5",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Base smoothie mangue-passion avec toppings gourmands",
+        "en": "Mango-passion smoothie base with delicious toppings"
+      },
+      "longDescription": {
+        "fr": "Smoothie épais à base de mangue et fruit de la passion, garni de kiwi, graines de chia, amandes effilées et pétales de coco.",
+        "en": "Thick smoothie with mango and passion fruit base, topped with kiwi, chia seeds, sliced almonds and coconut flakes."
+      },
+      "ingredients": [
+        { "_ref": "ing-7", "_type": "reference" },
+        { "_ref": "ing-10", "_type": "reference" },
+        { "_ref": "ing-9", "_type": "reference" }
+      ],
+      "preparationTime": 10,
+      "price": 8.50,
+      "isAvailable": true,
+      "displayOrder": 7,
+      "plu": "PLU007",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-8",
+      "_type": "product",
+      "title": {
+        "fr": "Club Sandwich Dinde & Avocat",
+        "en": "Turkey & Avocado Club Sandwich"
+      },
+      "slug": "club-sandwich-dinde-avocat",
+      "category": {
+        "_ref": "cat-3",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Pain complet, dinde fumée, avocat et légumes croquants",
+        "en": "Whole grain bread, smoked turkey, avocado and crispy vegetables"
+      },
+      "longDescription": {
+        "fr": "Triple étage de pain complet grillé avec dinde fumée bio, avocat, tomate, laitue, œuf dur et notre mayonnaise allégée au yaourt.",
+        "en": "Triple layer of toasted whole grain bread with organic smoked turkey, avocado, tomato, lettuce, hard-boiled egg and our light yogurt mayo."
+      },
+      "ingredients": [
+        { "_ref": "ing-2", "_type": "reference" }
+      ],
+      "preparationTime": 12,
+      "price": 10.90,
+      "isAvailable": true,
+      "displayOrder": 8,
+      "plu": "PLU008",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-9",
+      "_type": "product",
+      "title": {
+        "fr": "Jus Vert Énergisant",
+        "en": "Energizing Green Juice"
+      },
+      "slug": "jus-vert-energisant",
+      "category": {
+        "_ref": "cat-2",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Jus pressé à froid avec céleri, concombre et citron",
+        "en": "Cold-pressed juice with celery, cucumber and lemon"
+      },
+      "longDescription": {
+        "fr": "Un jus vert revitalisant pressé à froid avec céleri, concombre, pomme verte, épinards, citron et une touche de gingembre frais.",
+        "en": "A revitalizing cold-pressed green juice with celery, cucumber, green apple, spinach, lemon and a touch of fresh ginger."
+      },
+      "ingredients": [
+        { "_ref": "ing-3", "_type": "reference" }
+      ],
+      "preparationTime": 5,
+      "price": 5.90,
+      "isAvailable": true,
+      "displayOrder": 9,
+      "plu": "PLU009",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-10",
+      "_type": "product",
+      "title": {
+        "fr": "Energy Balls Choco-Amande",
+        "en": "Choco-Almond Energy Balls"
+      },
+      "slug": "energy-balls-choco-amande",
+      "category": {
+        "_ref": "cat-4",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Boules d'énergie au chocolat noir et amandes (6 pièces)",
+        "en": "Dark chocolate and almond energy balls (6 pieces)"
+      },
+      "longDescription": {
+        "fr": "Boules énergétiques maison à base de dattes, amandes, cacao cru, graines de chia et huile de coco. Sans sucre ajouté, naturellement sucrées.",
+        "en": "Homemade energy balls made with dates, almonds, raw cacao, chia seeds and coconut oil. No added sugar, naturally sweetened."
+      },
+      "ingredients": [
+        { "_ref": "ing-9", "_type": "reference" },
+        { "_ref": "ing-10", "_type": "reference" }
+      ],
+      "preparationTime": 2,
+      "price": 4.90,
+      "isAvailable": true,
+      "displayOrder": 10,
+      "plu": "PLU010",
+      "containsAlcohol": false,
+      "stockQuantity": 50
+    },
+    {
+      "_id": "prod-11",
+      "_type": "product",
+      "title": {
+        "fr": "Salade Méditerranéenne",
+        "en": "Mediterranean Salad"
+      },
+      "slug": "salade-mediterraneenne",
+      "category": {
+        "_ref": "cat-1",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Salade fraîche avec feta, olives et vinaigrette au citron",
+        "en": "Fresh salad with feta, olives and lemon dressing"
+      },
+      "longDescription": {
+        "fr": "Mélange de jeunes pousses, tomates cerises, concombre, poivrons, olives Kalamata, feta AOP et notre vinaigrette maison au citron et origan.",
+        "en": "Mix of baby greens, cherry tomatoes, cucumber, peppers, Kalamata olives, PDO feta and our homemade lemon-oregano dressing."
+      },
+      "preparationTime": 10,
+      "price": 10.50,
+      "isAvailable": true,
+      "displayOrder": 11,
+      "plu": "PLU011",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-12",
+      "_type": "product",
+      "title": {
+        "fr": "Smoothie Protéiné Chocolat",
+        "en": "Chocolate Protein Smoothie"
+      },
+      "slug": "smoothie-proteine-chocolat",
+      "category": {
+        "_ref": "cat-2",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Smoothie riche en protéines avec cacao et beurre d'amande",
+        "en": "Protein-rich smoothie with cocoa and almond butter"
+      },
+      "longDescription": {
+        "fr": "Smoothie crémeux avec protéine de pois, banane, cacao cru, beurre d'amande, lait d'avoine et une touche de sirop d'érable.",
+        "en": "Creamy smoothie with pea protein, banana, raw cacao, almond butter, oat milk and a touch of maple syrup."
+      },
+      "ingredients": [
+        { "_ref": "ing-9", "_type": "reference" }
+      ],
+      "preparationTime": 5,
+      "price": 7.90,
+      "isAvailable": true,
+      "isFeatured": true,
+      "displayOrder": 12,
+      "plu": "PLU012",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-13",
+      "_type": "product",
+      "title": {
+        "fr": "Wrap Falafel Houmous",
+        "en": "Falafel Hummus Wrap"
+      },
+      "slug": "wrap-falafel-houmous",
+      "category": {
+        "_ref": "cat-3",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Wrap végétalien avec falafels maison et houmous",
+        "en": "Vegan wrap with homemade falafel and hummus"
+      },
+      "longDescription": {
+        "fr": "Tortilla de blé complet garnie de falafels croustillants, houmous maison, taboulé, pickles de légumes et sauce tahini.",
+        "en": "Whole wheat tortilla filled with crispy falafel, homemade hummus, tabbouleh, pickled vegetables and tahini sauce."
+      },
+      "preparationTime": 15,
+      "price": 9.50,
+      "isAvailable": true,
+      "displayOrder": 13,
+      "plu": "PLU013",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-14",
+      "_type": "product",
+      "title": {
+        "fr": "Chia Pudding Fruits Rouges",
+        "en": "Berry Chia Pudding"
+      },
+      "slug": "chia-pudding-fruits-rouges",
+      "category": {
+        "_ref": "cat-4",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Pudding de chia au lait de coco et coulis de fruits rouges",
+        "en": "Chia pudding with coconut milk and berry coulis"
+      },
+      "longDescription": {
+        "fr": "Graines de chia infusées dans du lait de coco, vanille et sirop d'agave, garni de fruits rouges frais et coulis maison.",
+        "en": "Chia seeds soaked in coconut milk, vanilla and agave syrup, topped with fresh berries and homemade coulis."
+      },
+      "ingredients": [
+        { "_ref": "ing-10", "_type": "reference" },
+        { "_ref": "ing-8", "_type": "reference" }
+      ],
+      "preparationTime": 5,
+      "price": 5.50,
+      "isAvailable": true,
+      "displayOrder": 14,
+      "plu": "PLU014",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-15",
+      "_type": "product",
+      "title": {
+        "fr": "Bowl Tofu Teriyaki",
+        "en": "Teriyaki Tofu Bowl"
+      },
+      "slug": "bowl-tofu-teriyaki",
+      "category": {
+        "_ref": "cat-1",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Bowl végétalien avec tofu grillé et sauce teriyaki maison",
+        "en": "Vegan bowl with grilled tofu and homemade teriyaki sauce"
+      },
+      "longDescription": {
+        "fr": "Tofu bio mariné et grillé, servi sur un lit de riz brun avec brocoli, carotte, edamame et notre sauce teriyaki sans gluten.",
+        "en": "Organic marinated and grilled tofu, served on brown rice with broccoli, carrot, edamame and our gluten-free teriyaki sauce."
+      },
+      "ingredients": [
+        { "_ref": "ing-6", "_type": "reference" }
+      ],
+      "modifierGroups": [
+        {
+          "group": { "_ref": "mod-1", "_type": "reference" },
+          "displayOrder": 1,
+          "isRequired": true,
+          "isVisible": true
+        }
+      ],
+      "preparationTime": 18,
+      "price": 11.90,
+      "isAvailable": true,
+      "displayOrder": 15,
+      "plu": "PLU015",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-16",
+      "_type": "product",
+      "title": {
+        "fr": "Overnight Oats Banane-Cannelle",
+        "en": "Banana-Cinnamon Overnight Oats"
+      },
+      "slug": "overnight-oats-banane-cannelle",
+      "category": {
+        "_ref": "cat-5",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Flocons d'avoine au lait d'amande, banane et cannelle",
+        "en": "Oats with almond milk, banana and cinnamon"
+      },
+      "longDescription": {
+        "fr": "Flocons d'avoine bio trempés dans du lait d'amande, garnis de rondelles de banane, cannelle, miel et noix concassées.",
+        "en": "Organic oats soaked in almond milk, topped with banana slices, cinnamon, honey and crushed walnuts."
+      },
+      "preparationTime": 2,
+      "price": 6.50,
+      "isAvailable": true,
+      "displayOrder": 16,
+      "plu": "PLU016",
+      "containsAlcohol": false,
+      "availabilitySchedule": [
+        {
+          "dayOfWeek": "all",
+          "startTime": "07:00",
+          "endTime": "11:00",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "_id": "prod-17",
+      "_type": "product",
+      "title": {
+        "fr": "Jus Boost Immunité",
+        "en": "Immunity Boost Juice"
+      },
+      "slug": "jus-boost-immunite",
+      "category": {
+        "_ref": "cat-2",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Jus orange, carotte, gingembre et curcuma",
+        "en": "Orange, carrot, ginger and turmeric juice"
+      },
+      "longDescription": {
+        "fr": "Jus frais pressé avec orange, carotte, pomme, gingembre frais, curcuma et une pointe de poivre noir pour maximiser l'absorption.",
+        "en": "Freshly pressed juice with orange, carrot, apple, fresh ginger, turmeric and a pinch of black pepper to maximize absorption."
+      },
+      "preparationTime": 5,
+      "price": 6.50,
+      "isAvailable": true,
+      "isTrending": true,
+      "displayOrder": 17,
+      "plu": "PLU017",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-18",
+      "_type": "product",
+      "title": {
+        "fr": "Sandwich Végé Grillé",
+        "en": "Grilled Veggie Sandwich"
+      },
+      "slug": "sandwich-vege-grille",
+      "category": {
+        "_ref": "cat-3",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Pain aux céréales avec légumes grillés et pesto",
+        "en": "Multigrain bread with grilled vegetables and pesto"
+      },
+      "longDescription": {
+        "fr": "Pain aux 7 céréales grillé avec aubergine, courgette, poivron rouge, mozzarella fraîche et pesto de basilic maison.",
+        "en": "Toasted 7-grain bread with eggplant, zucchini, red pepper, fresh mozzarella and homemade basil pesto."
+      },
+      "preparationTime": 10,
+      "price": 8.50,
+      "isAvailable": true,
+      "displayOrder": 18,
+      "plu": "PLU018",
+      "containsAlcohol": false
+    },
+    {
+      "_id": "prod-19",
+      "_type": "product",
+      "title": {
+        "fr": "Brownie Végétalien Sans Gluten",
+        "en": "Vegan Gluten-Free Brownie"
+      },
+      "slug": "brownie-vegetalien-sans-gluten",
+      "category": {
+        "_ref": "cat-4",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Brownie fondant au chocolat noir et patate douce",
+        "en": "Fudgy brownie with dark chocolate and sweet potato"
+      },
+      "longDescription": {
+        "fr": "Brownie moelleux à base de patate douce, chocolat noir 70%, farine d'amande et sucre de coco. Sans gluten, sans lactose, 100% plaisir.",
+        "en": "Moist brownie made with sweet potato, 70% dark chocolate, almond flour and coconut sugar. Gluten-free, dairy-free, 100% indulgence."
+      },
+      "preparationTime": 2,
+      "price": 4.50,
+      "isAvailable": true,
+      "displayOrder": 19,
+      "plu": "PLU019",
+      "containsAlcohol": false,
+      "stockQuantity": 30
+    },
+    {
+      "_id": "prod-20",
+      "_type": "product",
+      "title": {
+        "fr": "Salade Asiatique aux Nouilles de Riz",
+        "en": "Asian Rice Noodle Salad"
+      },
+      "slug": "salade-asiatique-nouilles-riz",
+      "category": {
+        "_ref": "cat-1",
+        "_type": "reference"
+      },
+      "shortDescription": {
+        "fr": "Nouilles de riz, légumes croquants et vinaigrette sésame-soja",
+        "en": "Rice noodles, crunchy vegetables and sesame-soy dressing"
+      },
+      "longDescription": {
+        "fr": "Nouilles de riz fraîches avec julienne de légumes colorés, coriandre, menthe, cacahuètes grillées et vinaigrette asiatique légère.",
+        "en": "Fresh rice noodles with julienned colorful vegetables, cilantro, mint, roasted peanuts and light Asian dressing."
+      },
+      "preparationTime": 12,
+      "price": 10.90,
+      "isAvailable": true,
+      "displayOrder": 20,
+      "plu": "PLU020",
+      "containsAlcohol": false,
+      "promotionBadge": {
+        "text": {
+          "fr": "Nouveau",
+          "en": "New"
+        },
+        "color": "primary",
+        "isVisible": true
+      }
+    }
+  ]
+}
