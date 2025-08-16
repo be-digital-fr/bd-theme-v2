@@ -10,7 +10,6 @@ import {
   BetterAuthResponseSchema,
   BetterAuthUserSchema
 } from '../../domain/schemas/UserSchemas';
-import { authClient } from '@/lib/auth-client';
 import { auth } from '@/lib/auth';
 
 /**
@@ -27,20 +26,38 @@ export class BetterAuthRepository implements IAuthRepository {
    */
   async signIn(credentials: SignInCredentialsType): Promise<AuthResult<AuthResultType>> {
     try {
-      const { data: result, error: signInError } = await authClient.signIn.email({
+      // Create a mock request for Better Auth server-side handler
+      const mockHeaders = new Headers();
+      mockHeaders.set('content-type', 'application/json');
+      
+      const body = JSON.stringify({
         email: credentials.email,
         password: credentials.password,
       });
 
-      if (signInError) {
+      const request = new Request('http://localhost:3000/api/auth/sign-in/email', {
+        method: 'POST',
+        headers: mockHeaders,
+        body: body
+      });
+
+      // Call Better Auth handler directly
+      const response = await auth.handler(request);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Better Auth sign-in error:', response.status, errorText);
+        
         return {
           success: false,
           error: {
-            code: this.mapBetterAuthErrorCode(signInError.message || 'Unknown error'),
-            message: this.mapBetterAuthErrorMessage(signInError.message || 'Unknown error'),
+            code: this.mapBetterAuthErrorCode(errorText),
+            message: this.mapBetterAuthErrorMessage(errorText),
           }
         };
       }
+
+      const result = await response.json();
 
       if (!result || !result.user) {
         return {
@@ -105,21 +122,39 @@ export class BetterAuthRepository implements IAuthRepository {
    */
   async signUp(userData: SignUpDataType): Promise<AuthResult<User>> {
     try {
-      const { data: result, error: signUpError } = await authClient.signUp.email({
+      // Create a mock request for Better Auth server-side handler
+      const mockHeaders = new Headers();
+      mockHeaders.set('content-type', 'application/json');
+      
+      const body = JSON.stringify({
         name: userData.name,
         email: userData.email,
         password: userData.password,
       });
 
-      if (signUpError) {
+      const request = new Request('http://localhost:3000/api/auth/sign-up/email', {
+        method: 'POST',
+        headers: mockHeaders,
+        body: body
+      });
+
+      // Call Better Auth handler directly
+      const response = await auth.handler(request);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Better Auth sign-up error:', response.status, errorText);
+        
         return {
           success: false,
           error: {
-            code: this.mapBetterAuthErrorCode(signUpError.message || 'Unknown error'),
-            message: this.mapBetterAuthErrorMessage(signUpError.message || 'Unknown error'),
+            code: this.mapBetterAuthErrorCode(errorText),
+            message: this.mapBetterAuthErrorMessage(errorText),
           }
         };
       }
+
+      const result = await response.json();
 
       if (!result || !result.user) {
         return {
@@ -167,9 +202,22 @@ export class BetterAuthRepository implements IAuthRepository {
    */
   async signOut(): Promise<AuthResult<void>> {
     try {
-      const { error: signOutError } = await authClient.signOut();
+      // Create a mock request for Better Auth server-side handler
+      const mockHeaders = new Headers();
+      mockHeaders.set('content-type', 'application/json');
 
-      if (signOutError) {
+      const request = new Request('http://localhost:3000/api/auth/sign-out', {
+        method: 'POST',
+        headers: mockHeaders,
+      });
+
+      // Call Better Auth handler directly
+      const response = await auth.handler(request);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Better Auth sign-out error:', response.status, errorText);
+        
         return {
           success: false,
           error: {
@@ -201,7 +249,26 @@ export class BetterAuthRepository implements IAuthRepository {
    */
   async getCurrentUser(): Promise<AuthResult<User | null>> {
     try {
-      const { data: session } = await authClient.getSession();
+      // Create a mock request for Better Auth server-side handler
+      const mockHeaders = new Headers();
+      mockHeaders.set('content-type', 'application/json');
+
+      const request = new Request('http://localhost:3000/api/auth/get-session', {
+        method: 'GET',
+        headers: mockHeaders,
+      });
+
+      // Call Better Auth handler directly
+      const response = await auth.handler(request);
+      
+      if (!response.ok) {
+        return {
+          success: true,
+          data: null
+        };
+      }
+
+      const session = await response.json();
 
       if (!session || !session.user) {
         return {

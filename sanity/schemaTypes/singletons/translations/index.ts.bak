@@ -1,6 +1,0 @@
-// Index des schémas de traduction
-export { signInTranslationsType } from './signInTranslations';
-export { signUpTranslationsType } from './signUpTranslations';
-export { forgotPasswordTranslationsType } from './forgotPasswordTranslations';
-export { resetPasswordTranslationsType } from './resetPasswordTranslations';
-export { authNotificationsTranslationsType } from './authNotificationsTranslations';

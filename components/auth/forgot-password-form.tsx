@@ -26,8 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useForgotPasswordTranslations } from "@/hooks/useForgotPasswordTranslations";
-import { useAuthNotifications } from "@/hooks/useAuthNotifications";
+import { useAuthTranslations, useAuthNotifications } from "@/hooks/useTranslations";
 import { mapAuthError } from "@/lib/auth-error-mapper";
 
 interface ForgotPasswordFormProps {
@@ -41,7 +40,7 @@ export function ForgotPasswordForm({
   onModeChange,
   hideCard = false
 }: ForgotPasswordFormProps) {
-  const { translations: t } = useForgotPasswordTranslations();
+  const { translations: t } = useAuthTranslations();
   const { notifications } = useAuthNotifications();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

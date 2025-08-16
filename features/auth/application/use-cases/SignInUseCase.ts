@@ -26,29 +26,7 @@ export class SignInUseCase {
       // Validate input
       const validatedCredentials = SignInCredentialsSchema.parse(credentials);
 
-      // Check if user exists
-      const userResult = await this.authRepository.getUserByEmail(validatedCredentials.email);
-      if (!userResult.success) {
-        return {
-          success: false,
-          error: {
-            code: 'INVALID_CREDENTIALS',
-            message: 'Email ou mot de passe incorrect',
-          }
-        };
-      }
-
-      if (!userResult.data) {
-        return {
-          success: false,
-          error: {
-            code: 'USER_NOT_FOUND',
-            message: 'Utilisateur non trouvé',
-          }
-        };
-      }
-
-      // Attempt sign in
+      // Attempt sign in - Better Auth handles user existence and password verification
       const signInResult = await this.authRepository.signIn(validatedCredentials);
       
       if (!signInResult.success) {
@@ -68,7 +46,6 @@ export class SignInUseCase {
               error: {
                 code: 'EMAIL_NOT_VERIFIED',
                 message: 'Veuillez vérifier votre email avant de vous connecter',
-                details: { userId: userResult.data.id }
               }
             };
           case 'TOO_MANY_ATTEMPTS':
@@ -134,6 +111,8 @@ export class SignInUseCase {
       };
     }
 
+    // For Better Auth integration, we'll use the emailExists method
+    // This is mainly for UI feedback (showing if email is available during signup)
     return await this.authRepository.emailExists(email);
   }
 }

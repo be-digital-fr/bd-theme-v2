@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContainer } from '../../infrastructure/di/AuthContainer';
 import type { SignInCredentialsType } from '../../domain/schemas/UserSchemas';
-import { captureAuthError, AuthErrorType, setAuthUserContext, startAuthTransaction } from '@/lib/sentry-auth';
+import { captureAuthError, AuthErrorType, setAuthUserContext, startAuthTransaction } from '@/lib/sentry-auth-client';
 
 interface UseSignInOptions {
   callbackUrl?: string;

@@ -1,13 +1,11 @@
-import { AuthNotifications } from '@/hooks/useAuthNotifications';
-
 /**
  * Maps error messages to localized translations
  */
-export function mapAuthError(error: string | null, notifications: AuthNotifications): string | null {
+export function mapAuthError(error: string | null, notifications: any): string | null {
   if (!error) return null;
 
   // Map common error patterns to localized messages
-  const errorMappings: Record<string, keyof AuthNotifications['error']> = {
+  const errorMappings: Record<string, string> = {
     // Email errors
     'invalid email': 'invalidEmail',
     'email is required': 'emailRequired',

@@ -3,11 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { User, LogOut, Settings } from "lucide-react";
+import { User, LogOut, Settings, Shield } from "lucide-react";
+import { UserRole } from "@prisma/client";
 
 import { useCurrentUser, useSignOut } from "@/features/auth/presentation/hooks";
 import { Button } from "@/components/ui/button";
-import { clearAuthUserContext, trackSessionEvent } from "@/lib/sentry-auth";
+import { clearAuthUserContext, trackSessionEvent } from "@/lib/sentry-auth-client";
 import {
   Popover,
   PopoverContent,
@@ -65,6 +66,8 @@ export function UserMenu() {
     .toUpperCase()
     .slice(0, 2);
 
+  const canAccessAdmin = user?.role === UserRole.ADMIN || user?.role === UserRole.EMPLOYEE;
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -119,6 +122,20 @@ export function UserMenu() {
               Paramètres
             </Link>
           </Button>
+
+          {canAccessAdmin && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start"
+              asChild
+            >
+              <Link href="/admin">
+                <Shield className="mr-2 h-4 w-4" />
+                Administration
+              </Link>
+            </Button>
+          )}
 
           <div className="h-px bg-border my-1" />
 

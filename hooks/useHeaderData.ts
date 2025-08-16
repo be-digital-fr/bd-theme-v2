@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from '@tanstack/react-query';
-import { client } from '@/sanity/lib/client';
 import { AuthSettings } from './useAuthSettings';
+import { useAdminSettings } from './useAdminSettings';
 
 // Types pour les données du header
 export interface HeaderSettings {
@@ -14,6 +14,8 @@ export interface HeaderSettings {
     };
     alt?: Record<string, string> | string;
   };
+  logoImageUrl?: string;
+  logoImageAlt?: Record<string, string>;
   headerStyle?: 'transparent' | 'solid' | 'gradient';
   stickyHeader?: boolean;
   showSearchIcon?: boolean;
@@ -25,11 +27,20 @@ export interface HeaderSettings {
 export interface MenuItem {
   _key?: string;
   label: Record<string, string> | string;
-  slug?: { current: string };
+  slug?: { current: string } | string;
   href: string;
   isExternal?: boolean;
   openInNewTab?: boolean;
   isActive?: boolean;
+}
+
+export interface NavigationItem {
+  _id: string;
+  label: Record<string, string>;
+  slug?: string;
+  href: string;
+  isExternal?: boolean;
+  openInNewTab?: boolean;
 }
 
 export interface FooterMenuItem {
@@ -67,157 +78,112 @@ export interface HeaderData {
   navigation: NavigationData | null;
 }
 
-// Requête pour récupérer tous les paramètres
-const getSettingsQuery = `
-  *[_type == "settings"][0] {
-    _id,
-    title,
-    isMultilingual,
-    supportedLanguages,
-    defaultLanguage,
-    headerSettings,
-    navigation {
-      _id,
-      title,
-      menuItems[] {
-        _key,
-        label,
-        slug,
-        href,
-        isExternal,
-        openInNewTab,
-        isActive
-      },
-      footerMenuItems[] {
-        _key,
-        label,
-        href,
-        isActive
-      },
-      mobileMenuTitle
-    },
-    languageSelectorTexts
-  }
-`;
-
-// Requête pour récupérer les paramètres d'authentification
-const getAuthSettingsQuery = `
-  *[_type == "authSettings"][0] {
-    _id,
-    _type,
-    redirectType,
-    defaultAuthPage,
-    enableGoogleAuth,
-    enableFacebookAuth,
-    enableTwitterAuth,
-    enableGitHubAuth,
-    modalTitle,
-    modalDescription,
-    authButtonText,
-    showSocialProviders
-  }
-`;
+// Plus besoin des requêtes Sanity - utilisation uniquement des données admin
 
 // Hook principal pour toutes les données du header
 export function useHeaderData() {
+  const { data: adminData, isLoading: adminLoading } = useAdminSettings();
+
   return useQuery<HeaderData>({
-    queryKey: ['headerData'],
+    queryKey: ['headerData', adminData],
     queryFn: async (): Promise<HeaderData> => {
-      try {
-        // Faire les deux requêtes en parallèle
-        const [settingsData, authSettingsData] = await Promise.all([
-          client.fetch(getSettingsQuery),
-          client.fetch(getAuthSettingsQuery)
-        ]);
-
-        // Valeurs par défaut pour authSettings si pas trouvé
-        const defaultAuthSettings: AuthSettings = {
-          _id: 'default',
-          _type: 'authSettings',
-          redirectType: 'page',
-          defaultAuthPage: 'signin',
-          googleAuth: {
-            enabled: false,
+      // Utiliser les données admin ou des valeurs par défaut
+      if (adminData && adminData.settings) {
+        // Mapper les données admin au format attendu
+        const mappedSettings: SettingsData = {
+          _id: 'admin-settings',
+          title: adminData.settings.headerSettings.logoText || 'Mon Site',
+          isMultilingual: adminData.settings.isMultilingual,
+          supportedLanguages: adminData.settings.supportedLanguages,
+          defaultLanguage: adminData.settings.defaultLanguage,
+          headerSettings: {
+            ...adminData.settings.headerSettings,
+            // Mapper logoImageUrl vers logoImage si nécessaire
+            logoImage: adminData.settings.headerSettings.logoImageUrl ? {
+              asset: {
+                url: adminData.settings.headerSettings.logoImageUrl
+              },
+              alt: adminData.settings.headerSettings.logoImageAlt
+            } : undefined
           },
-          facebookAuth: {
-            enabled: false,
-          },
-          enableTwitterAuth: false,
-          enableGitHubAuth: false,
-          modalTitle: {
-            fr: 'Connexion à votre compte',
-            en: 'Sign in to your account',
-          },
-          modalDescription: {
-            fr: 'Accédez à votre espace personnel',
-            en: 'Access your personal space',
-          },
-          authButtonText: {
-            fr: 'Se connecter',
-            en: 'Sign in',
-          },
-          showSocialProviders: false,
+          languageSelectorTexts: adminData.settings.languageSelectorTexts,
+          navigation: {
+            _id: 'admin-navigation',
+            title: 'Navigation',
+            menuItems: adminData.navigation.map(item => ({
+              _key: item._id,
+              label: item.label,
+              slug: item.slug ? { current: item.slug } : undefined,
+              href: item.href,
+              isExternal: item.isExternal,
+              openInNewTab: item.openInNewTab,
+              isActive: true
+            })),
+            footerMenuItems: [],
+            mobileMenuTitle: { fr: 'Menu', en: 'Menu' }
+          }
         };
 
         return {
-          settings: settingsData || null,
-          authSettings: authSettingsData || defaultAuthSettings,
-          navigation: settingsData?.navigation || null,
-        };
-      } catch (error) {
-        console.error('Error fetching header data:', error);
-        
-        // Retourner des valeurs par défaut en cas d'erreur
-        return {
-          settings: {
-            _id: 'default',
-            title: 'Settings',
-            isMultilingual: false,
-            supportedLanguages: ['fr'],
-            defaultLanguage: 'fr',
-            headerSettings: {
-              logoType: 'text',
-              logoText: 'BD Theme',
-              headerStyle: 'transparent',
-              stickyHeader: true,
-              showSearchIcon: true,
-              showUserIcon: true,
-              showCartIcon: true,
-              cartBadgeCount: 0,
-            },
-          },
-          authSettings: {
-            _id: 'default',
-            _type: 'authSettings',
-            redirectType: 'page',
-            defaultAuthPage: 'signin',
-            googleAuth: {
-              enabled: false,
-            },
-            facebookAuth: {
-              enabled: false,
-            },
-            enableTwitterAuth: false,
-            enableGitHubAuth: false,
-            modalTitle: {
-              fr: 'Connexion à votre compte',
-              en: 'Sign in to your account',
-            },
-            modalDescription: {
-              fr: 'Accédez à votre espace personnel',
-              en: 'Access your personal space',
-            },
-            authButtonText: {
-              fr: 'Se connecter',
-              en: 'Sign in',
-            },
-            showSocialProviders: false,
-          },
-          navigation: null,
+          settings: mappedSettings,
+          authSettings: adminData.authSettings,
+          navigation: mappedSettings.navigation
         };
       }
+
+      // Valeurs par défaut si pas de données admin
+      const defaultAuthSettings: AuthSettings = {
+        _id: 'default',
+        _type: 'authSettings',
+        redirectType: 'page',
+        defaultAuthPage: 'signin',
+        googleAuth: {
+          enabled: false,
+        },
+        facebookAuth: {
+          enabled: false,
+        },
+        enableTwitterAuth: false,
+        enableGitHubAuth: false,
+        modalTitle: {
+          fr: 'Connexion à votre compte',
+          en: 'Sign in to your account',
+        },
+        modalDescription: {
+          fr: 'Accédez à votre espace personnel',
+          en: 'Access your personal space',
+        },
+        authButtonText: {
+          fr: 'Se connecter',
+          en: 'Sign in',
+        },
+        showSocialProviders: false,
+      };
+
+      return {
+        settings: {
+          _id: 'default',
+          title: 'Settings',
+          isMultilingual: false,
+          supportedLanguages: ['fr'],
+          defaultLanguage: 'fr',
+          headerSettings: {
+            logoType: 'text',
+            logoText: 'Mon Site',
+            headerStyle: 'transparent',
+            stickyHeader: true,
+            showSearchIcon: true,
+            showUserIcon: true,
+            showCartIcon: true,
+            cartBadgeCount: 0,
+          },
+        },
+        authSettings: defaultAuthSettings,
+        navigation: null,
+      };
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
+    enabled: !adminLoading, // Ne pas faire la requête tant que admin loading
   });
 }

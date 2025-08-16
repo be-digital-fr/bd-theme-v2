@@ -1,0 +1,345 @@
+// ===================================
+// MODÈLES PRODUITS ET CATALOGUE
+// ===================================
+
+// Table principale des produits
+model products {
+  id                String   @id @default(uuid())
+  
+  // Informations de base
+  title             String
+  slug              String   @unique
+  shortDescription  String?
+  longDescription   String?
+  price             Decimal  @db.Decimal(10,2)
+  
+  // Gestion de stock et disponibilité
+  stockQuantity     Int      @default(0)
+  isAvailable       Boolean  @default(true)
+  preparationTime   Int?     // en minutes
+  
+  // Image principale (backward compatibility)
+  imageUrl          String?
+  
+  // Relations
+  categoryId        String
+  category          categories @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  // Images multiples (nouvelle fonctionnalité)
+  images            product_images[]
+  
+  // Relations many-to-many
+  ingredients       product_ingredients[]
+  extras            product_extras[]
+  
+  // Avis et notes
+  ratings           product_ratings[]
+  averageRating     Decimal? @db.Decimal(3,2) // calculé automatiquement
+  ratingCount       Int      @default(0)
+  
+  // Analytics et tracking
+  views             product_views[]
+  favorites         user_favorites[]
+  popularity        product_popularity?
+  
+  // Intégrations externes
+  uberEatsId        String?  @unique
+  deliverooId       String?  @unique
+  
+  // Collections spéciales
+  isFeatured        Boolean  @default(false)
+  isPopular         Boolean  @default(false)  
+  isTrending        Boolean  @default(false)
+  
+  // Badges et promotions
+  badges            product_badges[]
+  
+  // Informations nutritionnelles
+  nutritionalInfo   nutritional_info?
+  
+  // Timestamps
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Index pour performance
+  @@index([categoryId])
+  @@index([isAvailable])
+  @@index([price])
+  @@index([averageRating])
+  @@index([createdAt])
+  @@map("products")
+}
+
+// Système d'images multiples pour les produits
+model product_images {
+  id          String   @id @default(uuid())
+  productId   String
+  imageUrl    String
+  altText     String?
+  isMain      Boolean  @default(false) // image principale
+  
+  // Relations
+  product     products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Contraintes
+  @@index([productId])
+  @@map("product_images")
+}
+
+// Catégories de produits avec hiérarchie
+model categories {
+  id            String   @id @default(uuid())
+  name          String
+  slug          String   @unique
+  description   String?
+  imageUrl      String?
+  
+  // Hiérarchie des catégories
+  parentId      String?
+  parent        categories? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children      categories[] @relation("CategoryHierarchy")
+  
+  // État
+  isActive      Boolean  @default(true)
+  
+  // Relations
+  products      products[]
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Index
+  @@index([parentId])
+  @@map("categories")
+}
+
+// Ingrédients
+model ingredients {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  description   String?
+  allergens     String[] // Array des allergènes
+  isVegetarian  Boolean  @default(false)
+  isVegan       Boolean  @default(false)
+  isGlutenFree  Boolean  @default(false)
+  isRemovable   Boolean  @default(true)
+  additionalPrice Decimal @default(0) @db.Decimal(10,2)
+  isActive      Boolean  @default(true)
+  
+  // Relations
+  products      product_ingredients[]
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("ingredients")
+}
+
+// Relation many-to-many : Produits <-> Ingrédients
+model product_ingredients {
+  id           String @id @default(uuid())
+  productId    String
+  ingredientId String
+  quantity     String? // "100g", "2 pièces", etc.
+  isOptional   Boolean @default(false)
+  isRemovable  Boolean @default(true)
+  
+  // Relations
+  product      products    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  ingredient   ingredients @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  
+  // Contraintes
+  @@unique([productId, ingredientId])
+  @@index([productId])
+  @@index([ingredientId])
+  @@map("product_ingredients")
+}
+
+// Extras/suppléments
+model extras {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal  @db.Decimal(10,2)
+  type        ExtraType // ADDON, SUBSTITUTE, OPTION
+  isAvailable Boolean  @default(true)
+  
+  // Relations
+  products    product_extras[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("extras")
+}
+
+// Types d'extras
+enum ExtraType {
+  ADDON      // Supplément payant
+  SUBSTITUTE // Substitution
+  OPTION     // Option gratuite
+}
+
+// Relation many-to-many : Produits <-> Extras
+model product_extras {
+  id        String @id @default(uuid())
+  productId String
+  extraId   String
+  
+  // Relations
+  product   products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  extra     extras   @relation(fields: [extraId], references: [id], onDelete: Cascade)
+  
+  // Contraintes
+  @@unique([productId, extraId])
+  @@index([productId])
+  @@index([extraId])
+  @@map("product_extras")
+}
+
+// Système d'avis et notes des produits
+model product_ratings {
+  id         String   @id @default(uuid())
+  productId  String
+  userId     String
+  rating     Int      @default(1) // 1-5 étoiles
+  comment    String?
+  isVerified Boolean  @default(false)
+  
+  // Relations
+  product    products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Contraintes : un avis par utilisateur par produit
+  @@unique([productId, userId])
+  @@index([productId])
+  @@index([userId])
+  @@index([rating])
+  @@map("product_ratings")
+}
+
+// Tracking des vues de produits
+model product_views {
+  id        String   @id @default(uuid())
+  productId String
+  userId    String?  // Optionnel pour les utilisateurs anonymes
+  ipAddress String?
+  userAgent String?
+  
+  // Relations
+  product   products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      user?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  viewedAt  DateTime @default(now())
+  
+  // Index pour analytics
+  @@index([productId])
+  @@index([userId])
+  @@index([viewedAt])
+  @@map("product_views")
+}
+
+// Système de favoris utilisateurs
+model user_favorites {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  
+  // Relations
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  
+  // Contraintes
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+  @@map("user_favorites")
+}
+
+// Analytics de popularité des produits
+model product_popularity {
+  id              String   @id @default(uuid())
+  productId       String   @unique
+  viewCount       Int      @default(0)
+  favoriteCount   Int      @default(0)
+  orderCount      Int      @default(0)
+  popularityScore Decimal  @default(0) @db.Decimal(5,2)
+  
+  // Relations
+  product         products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  lastCalculated  DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("product_popularity")
+}
+
+// Badges promotionnels
+model product_badges {
+  id          String     @id @default(uuid())
+  productId   String
+  type        BadgeType
+  text        String
+  color       String     @default("#ff0000")
+  isActive    Boolean    @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  
+  // Relations
+  product     products   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  @@index([productId])
+  @@index([isActive])
+  @@map("product_badges")
+}
+
+// Types de badges
+enum BadgeType {
+  NEW        // Nouveau
+  BESTSELLER // Meilleure vente
+  PROMOTION  // En promotion
+  LIMITED    // Quantité limitée
+  RECOMMENDED // Recommandé
+}
+
+// Informations nutritionnelles
+model nutritional_info {
+  id           String   @id @default(uuid())
+  productId    String   @unique
+  calories     Int?
+  proteins     Decimal? @db.Decimal(5,2) // en grammes
+  carbs        Decimal? @db.Decimal(5,2) // en grammes
+  fats         Decimal? @db.Decimal(5,2) // en grammes
+  fiber        Decimal? @db.Decimal(5,2) // en grammes
+  sodium       Decimal? @db.Decimal(7,2) // en milligrammes (jusqu'à 99999.99)
+  sugar        Decimal? @db.Decimal(5,2) // en grammes
+  
+  // Relations
+  product      products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("nutritional_info")
+}

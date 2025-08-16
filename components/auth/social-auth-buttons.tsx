@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { signInWithGoogle, signInWithFacebook } from "@/lib/auth-client";
 import { AuthSettings } from "@/hooks/useAuthSettings";
-import { trackOAuthAttempt } from "@/lib/sentry-auth";
+import { trackOAuthAttempt } from "@/lib/sentry-auth-client";
 
 interface SocialAuthButtonsProps {
   authSettings: AuthSettings;

@@ -13,7 +13,7 @@ import { SignUpForm } from './sign-up-form';
 import { ForgotPasswordForm } from './forgot-password-form';
 import { useLocale } from '@/components/providers/locale-provider';
 import { AuthSettings } from '@/hooks/useAuthSettings';
-import { useSignInTranslations } from '@/hooks/useSignInTranslations';
+// Hook de traduction Sanity supprimé
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -32,7 +32,22 @@ export function AuthModal({
 }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>(defaultMode);
   const { resolveMultilingualValue } = useLocale();
-  const { translations: signInT } = useSignInTranslations();
+  
+  // Traductions par défaut pour remplacer Sanity
+  const signInT = {
+    title: resolveMultilingualValue({
+      fr: 'Connexion à votre compte',
+      en: 'Sign in to your account',
+      es: 'Iniciar sesión en tu cuenta',
+      de: 'Melden Sie sich bei Ihrem Konto an'
+    }),
+    subtitle: resolveMultilingualValue({
+      fr: 'Accédez à votre espace personnel',
+      en: 'Access your personal space',
+      es: 'Accede a tu espacio personal',
+      de: 'Greifen Sie auf Ihren persönlichen Bereich zu'
+    })
+  };
 
   const handleModeChange = (newMode: AuthMode) => {
     setMode(newMode);

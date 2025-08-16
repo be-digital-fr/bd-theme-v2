@@ -1,5 +1,8 @@
-import { PrismaClient } from '@prisma/client';
-import { hash } from 'bcryptjs';
+import { PrismaClient, UserRole } from '@prisma/client';
+import { scrypt, randomBytes } from 'crypto';
+import { promisify } from 'util';
+
+const scryptAsync = promisify(scrypt);
 
 const prisma = new PrismaClient();
 
@@ -44,39 +47,49 @@ async function main() {
     },
   });
 
-  // Hash password for all test users (password: "testpass123")
-  const hashedPassword = await hash('testpass123', 12);
+  // Hash password for all test users (password: "testpass123") using scrypt
+  // Better Auth uses scrypt by default with specific parameters:
+  // - 16-byte salt (32 chars hex)  
+  // - 64-byte derived key (128 chars hex)
+  // - Format: salt:hash (both in hex)
+  async function hashPassword(password: string): Promise<string> {
+    const salt = randomBytes(16); // 16 bytes
+    const derived = await scryptAsync(password, salt, 64) as Buffer; // 64 bytes
+    return `${salt.toString('hex')}:${derived.toString('hex')}`;
+  }
+  
+  const hashedPassword = await hashPassword('testpass123');
 
   // Create test users
   const users = [
     {
       email: 'admin@test.local',
       name: 'Admin User',
-      role: 'admin', // This is just for logging, not stored in DB
+      role: UserRole.ADMIN,
       emailVerified: true,
     },
     {
       email: 'employee@test.local',
       name: 'Employee User',
-      role: 'employee',
+      role: UserRole.EMPLOYEE,
       emailVerified: true,
     },
     {
       email: 'user1@test.local',
       name: 'John Doe',
-      role: 'user',
+      role: UserRole.USER,
       emailVerified: true,
     },
     {
       email: 'user2@test.local',
       name: 'Jane Smith',
-      role: 'user',
+      role: UserRole.USER,
       emailVerified: true,
     },
     {
       email: 'user3@test.local',
       name: 'Bob Johnson',
-      role: 'user',
+      role: UserRole.USER,
       emailVerified: true,
     },
   ];
@@ -86,17 +99,19 @@ async function main() {
       data: {
         email: userData.email,
         name: userData.name,
+        role: userData.role,
         emailVerified: userData.emailVerified,
       },
     });
 
     // Create associated Account for email/password authentication
-    // Better Auth uses 'email-password' as provider ID for email/password auth
+    // Better Auth uses 'credential' as provider ID for email/password auth
+    // accountId should be the user ID, not the email
     await prisma.account.create({
       data: {
         userId: user.id,
-        accountId: user.email,
-        providerId: 'email-password',
+        accountId: user.id,
+        providerId: 'credential',
         password: hashedPassword,
       },
     });

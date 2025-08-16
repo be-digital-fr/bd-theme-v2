@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 export class PrismaAdminPreferencesRepository implements IAdminPreferencesRepository {
   async get(): Promise<AdminPreferences> {
     try {
-      const preferences = await prisma.adminPreferences.findFirst();
+      const preferences = await prisma.admin_preferences.findFirst();
       if (!preferences) {
         // Retourner des valeurs par défaut si pas de préférences
         return new AdminPreferences(
@@ -30,10 +30,10 @@ export class PrismaAdminPreferencesRepository implements IAdminPreferencesReposi
 
   async update(preferences: AdminPreferences): Promise<AdminPreferences> {
     try {
-      const existing = await prisma.adminPreferences.findFirst();
+      const existing = await prisma.admin_preferences.findFirst();
       
       if (existing) {
-        const updated = await prisma.adminPreferences.update({
+        const updated = await prisma.admin_preferences.update({
           where: { id: existing.id },
           data: preferences.toData(),
         });
@@ -44,7 +44,7 @@ export class PrismaAdminPreferencesRepository implements IAdminPreferencesReposi
           defaultLanguage: updated.defaultLanguage as LocaleCodeType,
         });
       } else {
-        const created = await prisma.adminPreferences.create({
+        const created = await prisma.admin_preferences.create({
           data: preferences.toData(),
         });
         return AdminPreferences.fromData({

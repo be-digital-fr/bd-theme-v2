@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// NOTE: Prisma doesn't support includes yet, so models are consolidated here
+// Individual files are maintained in schema/ for organization:
+// - schema/auth.prisma    - Authentication models
+// - schema/admin.prisma   - Admin preferences  
+// - schema/settings.prisma - Site settings models
+// ============================================================================
+
+// AUTH MODELS (from schema/auth.prisma)
+model accounts {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime
+  users                 users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+}
+
+model sessions {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  users     users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model users {
+  id            String     @id
+  name          String?
+  email         String     @unique
+  emailVerified Boolean    @default(false)
+  image         String?
+  role          UserRole   @default(USER)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime
+  accounts      accounts[]
+  sessions      sessions[]
+}
+
+model verifications {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+
+  @@unique([identifier, value])
+}
+
+enum UserRole {
+  USER
+  EMPLOYEE
+  ADMIN
+}
+
+// ADMIN MODELS (from schema/admin.prisma)
+model admin_preferences {
+  id                 String   @id
+  isMultilingual     Boolean  @default(false)
+  supportedLanguages String[] @default([])
+  defaultLanguage    String   @default("fr")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime
+}
+
+// SITE SETTINGS MODELS (from schema/settings.prisma)
+model SiteSettings {
+  id        String   @id @default(cuid())
+  title     String   @default("Paramètres du site")
+  
+  // Header Settings
+  headerSettings HeaderSettings?
+  
+  // Language Settings  
+  isMultilingual     Boolean  @default(false)
+  supportedLanguages String[] @default(["fr"])
+  defaultLanguage    String   @default("fr")
+  
+  // Language Selector Texts
+  languageSelectorTexts LanguageSelectorTexts?
+  
+  // Navigation
+  navigation Navigation?
+  
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model HeaderSettings {
+  id String @id @default(cuid())
+  
+  // Logo configuration
+  logoType     String  @default("text") // 'text', 'image', 'both'
+  logoText     String?
+  logoImageUrl String? // URL de l'image stockée sur Cloudinary
+  logoImageAlt Json?   // Texte alternatif multilingue {fr: "...", en: "..."}
+  
+  // Header style
+  headerStyle   String  @default("transparent") // 'transparent', 'opaque', 'gradient'  
+  stickyHeader  Boolean @default(true)
+  
+  // Header icons
+  showSearchIcon Boolean @default(true)
+  showUserIcon   Boolean @default(true)
+  showCartIcon   Boolean @default(true)
+  cartBadgeCount Int     @default(0)
+  
+  // Relations
+  siteSettingsId String       @unique
+  siteSettings   SiteSettings @relation(fields: [siteSettingsId], references: [id], onDelete: Cascade)
+
+  @@map("header_settings")
+}
+
+model LanguageSelectorTexts {
+  id String @id @default(cuid())
+  
+  chooseLangText Json // Texte multilingue pour "Choisir une langue"
+  
+  // Relations
+  siteSettingsId String       @unique
+  siteSettings   SiteSettings @relation(fields: [siteSettingsId], references: [id], onDelete: Cascade)
+
+  @@map("language_selector_texts")
+}
+
+model Navigation {
+  id String @id @default(cuid())
+  
+  mobileMenuTitle Json // Titre du menu mobile multilingue
+  
+  // Relations
+  siteSettingsId String       @unique
+  siteSettings   SiteSettings @relation(fields: [siteSettingsId], references: [id], onDelete: Cascade)
+  
+  menuItems       MenuItem[]
+  footerMenuItems FooterMenuItem[]
+
+  @@map("navigation")
+}
+
+model MenuItem {
+  id String @id @default(cuid())
+  
+  label        Json    // Libellé multilingue
+  slug         String  // Identifiant slug
+  href         String  // Lien
+  isExternal   Boolean @default(false)
+  openInNewTab Boolean @default(false)
+  isActive     Boolean @default(true)
+  order        Int     @default(0) // Pour l'ordre d'affichage
+  
+  // Relations
+  navigationId String
+  navigation   Navigation @relation(fields: [navigationId], references: [id], onDelete: Cascade)
+
+  @@map("menu_items")
+}
+
+model FooterMenuItem {
+  id String @id @default(cuid())
+  
+  label      Json    // Libellé multilingue
+  href       String  // Lien
+  isExternal Boolean @default(false)
+  isActive   Boolean @default(true)
+  order      Int     @default(0) // Pour l'ordre d'affichage
+  
+  // Relations
+  navigationId String
+  navigation   Navigation @relation(fields: [navigationId], references: [id], onDelete: Cascade)
+
+  @@map("footer_menu_items")
+}

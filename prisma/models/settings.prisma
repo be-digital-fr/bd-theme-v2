@@ -1,0 +1,69 @@
+// SITE SETTINGS MODELS - Content management system
+model site_settings {
+  id                      String                   @id
+  title                   String                   @default("Paramètres du site")
+  isMultilingual          Boolean                  @default(false)
+  supportedLanguages      String[]                 @default(["fr"])
+  defaultLanguage         String                   @default("fr")
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime
+  header_settings         header_settings?
+  language_selector_texts language_selector_texts?
+  navigation              navigation?
+}
+
+model header_settings {
+  id             String        @id
+  logoType       String        @default("text")
+  logoText       String?
+  logoImageUrl   String?
+  logoImageAlt   Json?
+  headerStyle    String        @default("transparent")
+  stickyHeader   Boolean       @default(true)
+  showSearchIcon Boolean       @default(true)
+  showUserIcon   Boolean       @default(true)
+  showCartIcon   Boolean       @default(true)
+  cartBadgeCount Int           @default(0)
+  siteSettingsId String        @unique
+  site_settings  site_settings @relation(fields: [siteSettingsId], references: [id], onDelete: Cascade)
+}
+
+model language_selector_texts {
+  id             String        @id
+  chooseLangText Json
+  siteSettingsId String        @unique
+  site_settings  site_settings @relation(fields: [siteSettingsId], references: [id], onDelete: Cascade)
+}
+
+model navigation {
+  id                String              @id
+  mobileMenuTitle   Json
+  siteSettingsId    String              @unique
+  footer_menu_items footer_menu_items[]
+  menu_items        menu_items[]
+  site_settings     site_settings       @relation(fields: [siteSettingsId], references: [id], onDelete: Cascade)
+}
+
+model menu_items {
+  id           String     @id
+  label        Json
+  slug         String
+  href         String
+  isExternal   Boolean    @default(false)
+  openInNewTab Boolean    @default(false)
+  isActive     Boolean    @default(true)
+  order        Int        @default(0)
+  navigationId String
+  navigation   navigation @relation(fields: [navigationId], references: [id], onDelete: Cascade)
+}
+
+model footer_menu_items {
+  id           String     @id
+  label        Json
+  href         String
+  isExternal   Boolean    @default(false)
+  isActive     Boolean    @default(true)
+  order        Int        @default(0)
+  navigationId String
+  navigation   navigation @relation(fields: [navigationId], references: [id], onDelete: Cascade)
+}

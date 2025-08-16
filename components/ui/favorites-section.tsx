@@ -395,5 +395,3 @@ export const FavoritesSection = React.forwardRef<HTMLElement, FavoritesSectionPr
 
 FavoritesSection.displayName = 'FavoritesSection'
 
-export { FavoritesSection }
-export type { FavoritesSectionProps }

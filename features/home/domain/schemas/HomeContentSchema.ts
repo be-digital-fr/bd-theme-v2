@@ -63,7 +63,6 @@ export type HeroBannerType = z.infer<typeof HeroBannerSchema>;
 export const FeatureItemSchema = z.object({
   icon: SanityImageSchema.optional(),
   title: MultilingualValueSchema.optional(),
-  description: MultilingualValueSchema.optional(),
 });
 
 export type FeatureItemType = z.infer<typeof FeatureItemSchema>;
@@ -124,7 +123,6 @@ export const LocalizedHomeContentSchema = z.object({
     features: z.array(z.object({
       icon: z.string().optional(), // URL string for localized version
       title: z.string().optional(),
-      description: z.string().optional(),
     })).optional(),
   }).optional(),
 });

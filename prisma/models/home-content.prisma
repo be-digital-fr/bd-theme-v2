@@ -1,0 +1,63 @@
+model home_content {
+  id        String   @id @default("home-content-singleton")
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  hero_banner     hero_banner?
+  features_section features_section?
+  seo_metadata    seo_metadata?
+}
+
+model hero_banner {
+  id              String  @id @default("home-content-singleton-hero")
+  isActive        Boolean @default(true)
+  heroTitle       Json
+  heroDescription Json
+  
+  // Boutons
+  primaryButtonText   Json
+  primaryButtonUrl    String @default("/order")
+  secondaryButtonText Json
+  secondaryButtonUrl  String @default("/menu")
+  
+  // Images principales
+  heroImageDesktop    String?
+  heroImageMobile     String?
+  heroImageAlt        Json?
+  
+  // Images de fond
+  backgroundImageDesktop String?
+  backgroundImageMobile  String?
+  
+  homeContentId String       @unique
+  home_content  home_content @relation(fields: [homeContentId], references: [id], onDelete: Cascade)
+}
+
+model features_section {
+  id        String  @id @default("home-content-singleton-features")
+  isActive  Boolean @default(true)
+  
+  homeContentId String         @unique
+  home_content  home_content   @relation(fields: [homeContentId], references: [id], onDelete: Cascade)
+  feature_items feature_items[]
+}
+
+model feature_items {
+  id          String @id @default(uuid())
+  title       Json
+  iconUrl     String
+  order       Int    @default(0)
+  
+  featuresSectionId String           @map("features_section_id")
+  features_section  features_section @relation(fields: [featuresSectionId], references: [id], onDelete: Cascade)
+}
+
+model seo_metadata {
+  id             String @id @default("home-content-singleton-seo")
+  seoTitle       Json?
+  seoDescription Json?
+  ogImage        String?
+  
+  homeContentId String       @unique
+  home_content  home_content @relation(fields: [homeContentId], references: [id], onDelete: Cascade)
+}

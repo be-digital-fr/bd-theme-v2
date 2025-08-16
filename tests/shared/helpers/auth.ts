@@ -87,6 +87,13 @@ export async function signInWithModal(page: Page, user: TestUser) {
 }
 
 /**
+ * Sign in a test user (main function for test authentication)
+ */
+export async function signInTestUser(page: Page, user: TestUser) {
+  return await signInWithPage(page, user);
+}
+
+/**
  * Sign in a user via the auth page
  */
 export async function signInWithPage(page: Page, user: TestUser) {

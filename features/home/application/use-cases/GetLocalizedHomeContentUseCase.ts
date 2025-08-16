@@ -59,8 +59,7 @@ export class GetLocalizedHomeContentUseCase {
         sectionDescription: this.resolveMultilingualValue(homeContent.featuresSection.sectionDescription, locale),
         features: homeContent.featuresSection.features ? homeContent.featuresSection.features.map((feature: any) => ({
           icon: feature.icon, // Keep icon as-is (it's an image object)
-          title: this.resolveMultilingualValue(feature.title, locale),
-          description: this.resolveMultilingualValue(feature.description, locale)
+          title: this.resolveMultilingualValue(feature.title, locale)
         })) : []
       };
     }

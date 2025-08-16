@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from '@tanstack/react-query';
-import { client } from '@/sanity/lib/client';
+// Client Sanity supprimé - utilise des valeurs par défaut
 
 export interface AuthSettings {
   _id: string;
@@ -38,69 +38,41 @@ export interface AuthSettings {
   showSocialProviders: boolean;
 }
 
-const AUTH_SETTINGS_QUERY = `
-  *[_type == "authSettings"][0] {
-    _id,
-    _type,
-    redirectType,
-    defaultAuthPage,
-    googleAuth{
-      enabled,
-      clientId,
-      clientSecret
-    },
-    facebookAuth{
-      enabled,
-      appId,
-      appSecret
-    },
-    enableTwitterAuth,
-    enableGitHubAuth,
-    modalTitle,
-    modalDescription,
-    authButtonText,
-    showSocialProviders
-  }
-`;
+// Valeurs par défaut pour les paramètres d'authentification
+const DEFAULT_AUTH_SETTINGS: AuthSettings = {
+  _id: 'default',
+  _type: 'authSettings',
+  redirectType: 'page',
+  defaultAuthPage: 'signin',
+  googleAuth: {
+    enabled: false,
+  },
+  facebookAuth: {
+    enabled: false,
+  },
+  enableTwitterAuth: false,
+  enableGitHubAuth: false,
+  modalTitle: {
+    fr: 'Connexion à votre compte',
+    en: 'Sign in to your account',
+  },
+  modalDescription: {
+    fr: 'Accédez à votre espace personnel',
+    en: 'Access your personal space',
+  },
+  authButtonText: {
+    fr: 'Se connecter',
+    en: 'Sign in',
+  },
+  showSocialProviders: false,
+};
 
 export function useAuthSettings() {
   return useQuery<AuthSettings | null>({
     queryKey: ['authSettings'],
     queryFn: async () => {
-      try {
-        const data = await client.fetch(AUTH_SETTINGS_QUERY);
-        return data || null;
-      } catch (error) {
-        console.error('Error fetching auth settings:', error);
-        // Retourner des valeurs par défaut en cas d'erreur
-        return {
-          _id: 'default',
-          _type: 'authSettings',
-          redirectType: 'page',
-          defaultAuthPage: 'signin',
-          googleAuth: {
-            enabled: false,
-          },
-          facebookAuth: {
-            enabled: false,
-          },
-          enableTwitterAuth: false,
-          enableGitHubAuth: false,
-          modalTitle: {
-            fr: 'Connexion à votre compte',
-            en: 'Sign in to your account',
-          },
-          modalDescription: {
-            fr: 'Accédez à votre espace personnel',
-            en: 'Access your personal space',
-          },
-          authButtonText: {
-            fr: 'Se connecter',
-            en: 'Sign in',
-          },
-          showSocialProviders: false,
-        } as AuthSettings;
-      }
+      // Retourner directement les valeurs par défaut
+      return DEFAULT_AUTH_SETTINGS;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes

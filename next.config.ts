@@ -16,7 +16,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cdn.sanity.io',
+        hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
     ],
     formats: ['image/avif', 'image/webp'],
@@ -31,8 +35,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Apply headers to all routes except API, static files, and Sanity Studio
-        source: '/((?!api|_next/static|_next/image|favicon.ico|studio).*)',
+        // Apply headers to all routes except API, static files
+        source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
         headers: [
           {
             key: 'X-DNS-Prefetch-Control',
@@ -62,28 +66,13 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=()'
           },
-          // Commented out to allow Sanity CDN images
-          // {
-          //   key: 'Cross-Origin-Embedder-Policy',
-          //   value: 'require-corp'
-          // },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp'
+          },
           {
             key: 'Cross-Origin-Opener-Policy',
             value: 'same-origin'
-          },
-          {
-            key: 'Cross-Origin-Resource-Policy',
-            value: 'cross-origin'
-          }
-        ]
-      },
-      // Specific headers for Sanity Studio to allow uploads
-      {
-        source: '/studio/:path*',
-        headers: [
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'unsafe-none'
           },
           {
             key: 'Cross-Origin-Resource-Policy',

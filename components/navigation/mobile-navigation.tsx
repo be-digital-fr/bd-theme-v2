@@ -6,6 +6,7 @@ import { useLocale } from '@/components/providers/locale-provider';
 import { cn } from '@/lib/utils';
 import { Languages } from 'lucide-react';
 import { LanguageSelector } from '@/components/language-selector';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import { MenuItem } from '@/hooks/useHeaderData';
 
@@ -14,16 +15,41 @@ interface MobileNavigationProps {
   onItemClick?: () => void;
   className?: string;
   showLanguageSelector?: boolean;
+  isLoading?: boolean;
 }
 
 export function MobileNavigation({ 
   menuItems, 
   onItemClick, 
   className,
-  showLanguageSelector = true
+  showLanguageSelector = true,
+  isLoading = false
 }: MobileNavigationProps) {
   const pathname = usePathname();
   const { resolveMultilingualValue } = useLocale();
+
+  if (isLoading || !menuItems || menuItems.length === 0) {
+    return (
+      <nav className={cn("flex flex-col space-y-2 pt-4", className)}>
+        <Skeleton className="h-12 w-full rounded-md" />
+        <Skeleton className="h-12 w-full rounded-md" />
+        <Skeleton className="h-12 w-full rounded-md" />
+        <Skeleton className="h-12 w-full rounded-md" />
+        
+        {showLanguageSelector && (
+          <div className="px-4 py-3">
+            <div className="flex items-center gap-3 mb-3">
+              <Skeleton className="h-5 w-5 rounded" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <div className="pl-8">
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+          </div>
+        )}
+      </nav>
+    );
+  }
 
   return (
     <nav className={cn("flex flex-col space-y-2 pt-4", className)}>

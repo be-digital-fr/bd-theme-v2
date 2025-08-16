@@ -55,14 +55,24 @@ export function Logo({
   // Utiliser les headerSettings passés en props ou valeurs par défaut
   const logoSettings = headerSettings || {};
 
-  const logoText = logoSettings.logoText || 'BD Theme';
+  const logoText = logoSettings.logoText;
   const logoAlt = logoSettings.logoImage?.alt 
     ? resolveMultilingualValue(logoSettings.logoImage.alt)
     : 'Logo';
   const logoImage = logoSettings.logoImage;
 
-  // Afficher skeleton pendant le chargement (utiliser isHeaderLoading si fourni)
-  if ((isHeaderLoading || false) && showSkeleton) {
+  // Afficher skeleton pendant le chargement dans ces cas :
+  // 1. isHeaderLoading est true (chargement explicite)
+  // 2. headerSettings est null/undefined (pas encore chargé)
+  // 3. logoText est undefined ou "BD Theme" (valeur par défaut = pas encore chargé)
+  const shouldShowSkeleton = showSkeleton && (
+    isHeaderLoading || 
+    !headerSettings || 
+    !logoText || 
+    logoText === 'BD Theme'
+  );
+  
+  if (shouldShowSkeleton) {
     return (
       <div className={cn("flex items-center space-x-2", className)} role="status" aria-label="Chargement du logo">
         {/* Show different skeleton based on whether we expect an image or text logo */}
@@ -111,7 +121,7 @@ export function Logo({
           "text-primary",
           textClassName
         )}>
-          {logoText}
+          {logoText || 'Mon Site'}
         </span>
       )}
     </div>

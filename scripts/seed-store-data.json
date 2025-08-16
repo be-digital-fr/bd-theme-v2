@@ -1,0 +1,1090 @@
+{
+  "categories": [
+    {
+      "name": "Wraps Healthy",
+      "slug": "wraps-healthy",
+      "description": "Wraps frais et équilibrés aux saveurs du monde"
+    },
+    {
+      "name": "Bowls Nutritifs",
+      "slug": "bowls-nutritifs",
+      "description": "Bowls complets riches en nutriments et saveurs"
+    },
+    {
+      "name": "Burgers Équilibrés",
+      "slug": "burgers-equilibres",
+      "description": "Burgers revisités avec des ingrédients sains"
+    },
+    {
+      "name": "Salades Gourmandes",
+      "slug": "salades-gourmandes",
+      "description": "Salades créatives et rassasiantes"
+    },
+    {
+      "name": "Burritos Énergétiques",
+      "slug": "burritos-energetiques",
+      "description": "Burritos copieux aux saveurs mexicaines authentiques"
+    },
+    {
+      "name": "Snacks & Jus",
+      "slug": "snacks-jus",
+      "description": "Collations saines et boissons fraîches détox"
+    }
+  ],
+  "ingredients": [
+    {
+      "name": "Quinoa bio",
+      "description": "Graines de quinoa biologiques riches en protéines",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Avocat frais",
+      "description": "Avocat mûr à point, source d'oméga-3",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Poulet fermier grillé",
+      "description": "Blanc de poulet fermier grillé sans antibiotiques",
+      "allergens": [],
+      "isVegetarian": false,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Saumon fumé",
+      "description": "Saumon fumé d'Écosse, riche en oméga-3",
+      "allergens": ["poisson"],
+      "isVegetarian": false,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Feta grecque AOP",
+      "description": "Fromage feta authentique au lait de brebis",
+      "allergens": ["lait"],
+      "isVegetarian": true,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Roquette sauvage",
+      "description": "Jeunes pousses de roquette au goût piquant",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Tomates cerises",
+      "description": "Tomates cerises colorées et juteuses",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Concombre bio",
+      "description": "Concombre croquant et rafraîchissant",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Houmous maison",
+      "description": "Crème de pois chiches aux épices orientales",
+      "allergens": ["sésame"],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Falafels épicés",
+      "description": "Boulettes de légumineuses aux herbes fraîches",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Tortilla de blé complet",
+      "description": "Galette de blé complet artisanale",
+      "allergens": ["gluten"],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": false
+    },
+    {
+      "name": "Pain complet bio",
+      "description": "Pain au levain naturel riche en fibres",
+      "allergens": ["gluten"],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": false
+    },
+    {
+      "name": "Riz basmati",
+      "description": "Riz basmati parfumé cuit à la perfection",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Patate douce rôtie",
+      "description": "Cubes de patate douce caramélisés au four",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Crevettes grillées",
+      "description": "Crevettes fraîches grillées aux herbes",
+      "allergens": ["crustacés"],
+      "isVegetarian": false,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Thon albacore",
+      "description": "Thon albacore mi-cuit de qualité sashimi",
+      "allergens": ["poisson"],
+      "isVegetarian": false,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Mozzarella di bufala",
+      "description": "Mozzarella crémeuse au lait de bufflonne",
+      "allergens": ["lait"],
+      "isVegetarian": true,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Épinards frais",
+      "description": "Jeunes pousses d'épinards tendres",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Mangue fraîche",
+      "description": "Cubes de mangue sucrée et parfumée",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Sauce tahini",
+      "description": "Crème de sésame onctueuse et parfumée",
+      "allergens": ["sésame"],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Vinaigrette citron-herbes",
+      "description": "Assaisonnement léger aux agrumes et fines herbes",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Graines de tournesol",
+      "description": "Graines croquantes riches en vitamine E",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Noix de cajou",
+      "description": "Noix de cajou grillées non salées",
+      "allergens": ["fruits à coque"],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Lentilles corail",
+      "description": "Lentilles corail cuites aux épices douces",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Chou rouge",
+      "description": "Lamelles de chou rouge croquant",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Carotte râpée",
+      "description": "Carottes bio râpées finement",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Poivron grillé",
+      "description": "Lamelles de poivrons colorés grillés",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Oignon rouge",
+      "description": "Lamelles d'oignon rouge doux",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Coriandre fraîche",
+      "description": "Feuilles de coriandre parfumées",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Guacamole maison",
+      "description": "Purée d'avocat aux épices mexicaines",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Haricots noirs",
+      "description": "Haricots noirs mijotés aux épices",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Maïs grillé",
+      "description": "Grains de maïs grillés légèrement fumés",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Sauce chipotle",
+      "description": "Sauce pimentée fumée mexicaine",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Cheddar affiné",
+      "description": "Fromage cheddar vieilli 12 mois",
+      "allergens": ["lait"],
+      "isVegetarian": true,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Tofu fumé",
+      "description": "Tofu bio fumé aux herbes de Provence",
+      "allergens": ["soja"],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Graines de chia",
+      "description": "Superaliment riche en oméga-3",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Cranberries séchées",
+      "description": "Canneberges séchées sans sucre ajouté",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Sauce yogourt grec",
+      "description": "Sauce onctueuse au yaourt grec et menthe",
+      "allergens": ["lait"],
+      "isVegetarian": true,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Bœuf bio haché",
+      "description": "Viande de bœuf bio élevé aux pâturages",
+      "allergens": [],
+      "isVegetarian": false,
+      "isVegan": false,
+      "isGlutenFree": true
+    },
+    {
+      "name": "Pousses de soja",
+      "description": "Jeunes pousses croquantes et fraîches",
+      "allergens": [],
+      "isVegetarian": true,
+      "isVegan": true,
+      "isGlutenFree": true
+    }
+  ],
+  "products": [
+    {
+      "title": "Wrap Méditerranéen Soleil",
+      "shortDescription": "Houmous, falafels, légumes croquants et sauce tahini dans une tortilla moelleuse",
+      "longDescription": "Un voyage en Méditerranée avec nos falafels maison, houmous crémeux et légumes frais. Cette combinaison riche en fibres et protéines végétales offre un repas équilibré aux saveurs authentiques du Moyen-Orient.",
+      "price": "9.90",
+      "preparationTime": 8,
+      "categorySlug": "wraps-healthy",
+      "ingredients": [
+        { "name": "Tortilla de blé complet", "quantity": "1 pièce", "isOptional": false, "isRemovable": false },
+        { "name": "Houmous maison", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Falafels épicés", "quantity": "4 pièces", "isOptional": false, "isRemovable": false },
+        { "name": "Tomates cerises", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Roquette sauvage", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce tahini", "quantity": "20g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 485,
+        "proteins": "18.5",
+        "carbs": "52.3",
+        "fats": "22.1",
+        "fiber": "12.8",
+        "sodium": "720",
+        "sugar": "8.2"
+      },
+      "badges": [
+        { "type": "RECOMMENDED", "text": "Recommandé", "color": "#10b981" }
+      ],
+      "extras": [
+        { "name": "Avocat frais", "price": "2.50", "type": "ADDON" },
+        { "name": "Feta grecque AOP", "price": "2.00", "type": "ADDON" },
+        { "name": "Double falafels", "price": "3.00", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Bowl Quinoa Power",
+      "shortDescription": "Base quinoa, poulet grillé, avocat, légumes colorés et vinaigrette citron-herbes",
+      "longDescription": "Un bowl complet alliant quinoa bio, protéines de qualité et légumes de saison. Riche en acides aminés essentiels et fibres, ce plat énergétique vous accompagne toute la journée avec ses saveurs fraîches et équilibrées.",
+      "price": "12.90",
+      "preparationTime": 10,
+      "categorySlug": "bowls-nutritifs",
+      "ingredients": [
+        { "name": "Quinoa bio", "quantity": "80g", "isOptional": false, "isRemovable": false },
+        { "name": "Poulet fermier grillé", "quantity": "120g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "60g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "60g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Carotte râpée", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Épinards frais", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Graines de tournesol", "quantity": "15g", "isOptional": true, "isRemovable": true },
+        { "name": "Vinaigrette citron-herbes", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 620,
+        "proteins": "42.8",
+        "carbs": "38.2",
+        "fats": "28.5",
+        "fiber": "11.2",
+        "sodium": "580",
+        "sugar": "12.1"
+      },
+      "badges": [
+        { "type": "BESTSELLER", "text": "Meilleure vente", "color": "#f59e0b" }
+      ],
+      "extras": [
+        { "name": "Saumon fumé", "price": "4.50", "type": "SUBSTITUTE" },
+        { "name": "Tofu fumé", "price": "2.00", "type": "SUBSTITUTE" },
+        { "name": "Double portion quinoa", "price": "2.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Burger Végétal Gourmand",
+      "shortDescription": "Steak de lentilles, avocat, roquette et sauce yogourt grec sur pain complet",
+      "longDescription": "Notre burger 100% végétal qui ne fait aucun compromis sur le goût ! Steak de lentilles corail maison, légumes croquants et sauce crémeuse dans un pain complet artisanal. Une alternative saine et savoureuse aux burgers traditionnels.",
+      "price": "11.50",
+      "preparationTime": 12,
+      "categorySlug": "burgers-equilibres",
+      "ingredients": [
+        { "name": "Pain complet bio", "quantity": "1 pièce", "isOptional": false, "isRemovable": false },
+        { "name": "Lentilles corail", "quantity": "100g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Roquette sauvage", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Oignon rouge", "quantity": "20g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce yogourt grec", "quantity": "30g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 520,
+        "proteins": "22.3",
+        "carbs": "58.7",
+        "fats": "20.1",
+        "fiber": "18.5",
+        "sodium": "650",
+        "sugar": "11.8"
+      },
+      "badges": [
+        { "type": "NEW", "text": "Nouveau", "color": "#3b82f6" }
+      ],
+      "extras": [
+        { "name": "Cheddar affiné", "price": "2.00", "type": "ADDON" },
+        { "name": "Frites de patate douce", "price": "3.50", "type": "ADDON" },
+        { "name": "Sans sauce", "price": "0.00", "type": "OPTION" }
+      ]
+    },
+    {
+      "title": "Salade Buddha Colorée",
+      "shortDescription": "Mélange de graines, légumes arc-en-ciel, avocat et vinaigrette aux herbes",
+      "longDescription": "Une explosion de couleurs et de nutriments dans cette salade complète. Graines de chia, légumes de saison et avocat créent un équilibre parfait entre saveurs et bienfaits nutritionnels. Idéale pour faire le plein de vitamines.",
+      "price": "10.90",
+      "preparationTime": 7,
+      "categorySlug": "salades-gourmandes",
+      "ingredients": [
+        { "name": "Épinards frais", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Roquette sauvage", "quantity": "40g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "70g", "isOptional": false, "isRemovable": true },
+        { "name": "Carotte râpée", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Chou rouge", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Graines de chia", "quantity": "10g", "isOptional": false, "isRemovable": true },
+        { "name": "Noix de cajou", "quantity": "25g", "isOptional": false, "isRemovable": true },
+        { "name": "Cranberries séchées", "quantity": "20g", "isOptional": false, "isRemovable": true },
+        { "name": "Vinaigrette citron-herbes", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 420,
+        "proteins": "12.8",
+        "carbs": "28.5",
+        "fats": "31.2",
+        "fiber": "15.8",
+        "sodium": "320",
+        "sugar": "18.7"
+      },
+      "badges": [
+        { "type": "RECOMMENDED", "text": "Recommandé", "color": "#10b981" }
+      ],
+      "extras": [
+        { "name": "Poulet fermier grillé", "price": "4.00", "type": "ADDON" },
+        { "name": "Saumon fumé", "price": "4.50", "type": "ADDON" },
+        { "name": "Double avocat", "price": "2.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Burrito Fiesta Mexicain",
+      "shortDescription": "Haricots noirs, riz, guacamole, légumes grillés et sauce chipotle fumée",
+      "longDescription": "L'authenticité mexicaine dans un burrito généreux ! Haricots noirs riches en protéines, riz parfumé et légumes grillés, le tout relevé par notre guacamole maison et sauce chipotle fumée. Un festival de saveurs épicées et équilibrées.",
+      "price": "11.90",
+      "preparationTime": 9,
+      "categorySlug": "burritos-energetiques",
+      "ingredients": [
+        { "name": "Tortilla de blé complet", "quantity": "1 grande", "isOptional": false, "isRemovable": false },
+        { "name": "Haricots noirs", "quantity": "80g", "isOptional": false, "isRemovable": false },
+        { "name": "Riz basmati", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Guacamole maison", "quantity": "50g", "isOptional": false, "isRemovable": false },
+        { "name": "Poivron grillé", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Maïs grillé", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Coriandre fraîche", "quantity": "10g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce chipotle", "quantity": "20g", "isOptional": false, "isRemovable": true }
+      ],
+      "nutritionalInfo": {
+        "calories": 580,
+        "proteins": "18.2",
+        "carbs": "78.5",
+        "fats": "22.8",
+        "fiber": "16.3",
+        "sodium": "920",
+        "sugar": "8.9"
+      },
+      "badges": [
+        { "type": "LIMITED", "text": "Série limitée", "color": "#ec4899" }
+      ],
+      "extras": [
+        { "name": "Poulet fermier grillé", "price": "4.00", "type": "ADDON" },
+        { "name": "Cheddar affiné", "price": "2.00", "type": "ADDON" },
+        { "name": "Double guacamole", "price": "2.50", "type": "ADDON" },
+        { "name": "Sans sauce pimentée", "price": "0.00", "type": "OPTION" }
+      ]
+    },
+    {
+      "title": "Smoothie Bowl Tropical",
+      "shortDescription": "Base mangue-avocat, graines de chia, noix de cajou et fruits exotiques",
+      "longDescription": "Un petit-déjeuner ou collation vitaminée aux saveurs tropicales. Base crémeuse mangue-avocat enrichie de superaliments, garnie de fruits frais et graines croquantes. Une explosion de vitamines et antioxydants pour bien démarrer la journée.",
+      "price": "8.90",
+      "preparationTime": 5,
+      "categorySlug": "snacks-jus",
+      "ingredients": [
+        { "name": "Mangue fraîche", "quantity": "120g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "40g", "isOptional": false, "isRemovable": false },
+        { "name": "Graines de chia", "quantity": "15g", "isOptional": false, "isRemovable": true },
+        { "name": "Noix de cajou", "quantity": "20g", "isOptional": false, "isRemovable": true },
+        { "name": "Cranberries séchées", "quantity": "15g", "isOptional": false, "isRemovable": true }
+      ],
+      "nutritionalInfo": {
+        "calories": 320,
+        "proteins": "8.5",
+        "carbs": "35.2",
+        "fats": "18.7",
+        "fiber": "12.1",
+        "sodium": "15",
+        "sugar": "28.3"
+      },
+      "badges": [
+        { "type": "NEW", "text": "Nouveau", "color": "#3b82f6" }
+      ],
+      "extras": [
+        { "name": "Protéine végétale", "price": "2.00", "type": "ADDON" },
+        { "name": "Granola maison", "price": "1.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Wrap Saumon Nordique",
+      "shortDescription": "Saumon fumé, avocat, concombre, épinards et sauce crémeuse à l'aneth",
+      "longDescription": "Inspiré des saveurs scandinaves, ce wrap raffiné associe saumon fumé d'Écosse, légumes frais et avocat crémeux. Riche en oméga-3 et protéines de haute qualité, c'est le choix parfait pour un déjeuner léger et nutritif.",
+      "price": "12.50",
+      "preparationTime": 6,
+      "categorySlug": "wraps-healthy",
+      "ingredients": [
+        { "name": "Tortilla de blé complet", "quantity": "1 pièce", "isOptional": false, "isRemovable": false },
+        { "name": "Saumon fumé", "quantity": "80g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Épinards frais", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce yogourt grec", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 450,
+        "proteins": "28.5",
+        "carbs": "32.1",
+        "fats": "24.8",
+        "fiber": "8.2",
+        "sodium": "1180",
+        "sugar": "6.3"
+      },
+      "badges": [
+        { "type": "BESTSELLER", "text": "Meilleure vente", "color": "#f59e0b" }
+      ],
+      "extras": [
+        { "name": "Double saumon", "price": "5.00", "type": "ADDON" },
+        { "name": "Câpres", "price": "1.00", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Bowl Asiatique Fusion",
+      "shortDescription": "Riz, thon mi-cuit, avocat, légumes croquants et sauce soja-gingembre",
+      "longDescription": "Un voyage gustatif vers l'Asie avec notre thon albacore mi-cuit, riz parfumé et légumes croquants. Cette création fusion marie les saveurs traditionnelles japonaises à une présentation moderne, riche en protéines nobles et légumes frais.",
+      "price": "13.90",
+      "preparationTime": 11,
+      "categorySlug": "bowls-nutritifs",
+      "ingredients": [
+        { "name": "Riz basmati", "quantity": "80g", "isOptional": false, "isRemovable": false },
+        { "name": "Thon albacore", "quantity": "100g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "60g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Carotte râpée", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Pousses de soja", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Coriandre fraîche", "quantity": "10g", "isOptional": false, "isRemovable": true },
+        { "name": "Graines de sésame", "quantity": "10g", "isOptional": false, "isRemovable": true }
+      ],
+      "nutritionalInfo": {
+        "calories": 580,
+        "proteins": "35.2",
+        "carbs": "42.8",
+        "fats": "26.5",
+        "fiber": "9.1",
+        "sodium": "680",
+        "sugar": "8.7"
+      },
+      "badges": [
+        { "type": "RECOMMENDED", "text": "Recommandé", "color": "#10b981" }
+      ],
+      "extras": [
+        { "name": "Sauce wasabi", "price": "1.50", "type": "ADDON" },
+        { "name": "Avocat supplémentaire", "price": "2.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Burger Bœuf Artisanal",
+      "shortDescription": "Steak de bœuf bio, cheddar, roquette, tomate et sauce maison sur pain complet",
+      "longDescription": "Le burger gourmand revisité avec des ingrédients d'exception ! Bœuf bio élevé aux pâturages, cheddar affiné et légumes frais dans un pain complet artisanal. Une version équilibrée du grand classique, sans compromis sur le goût authentique.",
+      "price": "12.90",
+      "preparationTime": 10,
+      "categorySlug": "burgers-equilibres",
+      "ingredients": [
+        { "name": "Pain complet bio", "quantity": "1 pièce", "isOptional": false, "isRemovable": false },
+        { "name": "Bœuf bio haché", "quantity": "120g", "isOptional": false, "isRemovable": false },
+        { "name": "Cheddar affiné", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Roquette sauvage", "quantity": "25g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Oignon rouge", "quantity": "20g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce yogourt grec", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 620,
+        "proteins": "38.5",
+        "carbs": "35.2",
+        "fats": "32.1",
+        "fiber": "8.9",
+        "sodium": "780",
+        "sugar": "9.8"
+      },
+      "badges": [
+        { "type": "BESTSELLER", "text": "Meilleure vente", "color": "#f59e0b" }
+      ],
+      "extras": [
+        { "name": "Avocat frais", "price": "2.50", "type": "ADDON" },
+        { "name": "Bacon artisanal", "price": "3.00", "type": "ADDON" },
+        { "name": "Double steak", "price": "4.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Salade Océane Fraîcheur",
+      "shortDescription": "Crevettes grillées, avocat, mangue, roquette et vinaigrette passion-citron vert",
+      "longDescription": "Une évasion maritime avec nos crevettes grillées aux herbes, mangue juteuse et avocat crémeux. Cette salade raffinée aux accents tropicaux offre un parfait équilibre entre protéines iodées, fruits exotiques et légumes croquants.",
+      "price": "13.50",
+      "preparationTime": 8,
+      "categorySlug": "salades-gourmandes",
+      "ingredients": [
+        { "name": "Roquette sauvage", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Épinards frais", "quantity": "40g", "isOptional": false, "isRemovable": false },
+        { "name": "Crevettes grillées", "quantity": "100g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "60g", "isOptional": false, "isRemovable": true },
+        { "name": "Mangue fraîche", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Vinaigrette citron-herbes", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 420,
+        "proteins": "28.8",
+        "carbs": "22.5",
+        "fats": "24.2",
+        "fiber": "11.8",
+        "sodium": "680",
+        "sugar": "16.3"
+      },
+      "badges": [
+        { "type": "LIMITED", "text": "Série limitée", "color": "#ec4899" }
+      ],
+      "extras": [
+        { "name": "Double crevettes", "price": "4.50", "type": "ADDON" },
+        { "name": "Noix de cajou", "price": "2.00", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Burrito Veggie Protéiné",
+      "shortDescription": "Tofu fumé, quinoa, haricots, légumes colorés et guacamole dans tortilla complète",
+      "longDescription": "La version végétarienne de notre burrito signature ! Tofu fumé aux herbes, quinoa bio et haricots noirs créent un apport protéique complet, accompagnés de légumes frais et guacamole maison. Nourrissant, coloré et plein de saveurs authentiques.",
+      "price": "10.90",
+      "preparationTime": 9,
+      "categorySlug": "burritos-energetiques",
+      "ingredients": [
+        { "name": "Tortilla de blé complet", "quantity": "1 grande", "isOptional": false, "isRemovable": false },
+        { "name": "Tofu fumé", "quantity": "80g", "isOptional": false, "isRemovable": false },
+        { "name": "Quinoa bio", "quantity": "50g", "isOptional": false, "isRemovable": false },
+        { "name": "Haricots noirs", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Guacamole maison", "quantity": "40g", "isOptional": false, "isRemovable": false },
+        { "name": "Poivron grillé", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Maïs grillé", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Coriandre fraîche", "quantity": "10g", "isOptional": false, "isRemovable": true }
+      ],
+      "nutritionalInfo": {
+        "calories": 520,
+        "proteins": "22.8",
+        "carbs": "62.1",
+        "fats": "20.5",
+        "fiber": "18.2",
+        "sodium": "780",
+        "sugar": "7.8"
+      },
+      "badges": [
+        { "type": "NEW", "text": "Nouveau", "color": "#3b82f6" }
+      ],
+      "extras": [
+        { "name": "Avocat supplémentaire", "price": "2.50", "type": "ADDON" },
+        { "name": "Double tofu", "price": "3.00", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Green Juice Détox",
+      "shortDescription": "Épinards, concombre, avocat, pomme verte et gingembre frais pressés à froid",
+      "longDescription": "Notre cocktail détox aux vertus purifiantes ! Légumes verts, fruits frais et gingembre stimulant sont pressés à froid pour préserver tous les nutriments. Riche en chlorophylle, vitamines et antioxydants pour revitaliser votre organisme naturellement.",
+      "price": "6.90",
+      "preparationTime": 5,
+      "categorySlug": "snacks-jus",
+      "ingredients": [
+        { "name": "Épinards frais", "quantity": "80g", "isOptional": false, "isRemovable": false },
+        { "name": "Concombre bio", "quantity": "100g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "30g", "isOptional": false, "isRemovable": true }
+      ],
+      "nutritionalInfo": {
+        "calories": 180,
+        "proteins": "6.2",
+        "carbs": "18.5",
+        "fats": "10.8",
+        "fiber": "8.9",
+        "sodium": "45",
+        "sugar": "12.1"
+      },
+      "badges": [
+        { "type": "RECOMMENDED", "text": "Recommandé", "color": "#10b981" }
+      ],
+      "extras": [
+        { "name": "Shot de gingembre", "price": "1.50", "type": "ADDON" },
+        { "name": "Spiruline bio", "price": "2.00", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Wrap Falafel Gourmand",
+      "shortDescription": "Falafels croustillants, houmous, taboulé, légumes frais et sauce tahini",
+      "longDescription": "L'authenticité du Moyen-Orient dans un wrap généreux ! Nos falafels maison croustillants à l'extérieur et moelleux à l'intérieur, accompagnés d'houmous crémeux et taboulé parfumé. Une explosion de saveurs méditerranéennes riches en fibres et protéines végétales.",
+      "price": "9.50",
+      "preparationTime": 7,
+      "categorySlug": "wraps-healthy",
+      "ingredients": [
+        { "name": "Tortilla de blé complet", "quantity": "1 pièce", "isOptional": false, "isRemovable": false },
+        { "name": "Falafels épicés", "quantity": "5 pièces", "isOptional": false, "isRemovable": false },
+        { "name": "Houmous maison", "quantity": "50g", "isOptional": false, "isRemovable": false },
+        { "name": "Tomates cerises", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Roquette sauvage", "quantity": "25g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce tahini", "quantity": "20g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 480,
+        "proteins": "19.5",
+        "carbs": "54.2",
+        "fats": "21.8",
+        "fiber": "13.1",
+        "sodium": "720",
+        "sugar": "8.9"
+      },
+      "badges": [
+        { "type": "BESTSELLER", "text": "Meilleure vente", "color": "#f59e0b" }
+      ],
+      "extras": [
+        { "name": "Feta grecque AOP", "price": "2.00", "type": "ADDON" },
+        { "name": "Olives noires", "price": "1.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Bowl Méditerranéen Complet",
+      "shortDescription": "Quinoa, falafels, légumes grillés, feta, olives et vinaigrette aux herbes",
+      "longDescription": "Un voyage ensoleillé en Méditerranée ! Quinoa bio, falafels dorés et légumes grillés parfumés aux herbes de Provence, relevés par la feta crémeuse et olives authentiques. Ce bowl équilibré marie parfaitement tradition culinaire et nutrition moderne.",
+      "price": "11.90",
+      "preparationTime": 10,
+      "categorySlug": "bowls-nutritifs",
+      "ingredients": [
+        { "name": "Quinoa bio", "quantity": "70g", "isOptional": false, "isRemovable": false },
+        { "name": "Falafels épicés", "quantity": "4 pièces", "isOptional": false, "isRemovable": false },
+        { "name": "Feta grecque AOP", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Poivron grillé", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Roquette sauvage", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Vinaigrette citron-herbes", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 550,
+        "proteins": "24.8",
+        "carbs": "45.2",
+        "fats": "28.5",
+        "fiber": "12.8",
+        "sodium": "880",
+        "sugar": "9.2"
+      },
+      "badges": [
+        { "type": "RECOMMENDED", "text": "Recommandé", "color": "#10b981" }
+      ],
+      "extras": [
+        { "name": "Houmous maison", "price": "2.50", "type": "ADDON" },
+        { "name": "Double falafels", "price": "3.00", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Burger Poulet Avocat",
+      "shortDescription": "Blanc de poulet grillé, avocat, roquette, tomate et sauce ranch sur pain complet",
+      "longDescription": "Le classique revisité avec des ingrédients premium ! Blanc de poulet fermier grillé aux herbes, avocat crémeux et légumes croquants dans un pain complet moelleux. Notre sauce ranch maison apporte la touche gourmande à ce burger équilibré et savoureux.",
+      "price": "11.90",
+      "preparationTime": 9,
+      "categorySlug": "burgers-equilibres",
+      "ingredients": [
+        { "name": "Pain complet bio", "quantity": "1 pièce", "isOptional": false, "isRemovable": false },
+        { "name": "Poulet fermier grillé", "quantity": "120g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Roquette sauvage", "quantity": "25g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce yogourt grec", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 580,
+        "proteins": "42.5",
+        "carbs": "32.8",
+        "fats": "26.2",
+        "fiber": "9.1",
+        "sodium": "650",
+        "sugar": "8.5"
+      },
+      "badges": [
+        { "type": "BESTSELLER", "text": "Meilleure vente", "color": "#f59e0b" }
+      ],
+      "extras": [
+        { "name": "Cheddar affiné", "price": "2.00", "type": "ADDON" },
+        { "name": "Double avocat", "price": "2.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Salade Power Protéinée",
+      "shortDescription": "Quinoa, lentilles, avocat, légumes croquants, graines et vinaigrette énergisante",
+      "longDescription": "La salade des sportifs et actifs ! Combinaison parfaite de quinoa et lentilles pour un apport complet en acides aminés essentiels, enrichie d'avocat, légumes colorés et graines nutritives. Cette salade énergisante vous accompagne dans vos défis quotidiens.",
+      "price": "12.50",
+      "preparationTime": 8,
+      "categorySlug": "salades-gourmandes",
+      "ingredients": [
+        { "name": "Quinoa bio", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Lentilles corail", "quantity": "70g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "60g", "isOptional": false, "isRemovable": true },
+        { "name": "Épinards frais", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Carotte râpée", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Graines de tournesol", "quantity": "15g", "isOptional": false, "isRemovable": true },
+        { "name": "Graines de chia", "quantity": "10g", "isOptional": false, "isRemovable": true },
+        { "name": "Vinaigrette citron-herbes", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 520,
+        "proteins": "22.8",
+        "carbs": "42.5",
+        "fats": "26.8",
+        "fiber": "18.2",
+        "sodium": "420",
+        "sugar": "8.1"
+      },
+      "badges": [
+        { "type": "NEW", "text": "Nouveau", "color": "#3b82f6" }
+      ],
+      "extras": [
+        { "name": "Poulet fermier grillé", "price": "4.00", "type": "ADDON" },
+        { "name": "Noix de cajou", "price": "2.00", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Burrito California Fresh",
+      "shortDescription": "Avocat, crevettes, riz, légumes croquants et sauce citron vert dans tortilla",
+      "longDescription": "L'esprit californien dans un burrito frais et léger ! Crevettes grillées, avocat crémeux et riz parfumé s'associent aux légumes croquants et sauce acidulée. Cette création ensoleillée allie fraîcheur océanique et saveurs du Pacifique pour un repas équilibré et rafraîchissant.",
+      "price": "13.50",
+      "preparationTime": 8,
+      "categorySlug": "burritos-energetiques",
+      "ingredients": [
+        { "name": "Tortilla de blé complet", "quantity": "1 grande", "isOptional": false, "isRemovable": false },
+        { "name": "Crevettes grillées", "quantity": "100g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Riz basmati", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Mangue fraîche", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Roquette sauvage", "quantity": "25g", "isOptional": false, "isRemovable": true },
+        { "name": "Vinaigrette citron-herbes", "quantity": "20g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 520,
+        "proteins": "28.5",
+        "carbs": "52.8",
+        "fats": "20.2",
+        "fiber": "9.8",
+        "sodium": "720",
+        "sugar": "12.5"
+      },
+      "badges": [
+        { "type": "LIMITED", "text": "Série limitée", "color": "#ec4899" }
+      ],
+      "extras": [
+        { "name": "Double crevettes", "price": "4.50", "type": "ADDON" },
+        { "name": "Guacamole maison", "price": "2.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Energy Bowl Superfruits",
+      "shortDescription": "Açaï, banane, granola, baies de goji, chia et miel dans un bol énergisant",
+      "longDescription": "Le petit-déjeuner des champions ! Base d'açaï antioxydant, fruits frais et superaliments se rencontrent pour créer un bol d'énergie pure. Granola croquant, baies exotiques et graines nutritives composent ce concentré de vitalité naturelle pour bien commencer la journée.",
+      "price": "9.50",
+      "preparationTime": 6,
+      "categorySlug": "snacks-jus",
+      "ingredients": [
+        { "name": "Mangue fraîche", "quantity": "80g", "isOptional": false, "isRemovable": false },
+        { "name": "Graines de chia", "quantity": "15g", "isOptional": false, "isRemovable": true },
+        { "name": "Cranberries séchées", "quantity": "20g", "isOptional": false, "isRemovable": true },
+        { "name": "Noix de cajou", "quantity": "20g", "isOptional": false, "isRemovable": true }
+      ],
+      "nutritionalInfo": {
+        "calories": 380,
+        "proteins": "9.8",
+        "carbs": "45.2",
+        "fats": "18.5",
+        "fiber": "12.8",
+        "sodium": "25",
+        "sugar": "32.1"
+      },
+      "badges": [
+        { "type": "NEW", "text": "Nouveau", "color": "#3b82f6" }
+      ],
+      "extras": [
+        { "name": "Protéine végétale", "price": "2.00", "type": "ADDON" },
+        { "name": "Granola artisanal", "price": "1.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Wrap Veggie Méditerranéen",
+      "shortDescription": "Légumes grillés, mozzarella, pesto, roquette et tomates dans tortilla complète",
+      "longDescription": "L'art de vivre méditerranéen dans un wrap coloré ! Légumes grillés aux herbes de Provence, mozzarella di bufala fondante et pesto aromatique créent une harmonie parfaite. Cette création végétarienne célèbre les saveurs ensoleillées du bassin méditerranéen.",
+      "price": "10.50",
+      "preparationTime": 7,
+      "categorySlug": "wraps-healthy",
+      "ingredients": [
+        { "name": "Tortilla de blé complet", "quantity": "1 pièce", "isOptional": false, "isRemovable": false },
+        { "name": "Mozzarella di bufala", "quantity": "60g", "isOptional": false, "isRemovable": false },
+        { "name": "Poivron grillé", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Roquette sauvage", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "30g", "isOptional": false, "isRemovable": true }
+      ],
+      "nutritionalInfo": {
+        "calories": 450,
+        "proteins": "21.5",
+        "carbs": "38.2",
+        "fats": "22.8",
+        "fiber": "8.5",
+        "sodium": "680",
+        "sugar": "9.1"
+      },
+      "badges": [
+        { "type": "RECOMMENDED", "text": "Recommandé", "color": "#10b981" }
+      ],
+      "extras": [
+        { "name": "Avocat frais", "price": "2.50", "type": "ADDON" },
+        { "name": "Pesto supplémentaire", "price": "1.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Bowl Océan Fraîcheur",
+      "shortDescription": "Saumon fumé, quinoa, avocat, concombre, radis et sauce yogourt-aneth",
+      "longDescription": "Une escapade marine raffinée ! Saumon fumé d'Écosse, quinoa bio et légumes croquants s'harmonisent dans ce bowl aux saveurs nordiques. Riche en oméga-3 et protéines nobles, cette création délicate marie fraîcheur océanique et nutrition équilibrée.",
+      "price": "14.50",
+      "preparationTime": 9,
+      "categorySlug": "bowls-nutritifs",
+      "ingredients": [
+        { "name": "Quinoa bio", "quantity": "70g", "isOptional": false, "isRemovable": false },
+        { "name": "Saumon fumé", "quantity": "80g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "60g", "isOptional": false, "isRemovable": true },
+        { "name": "Concombre bio", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Épinards frais", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce yogourt grec", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 580,
+        "proteins": "32.8",
+        "carbs": "35.5",
+        "fats": "30.2",
+        "fiber": "10.8",
+        "sodium": "1080",
+        "sugar": "8.9"
+      },
+      "badges": [
+        { "type": "BESTSELLER", "text": "Meilleure vente", "color": "#f59e0b" }
+      ],
+      "extras": [
+        { "name": "Double saumon", "price": "5.00", "type": "ADDON" },
+        { "name": "Câpres", "price": "1.00", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Burger Fish Croustillant",
+      "shortDescription": "Poisson pané maison, salade, tomate, avocat et sauce tartare sur pain complet",
+      "longDescription": "Le burger de la mer revisité ! Filet de poisson blanc pané maison dans une chapelure dorée, accompagné d'avocat crémeux et sauce tartare artisanale. Cette version gourmande et équilibrée du fish burger allie croquant, fondant et fraîcheur marine.",
+      "price": "12.50",
+      "preparationTime": 11,
+      "categorySlug": "burgers-equilibres",
+      "ingredients": [
+        { "name": "Pain complet bio", "quantity": "1 pièce", "isOptional": false, "isRemovable": false },
+        { "name": "Thon albacore", "quantity": "120g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Épinards frais", "quantity": "30g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Sauce yogourt grec", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 560,
+        "proteins": "38.2",
+        "carbs": "32.5",
+        "fats": "26.8",
+        "fiber": "9.2",
+        "sodium": "620",
+        "sugar": "7.8"
+      },
+      "badges": [
+        { "type": "NEW", "text": "Nouveau", "color": "#3b82f6" }
+      ],
+      "extras": [
+        { "name": "Sauce tartare", "price": "1.50", "type": "ADDON" },
+        { "name": "Double poisson", "price": "4.50", "type": "ADDON" }
+      ]
+    },
+    {
+      "title": "Salade Rainbow Vitaminée",
+      "shortDescription": "Mélange coloré de légumes, quinoa, avocat, graines et vinaigrette arc-en-ciel",
+      "longDescription": "Un festival de couleurs et vitamines ! Cette salade artistique combine tous les légumes de saison dans un arc-en-ciel nutritionnel. Quinoa, avocat et graines complètent cette création visuelle et gustative qui apporte vitalité et énergie pure à votre journée.",
+      "price": "11.50",
+      "preparationTime": 6,
+      "categorySlug": "salades-gourmandes",
+      "ingredients": [
+        { "name": "Quinoa bio", "quantity": "50g", "isOptional": false, "isRemovable": false },
+        { "name": "Avocat frais", "quantity": "60g", "isOptional": false, "isRemovable": true },
+        { "name": "Carotte râpée", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Chou rouge", "quantity": "40g", "isOptional": false, "isRemovable": true },
+        { "name": "Épinards frais", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Tomates cerises", "quantity": "50g", "isOptional": false, "isRemovable": true },
+        { "name": "Graines de tournesol", "quantity": "15g", "isOptional": false, "isRemovable": true },
+        { "name": "Vinaigrette citron-herbes", "quantity": "25g", "isOptional": false, "isRemovable": false }
+      ],
+      "nutritionalInfo": {
+        "calories": 480,
+        "proteins": "14.2",
+        "carbs": "38.5",
+        "fats": "28.8",
+        "fiber": "16.2",
+        "sodium": "380",
+        "sugar": "14.1"
+      },
+      "badges": [
+        { "type": "RECOMMENDED", "text": "Recommandé", "color": "#10b981" }
+      ],
+      "extras": [
+        { "name": "Poulet fermier grillé", "price": "4.00", "type": "ADDON" },
+        { "name": "Feta grecque AOP", "price": "2.00", "type": "ADDON" }
+      ]
+    }
+  ]
+}

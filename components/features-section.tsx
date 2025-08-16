@@ -7,10 +7,24 @@ import { Separator } from '@/components/ui/separator';
 import { useHomeContent } from '@/features/home/presentation/hooks/useHomeContent';
 import { useCurrentLocale } from '@/lib/locale';
 import { resolveMultilingualValue } from '@/lib/resolveMultilingualValue';
-import { urlFor } from '@/sanity/lib/image';
 import { cn } from '@/lib/utils';
-import type { SanityImageType } from '@/features/home/domain/schemas/HomeContentSchema';
 import { useState, useEffect } from 'react';
+import { Clock, Leaf, Heart, Star } from 'lucide-react';
+
+// Map icon names to Lucide components
+const iconMap = {
+  Clock,
+  Leaf,
+  Heart,
+  Star,
+} as const;
+
+type IconName = keyof typeof iconMap;
+
+// Helper function to get icon component
+const getIconComponent = (iconName: string) => {
+  return iconMap[iconName as IconName] || Star;
+};
 
 // Component props schema with Zod validation
 const FeaturesSectionPropsSchema = z.object({
@@ -114,7 +128,7 @@ export function FeaturesSection(props: FeaturesSectionProps) {
  */
 interface FeatureCardProps {
   feature: {
-    icon?: SanityImageType | string; // Allow both Sanity image object and URL string
+    icon?: string; // Icon URL string
     title?: string | Record<string, string>;
     description?: string | Record<string, string>;
   };
@@ -123,35 +137,15 @@ interface FeatureCardProps {
 }
 
 function FeatureCard({ feature, currentLocale, index }: FeatureCardProps) {
-  const [iconUrl, setIconUrl] = useState<string | null>(null);
-  
   // Resolve multilingual content
   const title = resolveMultilingualValue({
     value: feature.title,
     currentLanguage: currentLocale
   }) || 'Service';
 
-  // Get optimized image URL from Sanity or use direct URL
-  useEffect(() => {
-    try {
-      if (feature.icon && typeof feature.icon === 'object' && feature.icon.asset?._ref && feature.icon.asset._ref !== '') {
-        // Only try urlFor if we have a valid _ref
-        const url = urlFor(feature.icon)
-          .width(64)
-          .height(64)
-          .format('webp')
-          .quality(85)
-          .url();
-        setIconUrl(url);
-      } else if (feature.icon && typeof feature.icon === 'string') {
-        setIconUrl(feature.icon);
-      }
-    } catch (error) {
-      console.error('Error processing icon:', error);
-    }
-  }, [feature.icon]);
-
-  console.log("feature", feature, "iconUrl", iconUrl);
+  // Get icon component from name or URL
+  const isHttpUrl = feature.icon?.startsWith('http');
+  const IconComponent = !isHttpUrl ? getIconComponent(feature.icon || 'Star') : null;
 
   return (
     <div
@@ -162,14 +156,18 @@ function FeatureCard({ feature, currentLocale, index }: FeatureCardProps) {
       {/* Icon Container */}
       <div className="mb-3 relative">
         <div className="w-16 h-16 rounded-xl bg-card flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105 transform">
-          {iconUrl ? (
+          {isHttpUrl && feature.icon ? (
             <Image
-              src={iconUrl}
+              src={feature.icon}
               alt={`${title} icon`}
               width={32}
               height={32}
               className="object-contain group-hover:scale-110 transition-transform duration-300"
               priority={index < 3} // Preload first 3 icons
+            />
+          ) : IconComponent ? (
+            <IconComponent 
+              className="w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-300" 
             />
           ) : (
             <div className="w-8 h-8 bg-primary-foreground/30 rounded-md flex items-center justify-center">

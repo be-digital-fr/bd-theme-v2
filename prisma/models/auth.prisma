@@ -1,0 +1,68 @@
+// AUTH MODELS - Better Auth authentication system
+model account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime
+  user                 user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+}
+
+model session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user     user    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model user {
+  id            String     @id
+  name          String?
+  email         String     @unique
+  emailVerified Boolean    @default(false)
+  image         String?
+  role          UserRole   @default(USER)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime
+  
+  // Relations existantes
+  account       account[]
+  session       session[]
+  
+  // Relations avec le système de produits
+  productRatings product_ratings[]
+  productViews   product_views[]
+  favorites      user_favorites[]
+}
+
+model verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+
+  @@unique([identifier, value])
+}
+
+enum UserRole {
+  USER
+  EMPLOYEE
+  ADMIN
+}

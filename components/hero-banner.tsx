@@ -5,19 +5,9 @@ import Link from 'next/link';
 import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { useHomeContent } from '@/features/home/presentation/hooks/useHomeContent';
+import { usePrismaHomeContent } from '@/features/home/presentation/hooks/usePrismaHomeContent';
 import { useCurrentLocale } from '@/lib/locale';
-import { resolveMultilingualValue } from '@/lib/resolveMultilingualValue';
-import { urlFor } from '@/sanity/lib/image';
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 import { useEffect } from 'react';
-
-// Zod schema for image optimization options
-const ImageOptimizationOptionsSchema = z.object({
-  quality: z.number().min(1).max(100).optional()
-});
-
-type ImageOptimizationOptions = z.infer<typeof ImageOptimizationOptionsSchema>;
 
 // Component props schema
 const HeroBannerPropsSchema = z.object({
@@ -30,68 +20,27 @@ type HeroBannerProps = z.infer<typeof HeroBannerPropsSchema>;
  * Hero Banner Component
  * 
  * Displays the main hero banner with background images, title, description,
- * call-to-action buttons, and optimized Sanity images
+ * call-to-action buttons, and optimized images from Prisma data
  * 
  * @param props - Component props
  * @returns JSX element or null if not active
  */
-/**
- * Optimize Sanity images for web display
- * Uses aggressive compression and AVIF format for lightweight images
- */
-const getOptimizedImageUrl = (
-  image: SanityImageSource | undefined, 
-  options: ImageOptimizationOptions = {}
-): string | null => {
-  if (!image) return null;
-  
-  const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
-  
-  return urlFor(image)
-    .width(800) // Limit width to reduce file size
-    .height(600) // Limit height to maintain aspect ratio
-    .quality(validatedOptions.quality || 70) // Further reduced quality
-    .format('webp')
-    .auto('format') // Let Sanity choose best format (AVIF when supported)
-    .url();
-};
-
-/**
- * Optimize background images with lower quality for better performance
- * Uses aggressive compression for background elements
- */
-const getBackgroundImageUrl = (
-  image: SanityImageSource | undefined, 
-  options: ImageOptimizationOptions = {}
-): string | null => {
-  if (!image) return null;
-  
-  const validatedOptions = ImageOptimizationOptionsSchema.parse(options);
-  
-  return urlFor(image)
-    .width(1920) // Reasonable width for backgrounds
-    .height(1080) // Standard aspect ratio
-    .quality(validatedOptions.quality || 55) // More aggressive compression for backgrounds
-    .format('webp')
-    .auto('format')
-    .url();
-};
 
 export function HeroBanner(props: HeroBannerProps) {
   // Validate props at runtime
   HeroBannerPropsSchema.parse(props);
   
   const currentLocale = useCurrentLocale();
-  const { data: homeContent, isLoading } = useHomeContent(currentLocale);
+  const { data: homeContent, isLoading } = usePrismaHomeContent(currentLocale);
 
-  // Get heroBanner data for optimization
+  // Get heroBanner data
   const heroBanner = homeContent?.heroBanner;
 
-  // Generate optimized image URLs early for preloading
-  const desktopImageUrl = heroBanner ? getOptimizedImageUrl(heroBanner.heroImage?.desktop) || '/images/banner/burger-desktop.png' : '/images/banner/burger-desktop.png';
-  const mobileImageUrl = heroBanner ? getOptimizedImageUrl(heroBanner.heroImage?.mobile) || '/images/banner/burger-mobile.png' : '/images/banner/burger-mobile.png';
-  const desktopBgUrl = heroBanner ? getBackgroundImageUrl(heroBanner.backgroundImages?.desktop) || '/images/banner/bg-desktop.png' : '/images/banner/bg-desktop.png';
-  const mobileBgUrl = heroBanner ? getBackgroundImageUrl(heroBanner.backgroundImages?.mobile) || '/images/banner/bg-mobile.png' : '/images/banner/bg-mobile.png';
+  // Get image URLs directly from Prisma data with fallbacks
+  const desktopImageUrl = heroBanner?.heroImage?.desktop || '/images/banner/burger-desktop.png';
+  const mobileImageUrl = heroBanner?.heroImage?.mobile || '/images/banner/burger-mobile.png';
+  const desktopBgUrl = heroBanner?.backgroundImages?.desktop || '/images/banner/bg-desktop.png';
+  const mobileBgUrl = heroBanner?.backgroundImages?.mobile || '/images/banner/bg-mobile.png';
 
   // Preload critical images for faster display - MUST be before any returns
   useEffect(() => {
@@ -128,31 +77,12 @@ export function HeroBanner(props: HeroBannerProps) {
     return null;
   }
 
-  // Resolve multilingual content with fallbacks
-  const title = resolveMultilingualValue({
-    value: heroBanner?.heroTitle,
-    currentLanguage: currentLocale
-  }) || 'Taste our unique burgers';
-
-  const description = resolveMultilingualValue({
-    value: heroBanner?.heroDescription,
-    currentLanguage: currentLocale
-  }) || 'Fresh, delicious recipes prepared with quality ingredients';
-
-  const primaryButtonText = resolveMultilingualValue({
-    value: heroBanner?.primaryButton?.text,
-    currentLanguage: currentLocale
-  }) || 'Order now';
-
-  const secondaryButtonText = resolveMultilingualValue({
-    value: heroBanner?.secondaryButton?.text,
-    currentLanguage: currentLocale
-  }) || 'View menu';
-
-  const imageAlt = resolveMultilingualValue({
-    value: heroBanner?.heroImage?.alt,
-    currentLanguage: currentLocale
-  }) || 'Delicious burger with fresh ingredients';
+  // Get localized content (already resolved by our hook)
+  const title = heroBanner?.heroTitle || 'Taste our unique burgers';
+  const description = heroBanner?.heroDescription || 'Fresh, delicious recipes prepared with quality ingredients';
+  const primaryButtonText = heroBanner?.primaryButton?.text || 'Order now';
+  const secondaryButtonText = heroBanner?.secondaryButton?.text || 'View menu';
+  const imageAlt = heroBanner?.heroImage?.alt || 'Delicious burger with fresh ingredients';
 
 
   return (

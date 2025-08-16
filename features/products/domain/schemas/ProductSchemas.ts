@@ -60,9 +60,13 @@ export const CategorySchema = z.object({
   slug: z.string().min(1, 'Category slug is required'),
   description: z.string().optional(),
   imageUrl: z.string().url().optional(),
-  displayOrder: z.number().min(0).default(0),
   isActive: z.boolean().default(true),
   parentId: z.string().optional(),
+  
+  // Relations (optional for when populated)
+  products: z.array(z.any()).optional(),
+  children: z.array(z.any()).optional(),
+  
   createdAt: z.date(),
   updatedAt: z.date()
 })
@@ -80,7 +84,6 @@ export const IngredientSchema = z.object({
   id: z.string(),
   sanityId: z.string().optional(),
   name: z.string().min(1, 'Ingredient name is required'),
-  slug: z.string().min(1, 'Ingredient slug is required'),
   description: z.string().optional(),
   imageUrl: z.string().url().optional(),
   allergens: z.array(AllergenSchema).default([]),
@@ -95,6 +98,10 @@ export const IngredientSchema = z.object({
   fat: z.number().min(0).optional(),
   fiber: z.number().min(0).optional(),
   sodium: z.number().min(0).optional(),
+  
+  // Relations (optional for when populated)
+  products: z.array(z.any()).optional(),
+  
   createdAt: z.date(),
   updatedAt: z.date()
 })
@@ -128,6 +135,10 @@ export const ExtraSchema = z.object({
   fat: z.number().min(0).optional(),
   uberEatsId: z.string().optional(),
   deliverooId: z.string().optional(),
+  
+  // Relations (optional for when populated)
+  products: z.array(z.any()).optional(),
+  
   createdAt: z.date(),
   updatedAt: z.date()
 })
@@ -149,11 +160,14 @@ export const ProductSchema = z.object({
   shortDescription: z.string().optional(),
   longDescription: z.string().optional(),
   price: z.number().min(0, 'Price must be positive'),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.string().url('L\'URL de l\'image doit être valide').min(1, 'L\'image principale est obligatoire'),
   isAvailable: z.boolean().default(true),
   stockQuantity: z.number().min(0).optional(),
   preparationTime: z.number().min(1, 'Preparation time must be at least 1 minute'),
   categoryId: z.string().min(1, 'Category is required'),
+  
+  // Relations (optional for when populated)
+  category: CategorySchema.optional(),
   
   // Promotion & Popularity
   isFeatured: z.boolean().default(false).optional(),
@@ -161,7 +175,6 @@ export const ProductSchema = z.object({
   isTrending: z.boolean().default(false).optional(),
   promotionBadge: PromotionBadgeSchema.optional(),
   popularityScore: z.number().min(0).max(100).optional(),
-  displayOrder: z.number().default(0).optional(),
   
   uberEatsId: z.string().optional(),
   deliverooId: z.string().optional(),
@@ -218,11 +231,14 @@ export const ProductFilterSchema = z.object({
   isGlutenFree: z.boolean().optional(),
   search: z.string().optional(),
   
-  // Promotion filters
+  // Special collections filters
   isFeatured: z.boolean().optional(),
   isPopular: z.boolean().optional(),
   isTrending: z.boolean().optional(),
   minPopularityScore: z.number().min(0).max(100).optional(),
+  
+  // Collection filter (for filtering by collection type)
+  collection: z.enum(['featured', 'popular', 'trending']).optional(),
 })
 
 export const ProductSortSchema = z.enum([

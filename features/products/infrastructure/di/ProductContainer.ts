@@ -4,16 +4,18 @@ import { GetProductBySlug } from '../../application/use-cases/GetProductBySlug'
 import { GetCategories } from '../../application/use-cases/GetCategories'
 import { GetFavoriteProducts } from '../../application/use-cases/GetFavoriteProducts'
 import { TrackProductView } from '../../application/use-cases/TrackProductView'
-
-// Placeholder for actual repository implementations
-// These would be implemented in separate files
-interface ProductRepositoryImplementation extends IProductRepository {}
+import { UpdateProductUseCase } from '../../application/use-cases/UpdateProduct'
+import { PrismaProductRepository } from '../repositories/PrismaProductRepository'
+import { prisma } from '@/lib/prisma'
 
 export class ProductContainer {
   private static instance: ProductContainer
   private _productRepository: IProductRepository | null = null
 
-  private constructor() {}
+  private constructor() {
+    // Auto-initialize with PrismaProductRepository
+    this._productRepository = new PrismaProductRepository(prisma)
+  }
 
   static getInstance(): ProductContainer {
     if (!ProductContainer.instance) {
@@ -22,14 +24,14 @@ export class ProductContainer {
     return ProductContainer.instance
   }
 
-  // Repository registration
+  // Repository registration (optional override)
   registerProductRepository(repository: IProductRepository): void {
     this._productRepository = repository
   }
 
   get productRepository(): IProductRepository {
     if (!this._productRepository) {
-      throw new Error('ProductRepository not registered. Call registerProductRepository first.')
+      throw new Error('ProductRepository not initialized.')
     }
     return this._productRepository
   }
@@ -53,6 +55,10 @@ export class ProductContainer {
 
   trackProductView(): TrackProductView {
     return new TrackProductView(this.productRepository)
+  }
+
+  updateProduct(): UpdateProductUseCase {
+    return new UpdateProductUseCase(this.productRepository)
   }
 }
 

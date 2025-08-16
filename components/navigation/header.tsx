@@ -42,7 +42,7 @@ export function Header({ className }: HeaderProps) {
   // Utiliser des valeurs par défaut si pas de données (même pendant le loading)
   const settings = data?.settings || null;
   const navigation = data?.navigation || { menuItems: [], footerMenuItems: [] };
-  const headerSettings = settings?.headerSettings || {};
+  const headerSettings = settings?.headerSettings || null; // null au lieu de {} pour indiquer que les données ne sont pas chargées
   const menuItems: MenuItem[] = navigation.menuItems || [];
 
 
@@ -117,7 +117,7 @@ export function Header({ className }: HeaderProps) {
           <Logo 
             size="lg" 
             priority 
-            showSkeleton={false}
+            showSkeleton={true}
             headerSettings={headerSettings}
             isHeaderLoading={isLoading}
           />
@@ -193,7 +193,7 @@ export function Header({ className }: HeaderProps) {
                   <Logo 
                     size="md" 
                     href={null} 
-                    showSkeleton={false}
+                    showSkeleton={true}
                     headerSettings={headerSettings}
                     isHeaderLoading={isLoading}
                   />
@@ -204,6 +204,7 @@ export function Header({ className }: HeaderProps) {
                     menuItems={menuItems}
                     onItemClick={() => setIsMobileMenuOpen(false)}
                     showLanguageSelector={settings?.isMultilingual ?? false}
+                    isLoading={isLoading}
                   />
                 </div>
                 

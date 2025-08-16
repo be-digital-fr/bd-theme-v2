@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Languages, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { client } from '@/sanity/lib/client';
+import { useHeaderData } from '@/hooks/useHeaderData';
 
 interface LanguageOption {
   code: string;
@@ -15,7 +15,7 @@ interface LanguageOption {
   flag: string;
 }
 
-interface SanitySettings {
+interface AdminSettings {
   isMultilingual: boolean;
   supportedLanguages: string[];
   defaultLanguage: string;
@@ -51,73 +51,40 @@ export function LanguageSelector({
   showFlag = true,
   showNativeName = true,
 }: LanguageSelectorProps) {
-  const [settings, setSettings] = useState<SanitySettings | null>(null);
+  const { data: headerData, isLoading } = useHeaderData();
   const [currentLocale, setCurrentLocale] = useState<string>('fr');
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Récupérer les settings depuis Sanity
+  // Extraire les settings du header data
+  const settings: AdminSettings | null = headerData?.settings ? {
+    isMultilingual: headerData.settings.isMultilingual,
+    supportedLanguages: headerData.settings.supportedLanguages,
+    defaultLanguage: headerData.settings.defaultLanguage,
+    languageSelectorTexts: headerData.settings.languageSelectorTexts
+  } : null;
+
+  // Fallback settings si pas de données
+  const fallbackSettings: AdminSettings = {
+    isMultilingual: true,
+    supportedLanguages: ['fr', 'en'],
+    defaultLanguage: 'fr'
+  };
+
+  // Initialiser la langue actuelle
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const settingsData = await client.fetch(`
-          *[_type == "settings"][0] {
-            isMultilingual,
-            supportedLanguages,
-            defaultLanguage,
-            languageSelectorTexts
-          }
-        `);
-        
-        if (settingsData) {
-          setSettings(settingsData);
-          // Récupérer la langue actuelle depuis localStorage ou utiliser la langue par défaut
-          const savedLocale = localStorage.getItem('preferred-locale');
-          if (savedLocale && settingsData.supportedLanguages?.includes(savedLocale)) {
-            setCurrentLocale(savedLocale);
-          } else {
-            setCurrentLocale(settingsData.defaultLanguage || 'fr');
-          }
-        } else {
-          // Utiliser des valeurs par défaut si aucun document settings n'existe
-          const defaultSettings: SanitySettings = {
-            isMultilingual: true,
-            supportedLanguages: ['fr', 'en'],
-            defaultLanguage: 'fr'
-          };
-          setSettings(defaultSettings);
-          const savedLocale = localStorage.getItem('preferred-locale');
-          if (savedLocale && defaultSettings.supportedLanguages.includes(savedLocale)) {
-            setCurrentLocale(savedLocale);
-          } else {
-            setCurrentLocale(defaultSettings.defaultLanguage);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching settings:', error);
-        // En cas d'erreur, utiliser les valeurs par défaut
-        const defaultSettings: SanitySettings = {
-          isMultilingual: true,
-          supportedLanguages: ['fr', 'en'],
-          defaultLanguage: 'fr'
-        };
-        setSettings(defaultSettings);
-        const savedLocale = localStorage.getItem('preferred-locale');
-        if (savedLocale && defaultSettings.supportedLanguages.includes(savedLocale)) {
-          setCurrentLocale(savedLocale);
-        } else {
-          setCurrentLocale(defaultSettings.defaultLanguage);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSettings();
-  }, []);
+    const activeSettings = settings || fallbackSettings;
+    // Récupérer la langue actuelle depuis localStorage ou utiliser la langue par défaut
+    const savedLocale = localStorage.getItem('preferred-locale');
+    if (savedLocale && activeSettings.supportedLanguages?.includes(savedLocale)) {
+      setCurrentLocale(savedLocale);
+    } else {
+      setCurrentLocale(activeSettings.defaultLanguage || 'fr');
+    }
+  }, [settings]);
 
   // Changer la langue
   const changeLocale = (newLocale: string) => {
-    if (!settings?.supportedLanguages?.includes(newLocale)) return;
+    const activeSettings = settings || fallbackSettings;
+    if (!activeSettings?.supportedLanguages?.includes(newLocale)) return;
     
     setCurrentLocale(newLocale);
     localStorage.setItem('preferred-locale', newLocale);
@@ -126,120 +93,115 @@ export function LanguageSelector({
     window.location.reload();
   };
 
-  // Ne pas afficher si pas multilingue ou en chargement
-  if (isLoading || !settings?.isMultilingual) {
+  // Ne pas afficher si pas multilingue ou pas assez de langues
+  const activeSettings = settings || fallbackSettings;
+  if (isLoading || !activeSettings.isMultilingual || activeSettings.supportedLanguages.length <= 1) {
     return null;
   }
 
-  // Récupérer uniquement les langues autorisées dans Sanity
-  const availableLanguages = settings.supportedLanguages
+  const supportedLanguages = activeSettings.supportedLanguages
     .map(code => LANGUAGE_INFO[code])
-    .filter(Boolean); // Filtrer les langues non définies
+    .filter(Boolean);
 
-  // Infos de la langue actuelle
-  const currentLanguageInfo = LANGUAGE_INFO[currentLocale];
+  const currentLanguage = LANGUAGE_INFO[currentLocale];
 
-  // Résoudre le texte multilingue
+  // Obtenir le texte "Choisir une langue"
   const getChooseLanguageText = () => {
-    const text = settings.languageSelectorTexts?.chooseLangText;
-    if (!text) {
-      return currentLocale === 'en' ? 'Choose a language' : 
-             currentLocale === 'es' ? 'Elegir un idioma' : 
-             'Choisir une langue';
+    const chooseLangText = activeSettings?.languageSelectorTexts?.chooseLangText;
+    
+    if (typeof chooseLangText === 'object' && chooseLangText !== null) {
+      return chooseLangText[currentLocale] || chooseLangText['fr'] || chooseLangText['en'] || 'Choisir une langue';
     }
     
-    if (typeof text === 'string') return text;
+    if (typeof chooseLangText === 'string') {
+      return chooseLangText;
+    }
     
-    return text[currentLocale] || text['fr'] || 'Choisir une langue';
+    // Fallback par défaut
+    return currentLocale === 'en' ? 'Choose language' : 'Choisir une langue';
   };
 
-  // Afficher skeleton pendant le chargement
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2">
-        {showFlag ? (
-          <Skeleton className="h-8 w-8 rounded-full" />
-        ) : (
-          <>
-            <Skeleton className="h-4 w-4" />
-            <Skeleton className="h-4 w-16" />
-          </>
-        )}
+      <div className={cn('flex items-center', className)}>
+        <Skeleton className="h-9 w-9 rounded-md" />
       </div>
     );
+  }
+
+  if (supportedLanguages.length === 0) {
+    return null;
   }
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
-          size="sm"
-          className={cn('flex items-center gap-2', className)}
-        >
-          <Languages className="h-4 w-4" />
-          {currentLanguageInfo && showFlag && (
-            <span className="text-lg">{currentLanguageInfo.flag}</span>
+          variant="ghost"
+          size="icon"
+          className={cn(
+            'h-9 w-9 rounded-md hover:bg-accent',
+            className
           )}
-          {currentLanguageInfo && (showNativeName || !showFlag) && (
-            <span>
-              {showNativeName ? currentLanguageInfo.nativeName : currentLanguageInfo.name}
-            </span>
+          aria-label={getChooseLanguageText()}
+        >
+          {currentLanguage ? (
+            showFlag ? (
+              <span className="text-lg" role="img" aria-label={currentLanguage.nativeName}>
+                {currentLanguage.flag}
+              </span>
+            ) : (
+              <Languages className="h-4 w-4" />
+            )
+          ) : (
+            <Languages className="h-4 w-4" />
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-48 p-0" align="end">
-        <div className="p-2">
-          <div className="text-xs font-medium text-muted-foreground mb-2 px-2">
+
+      <PopoverContent className="w-56 p-2" align="end">
+        <div className="space-y-1">
+          <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground border-b">
             {getChooseLanguageText()}
           </div>
-          {availableLanguages.map((language) => (
+          
+          {supportedLanguages.map((language) => (
             <Button
               key={language.code}
               variant="ghost"
-              size="sm"
               className={cn(
-                'w-full justify-start gap-2 text-sm',
+                'w-full justify-start text-left h-auto p-2',
                 currentLocale === language.code && 'bg-accent'
               )}
               onClick={() => changeLocale(language.code)}
             >
-              {showFlag && <span>{language.flag}</span>}
-              <span className="flex-1 text-left">
-                {showNativeName ? language.nativeName : language.name}
-              </span>
-              {currentLocale === language.code && (
-                <Check className="h-4 w-4" />
-              )}
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-3">
+                  {showFlag && (
+                    <span className="text-base" role="img" aria-label={language.name}>
+                      {language.flag}
+                    </span>
+                  )}
+                  <div className="flex flex-col items-start">
+                    {showNativeName && (
+                      <span className="text-sm font-medium">
+                        {language.nativeName}
+                      </span>
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      {language.name}
+                    </span>
+                  </div>
+                </div>
+                
+                {currentLocale === language.code && (
+                  <Check className="h-4 w-4" />
+                )}
+              </div>
             </Button>
           ))}
         </div>
       </PopoverContent>
     </Popover>
-  );
-}
-
-/**
- * Affichage simple de la langue actuelle
- */
-export function CurrentLanguageDisplay({ className }: { className?: string }) {
-  const [currentLocale, setCurrentLocale] = useState<string>('fr');
-
-  useEffect(() => {
-    const savedLocale = localStorage.getItem('preferred-locale') || 'fr';
-    setCurrentLocale(savedLocale);
-  }, []);
-
-  const currentLanguageInfo = LANGUAGE_INFO[currentLocale];
-
-  if (!currentLanguageInfo) {
-    return null;
-  }
-
-  return (
-    <div className={cn('flex items-center gap-2 text-sm text-muted-foreground', className)}>
-      <span>{currentLanguageInfo.flag}</span>
-      <span>{currentLanguageInfo.nativeName}</span>
-    </div>
   );
 }

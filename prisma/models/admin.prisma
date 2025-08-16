@@ -1,0 +1,9 @@
+// ADMIN MODELS - Administration preferences
+model admin_preferences {
+  id                 String   @id
+  isMultilingual     Boolean  @default(false)
+  supportedLanguages String[] @default([])
+  defaultLanguage    String   @default("fr")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime
+}

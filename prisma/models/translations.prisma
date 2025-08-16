@@ -1,0 +1,19 @@
+// Translation models
+model Translation {
+  id        String   @id @default(cuid())
+  key       String   // Clé unique de traduction (ex: "auth.signin.title")
+  category  String   // Catégorie (ex: "auth", "common", "forms")
+  fr        String?  // Traduction française
+  en        String?  // Traduction anglaise  
+  es        String?  // Traduction espagnole
+  de        String?  // Traduction allemande
+  it        String?  // Traduction italienne
+  pt        String?  // Traduction portugaise
+  ar        String?  // Traduction arabe
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([key])
+  @@index([category])
+  @@map("translations")
+}

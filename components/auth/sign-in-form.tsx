@@ -29,8 +29,7 @@ import {
 } from "@/components/ui/form";
 
 import { AuthSettings } from "@/hooks/useAuthSettings";
-import { useSignInTranslations } from "@/hooks/useSignInTranslations";
-import { useAuthNotifications } from "@/hooks/useAuthNotifications";
+import { useAuthTranslations, useAuthNotifications } from "@/hooks/useTranslations";
 import { mapAuthError } from "@/lib/auth-error-mapper";
 
 interface SignInFormProps {
@@ -48,7 +47,7 @@ export function SignInForm({
   authSettings,
   hideCard = false
 }: SignInFormProps) {
-  const { translations: t } = useSignInTranslations();
+  const { translations: t } = useAuthTranslations();
   const { notifications } = useAuthNotifications();
   const { signIn, isLoading, error, clearError } = useSignIn({
     callbackUrl,

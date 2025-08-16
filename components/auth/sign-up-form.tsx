@@ -29,8 +29,7 @@ import {
 } from "@/components/ui/form";
 
 import { AuthSettings } from "@/hooks/useAuthSettings";
-import { useSignUpTranslations } from "@/hooks/useSignUpTranslations";
-import { useAuthNotifications } from "@/hooks/useAuthNotifications";
+import { useAuthTranslations, useAuthNotifications } from "@/hooks/useTranslations";
 import { mapAuthError } from "@/lib/auth-error-mapper";
 
 interface SignUpFormProps {
@@ -48,7 +47,7 @@ export function SignUpForm({
   authSettings,
   hideCard = false
 }: SignUpFormProps) {
-  const { translations: t } = useSignUpTranslations();
+  const { translations: t } = useAuthTranslations();
   const { notifications } = useAuthNotifications();
   const { signUp, isLoading, error, success, clearError } = useSignUp({
     callbackUrl,

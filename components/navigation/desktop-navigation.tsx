@@ -31,10 +31,15 @@ export function DesktopNavigation({ menuItems, showLanguageSelector = false, cla
     );
   }
 
+  // Si pas de menu items, on affiche le skeleton pendant quelques secondes de plus
+  // pour éviter le flash du message d'erreur
   if (!menuItems || menuItems.length === 0) {
     return (
-      <nav className={cn("flex items-center", className)}>
-        <span className="text-sm text-muted-foreground">Aucun menu configuré</span>
+      <nav className={cn("flex items-center space-x-6", className)}>
+        <Skeleton className="h-6 w-16" />
+        <Skeleton className="h-6 w-20" />
+        <Skeleton className="h-6 w-18" />
+        <Skeleton className="h-6 w-14" />
       </nav>
     );
   }

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Languages, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useSettings } from '@/hooks/useNavigation';
+import { useHeaderData } from '@/hooks/useHeaderData';
 import { useLocale } from '@/components/providers/locale-provider';
 
 interface LanguageSelectorProps {
@@ -40,7 +40,8 @@ export function LanguageSelector({
 }: LanguageSelectorProps) {
   const currentLocale = useCurrentLocale();
   const { changeLocale } = useLocaleChange();
-  const { data: settings, isLoading } = useSettings();
+  const { data: headerData, isLoading } = useHeaderData();
+  const settings = headerData?.settings;
   const { resolveMultilingualValue } = useLocale();
 
   // Si les settings ne sont pas chargés ou le mode multilingue est désactivé, ne rien afficher
@@ -168,7 +169,8 @@ export function CurrentLanguageDisplay({ className }: { className?: string }) {
 export function AvailableLanguages({ className }: { className?: string }) {
   const currentLocale = useCurrentLocale();
   const { changeLocale } = useLocaleChange();
-  const { data: settings, isLoading } = useSettings();
+  const { data: headerData, isLoading } = useHeaderData();
+  const settings = headerData?.settings;
 
   if (isLoading || !settings?.isMultilingual) {
     return null;

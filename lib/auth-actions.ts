@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { UserRole } from "@prisma/client";
 
 /**
  * Server action to get the current session
@@ -40,10 +41,25 @@ export async function requireAuth() {
 export async function requireAdmin() {
   const session = await requireAuth();
   
-  // You can add admin role check here when implementing roles
-  // if (!session.user.isAdmin) {
-  //   redirect("/unauthorized");
-  // }
+  // Check if user has admin role
+  if (session.user.role !== UserRole.ADMIN) {
+    redirect("/");
+  }
+  
+  return session;
+}
+
+/**
+ * Server action to require employee or admin role
+ * Redirects to signin if not authenticated or not employee/admin
+ */
+export async function requireEmployee() {
+  const session = await requireAuth();
+  
+  // Check if user has admin or employee role
+  if (session.user.role !== UserRole.ADMIN && session.user.role !== UserRole.EMPLOYEE) {
+    redirect("/");
+  }
   
   return session;
 }

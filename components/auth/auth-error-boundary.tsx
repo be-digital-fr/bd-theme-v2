@@ -3,7 +3,7 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { captureAuthError, AuthErrorType } from "@/lib/sentry-auth";
+import { captureAuthError, AuthErrorType } from "@/lib/sentry-auth-client";
 
 interface Props {
   children: ReactNode;

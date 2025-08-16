@@ -18,7 +18,6 @@ export interface Product {
   isTrending?: boolean
   promotionBadge?: PromotionBadge
   popularityScore?: number
-  displayOrder?: number
   
   // External integrations
   uberEatsId?: string
@@ -48,7 +47,6 @@ export interface Category {
   slug: string
   description?: string
   imageUrl?: string
-  displayOrder: number
   isActive: boolean
   parentId?: string
   parent?: Category

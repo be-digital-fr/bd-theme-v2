@@ -1,5 +1,5 @@
 import { IHomeRepository } from '../../domain/repositories/IHomeRepository';
-import { SanityHomeRepository } from '../repositories/SanityHomeRepository';
+import { PrismaHomeRepository } from '../repositories/PrismaHomeRepository';
 import { GetHomeContentUseCase } from '../../application/use-cases/GetHomeContentUseCase';
 import { GetLocalizedHomeContentUseCase } from '../../application/use-cases/GetLocalizedHomeContentUseCase';
 
@@ -10,7 +10,7 @@ export class HomeContainer {
   private getLocalizedHomeContentUseCase: GetLocalizedHomeContentUseCase;
 
   private constructor() {
-    this.homeRepository = new SanityHomeRepository();
+    this.homeRepository = new PrismaHomeRepository();
     this.getHomeContentUseCase = new GetHomeContentUseCase(this.homeRepository);
     this.getLocalizedHomeContentUseCase = new GetLocalizedHomeContentUseCase(this.homeRepository);
   }
